@@ -18,9 +18,9 @@ prepare-cluster:
 
 install-acp-stack:
 	helm install acp acp/kube-acp-stack --values ./values/kube-acp-stack.yaml -n acp
-	kubectl -n acp wait deploy/acp --for condition=available
+	kubectl -n acp wait deploy/acp --for condition=available --timeout=10m
 	helm install ingress-nginx ingress-nginx/ingress-nginx --values ./values/ingress-nginx.yaml -n nginx
-	kubectl -n nginx wait deploy/ingress-nginx-controller --for condition=available
+	kubectl -n nginx wait deploy/ingress-nginx-controller --for condition=available --timeout=10m
 
 watch:
 	watch kubectl get pods -A
