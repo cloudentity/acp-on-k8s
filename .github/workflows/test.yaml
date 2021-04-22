@@ -20,6 +20,6 @@ jobs:
       - uses: azure/setup-helm@v1
         with:
           version: default
-          id: install
+        id: install
       - name: Deploy
         run: make all
