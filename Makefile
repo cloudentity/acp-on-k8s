@@ -1,22 +1,33 @@
+all: create-cluster prepare-helm prepare-cluster install-acp-stack
+
 create-cluster:
 	kind create cluster --name acp --config=./config/kind-cluster-config.yaml
 
 prepare-helm:
-	helm repo add cockroachdb https://charts.cockroachdb.com/
-	helm repo add hazelcast https://hazelcast-charts.s3.amazonaws.com/
 	helm repo add acp https://charts.cloudentity.io
+	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 	helm repo update
 
 prepare-cluster:
-	kubectl apply -f ./manifest/acp-namespace.yaml
-	kubectl create -n acp secret docker-registry artifactory --docker-server=acp.artifactory.cloudentity.com --docker-username=appd --docker-password=pJbClix17o3n
+	kubectl create namespace acp
+	kubectl create namespace nginx
+	kubectl create -n acp secret docker-registry artifactory \
+		--docker-server=acp.artifactory.cloudentity.com \
+		--docker-username=appd \
+		--docker-password=pJbClix17o3n
 
 install-acp-stack:
-	helm install acp  acp/kube-acp-stack --values ./values/values.yaml -n acp 
+	helm install acp acp/kube-acp-stack --values ./values/kube-acp-stack.yaml -n acp
+	kubectl -n acp wait deploy/acp --for condition=available
+	helm install ingress-nginx ingress-nginx/ingress-nginx --values ./values/ingress-nginx.yaml -n nginx
+	kubectl -n nginx wait deploy/ingress-nginx-controller --for condition=available
+
+watch:
+	watch kubectl get pods -A
 
 uninstall-acp:
 	helm uninstall acp -n acp
+	helm uninstall ingress-nginx -n nginx
 
 delete-cluster:
 	kind delete cluster --name=acp
-

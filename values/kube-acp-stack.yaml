@@ -1,0 +1,9 @@
+hazelcast:
+  enabled: true
+cockroachdb:
+  enabled: true
+acp:
+  enabled: true
+  serverURL: "https://acp.local:8443"
+  ingress:
+    enabled: true
