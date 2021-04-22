@@ -9,13 +9,13 @@ prepare-helm:
 
 prepare-cluster:
 	kubectl apply -f ./manifest/acp-namespace.yaml
-	kubectl create -n acp-system secret docker-registry artifactory --docker-server=acp.artifactory.cloudentity.com --docker-username=appd --docker-password=pJbClix17o3n
+	kubectl create -n acp secret docker-registry artifactory --docker-server=acp.artifactory.cloudentity.com --docker-username=appd --docker-password=pJbClix17o3n
 
 install-acp-stack:
-	helm install acp  acp/kube-acp-stack --values ./values/values.yaml -n acp-system 
+	helm install acp  acp/kube-acp-stack --values ./values/values.yaml -n acp 
 
 uninstall-acp:
-	helm uninstall acp -n acp-system
+	helm uninstall acp -n acp
 
 delete-cluster:
 	kind delete cluster --name=acp
