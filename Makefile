@@ -17,9 +17,9 @@ prepare-cluster:
 		--docker-password=pJbClix17o3n
 
 install-acp-stack:
-	helm install acp acp/kube-acp-stack --values ./values/kube-acp-stack.yaml -n acp
+	helm upgrade --install acp acp/kube-acp-stack --values ./values/kube-acp-stack.yaml -n acp
 	kubectl -n acp wait deploy/acp --for condition=available --timeout=10m
-	helm install ingress-nginx ingress-nginx/ingress-nginx --values ./values/ingress-nginx.yaml -n nginx
+	helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --values ./values/ingress-nginx.yaml -n nginx
 	kubectl -n nginx wait deploy/ingress-nginx-controller --for condition=available --timeout=10m
 
 watch:
