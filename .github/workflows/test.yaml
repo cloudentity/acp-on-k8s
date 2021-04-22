@@ -19,7 +19,7 @@ jobs:
           version: "v0.10.0"
       - uses: azure/setup-helm@v1
         with:
-          version: default
+          version: 3.5.4
         id: install
       - name: Deploy
         run: make all
