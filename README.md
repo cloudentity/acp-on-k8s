@@ -6,9 +6,9 @@ This repository's primary purpose is to enable you to rapidly stand up Cloudenti
 
 ## Prerequisites
 
-* [kind](https://kind.sigs.k8s.io/) 0.10.x -> [Installation](https://kind.sigs.k8s.io/docs/user/quick-start/#installation)
-* [helm](https://helm.sh/docs/intro/install/) 3.x.x -> [Installation](https://helm.sh/docs/intro/install/)
-* [kubectl](https://kubernetes.io/docs/tasks/tools/) 1.21.x -> [Installation](https://kubernetes.io/docs/tasks/tools/)
+* [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) 0.10.x 
+* [helm](https://helm.sh/docs/intro/install/) 3.x.x 
+* [kubectl](https://kubernetes.io/docs/tasks/tools/) 1.21.x
 * Credentials to access Cloudentity Private Docker Repo - if you are our client, you can find it in your Support Portal; if you are not and you want to check out our product, feel free to request access via our [website](https://cloudentity.com).
 
 ## Quickstart
@@ -28,7 +28,7 @@ Next go to `https://acp.acp-system:8443/` and log in with `admin`:`admin`
 ## What is next?
 
 * Check out ACP [documentation](http://docs.authorization.cloudentity.com)
-* Install Istio `make install-istion` and experiment with the [MicroPerimeter Authorizer for Istio](https://docs.authorization.cloudentity.com/howto/protect/istio/)
+* Install Istio `make install-istio` and experiment with the [MicroPerimeter Authorizer for Istio](https://docs.authorization.cloudentity.com/howto/protect/istio/)
 * Integrate your SPA app using our [Auth JS Lib](https://github.com/cloudentity/cloudentity-auth-js)
 * Explore strong service mTLS based authentication using [Sample Go mTLS OAuth app](https://github.com/cloudentity/sample-go-mtls-oauth-client)
 
