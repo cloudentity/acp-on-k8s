@@ -1,3 +1,8 @@
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
+
 all: create-cluster prepare-helm prepare-cluster install-acp-stack
 
 create-cluster:
@@ -13,8 +18,8 @@ prepare-cluster:
 	kubectl create namespace nginx
 	kubectl create -n acp-system secret docker-registry artifactory \
 		--docker-server=acp.artifactory.cloudentity.com \
-		--docker-username=appd \
-		--docker-password=pJbClix17o3n
+		--docker-username=${DOCKER_USER} \
+		--docker-password=${DOCKER_PWD}
 
 install-acp-stack:
 	helm upgrade --install acp acp/kube-acp-stack --values ./values/kube-acp-stack.yaml -n acp-system
@@ -22,6 +27,12 @@ install-acp-stack:
 	helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --values ./values/ingress-nginx.yaml -n nginx
 	kubectl -n nginx wait deploy/ingress-nginx-controller --for condition=available --timeout=10m
 
+install-istio:
+	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.9.3 TARGET_ARCH=x86_64  sh -
+	./istio-1.9.3/bin/istioctl install --set profile=demo -y
+	kubectl label namespace default istio-injection=enabled
+	rm -rf ./istio-1.9.3
+	
 watch:
 	watch kubectl get pods -A
 
@@ -31,3 +42,7 @@ uninstall-acp:
 
 delete-cluster:
 	kind delete cluster --name=acp
+
+## helpers
+deploy-cmd-pod:
+	kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.9/samples/sleep/sleep.yaml
