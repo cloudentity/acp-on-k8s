@@ -22,4 +22,8 @@ jobs:
           version: 3.5.4
         id: install
       - name: Deploy
+        env: # Or as an environment variable
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
         run: make all
+        
