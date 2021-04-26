@@ -5,6 +5,21 @@ cockroachdb:
 acp:
   enabled: true
   serverURL: "https://acp.acp-system:8443"
+  args:
+  - server
+  - start
+  - --config
+  - /config/reference.yaml,/data/config.yaml
+  - --demo
+  - --metrics
+  - --create-default-tenant
+  - --create-default-workspaces
+  - --swagger
+  - --dev
+  - --system.secret
+  - pleaseChangTheSystemSecretThisIsVeryImportant
+  features:
+  - systemClientsManagement: true
   ingress:
     enabled: true
     hosts:
