@@ -1,7 +1,14 @@
 hazelcast:
   enabled: true
+  cluster:
+    memberCount: 1
+  mancenter:
+    enabled: false
 cockroachdb:
   enabled: true
+  single-node: true
+  statefulset:
+    replicas: 1
 acp:
   enabled: true
   serverURL: "https://acp.acp-system:8443"
