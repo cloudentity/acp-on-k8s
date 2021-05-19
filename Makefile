@@ -29,7 +29,7 @@ install-acp-stack:
 
 install-istio:
 	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.9.3 TARGET_ARCH=x86_64  sh -
-	./istio-1.9.3/bin/istioctl install --set profile=demo -y
+	./istio-1.9.3/bin/istioctl install -f ./config/ce-istio-profile.yaml -y
 	kubectl label namespace default istio-injection=enabled
 	rm -rf ./istio-1.9.3
 	
@@ -46,3 +46,15 @@ delete-cluster:
 ## helpers
 deploy-cmd-pod:
 	kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.9/samples/sleep/sleep.yaml
+
+check-istio-ingress:
+	curl http://localhost:15021/healthz/ready -v
+
+deploy-httpbin-example:
+	kubectl apply -f ./examples/httpbin/deployment.yaml
+
+httpbin-ingress-k8s:
+	kubectl apply -f ./examples/httpbin/k8s-ingress.yaml
+
+httpbin-ingress-istio:
+	kubectl apply -f ./examples/httpbin/istio-ingress.yaml
