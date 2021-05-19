@@ -50,11 +50,5 @@ deploy-cmd-pod:
 check-istio-ingress:
 	curl http://localhost:15021/healthz/ready -v
 
-deploy-httpbin-example:
-	kubectl apply -f ./examples/httpbin/deployment.yaml
-
-httpbin-ingress-k8s:
-	kubectl apply -f ./examples/httpbin/k8s-ingress.yaml
-
-httpbin-ingress-istio:
-	kubectl apply -f ./examples/httpbin/istio-ingress.yaml
+install-example:
+	kubectl apply -f ./examples/httpbin
