@@ -11,10 +11,10 @@ cockroachdb:
     replicas: 1
 acp:
   enabled: true
-  serverURL: "https://acp.acp-system:8443"
+  serverURL: "https://acp.local:8443"
   ingress:
     enabled: true
     hosts:
-      - host: acp.acp-system
+      - host: acp.local
         paths:
           - path: /

@@ -16,14 +16,14 @@ This repository's primary purpose is to enable you to rapidly stand up Cloudenti
 Add
 
 ``` sh
-127.0.0.1 acp.acp-system
+127.0.0.1 acp.local
 ```
 
 to /etc/hosts and run 
 
 `make all`.
 
-Next go to `https://acp.acp-system:8443/` and log in with `admin`:`admin`
+Next go to `https://acp.local:8443/` and log in with `admin`:`admin`
 
 ## What is next?
 
@@ -49,4 +49,4 @@ Next go to `https://acp.acp-system:8443/` and log in with `admin`:`admin`
 
 1. Run `make deploy-cmd-pod`
 2. Export CMD_POD name: `export CMD_POD=$(kubectl get pod -l app=sleep -o jsonpath={.items..metadata.name})`
-3. Run the requested operation in te context of a  Kubernetes  cluster: `kubectl exec -it $CMD_POD -c sleep -- curl https://acp.acp-system:8443/alive --insecure`
+3. Run the requested operation in te context of a  Kubernetes  cluster: `kubectl exec -it $CMD_POD -c sleep -- curl https://acp.local:8443/alive --insecure`
