@@ -3,7 +3,9 @@ ifneq (,$(wildcard ./.env))
     export
 endif
 
-all: create-cluster prepare-helm prepare-cluster install-ingress-controller install-acp-stack
+all: prepare install-acp-stack
+
+prepare: create-cluster prepare-helm prepare-cluster install-ingress-controller
 
 create-cluster:
 	kind create cluster --name acp --config=./config/kind-cluster-config.yaml
