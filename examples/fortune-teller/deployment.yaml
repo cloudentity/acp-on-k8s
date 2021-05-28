@@ -18,7 +18,7 @@ metadata:
     app: fortune-teller-app
   namespace: default
   annotations:
-    services.k8s.cloudentity.com/spec-url: "https://gist.githubusercontent.com/ikawalec/5cf4c99dd7fe5f911448005fcf63f05f/raw/e1f23742166785ad09117114c359dabae061a5c4/fortune-teller.proto"
+    services.k8s.cloudentity.com/spec-url: "https://raw.githubusercontent.com/cloudentity/acp-on-k8s/master/examples/fortune-teller/service.proto"
 spec:
   replicas: 1
   selector:
