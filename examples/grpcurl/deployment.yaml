@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: grpcurl
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: grpcurl
+  labels:
+    app: grpcurl
+    service: grpcurl
+spec:
+  ports:
+  - port: 80
+    name: http
+  selector:
+    app: grpcurl
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grpcurl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grpcurl
+  template:
+    metadata:
+      labels:
+        app: grpcurl
+    spec:
+      terminationGracePeriodSeconds: 0
+      serviceAccountName: grpcurl
+      containers:
+      - name: grpcurl
+        image: docker.io/networld/grpcurl:latest
+        command: ["/bin/sleep", "3650d"]
+        imagePullPolicy: IfNotPresent
+---
