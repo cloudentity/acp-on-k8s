@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fortune-teller-service
+  namespace: default
+spec:
+  selector:
+    app: fortune-teller-app
+  ports:
+  - port: 50051
+    name: grpc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fortune-teller-app
+  labels:
+    app: fortune-teller-app
+  namespace: default
+  annotations:
+    services.k8s.cloudentity.com/spec-url: "https://gist.githubusercontent.com/ikawalec/5cf4c99dd7fe5f911448005fcf63f05f/raw/e1f23742166785ad09117114c359dabae061a5c4/fortune-teller.proto"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fortune-teller-app
+  template:
+    metadata:
+      labels:
+        app: fortune-teller-app
+    spec:
+      containers:
+      - name: fortune-teller-app
+        image: quay.io/kubernetes-ingress-controller/grpc-fortune-teller:0.1
+        ports:
+        - containerPort: 50051
+          name: grpc
