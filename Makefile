@@ -66,7 +66,7 @@ install-cert-manager:
 		--namespace cert-manager \
 		--create-namespace \
 		--version v1.3.1
-	kubectl -n cert-manager wait deploy/cert-manager --for condition=available --timeout=10m
+	kubectl -n cert-manager wait deploy/cert-manager-webhook --for condition=available --timeout=10m
 	kubectl apply -f config/cert-issuer.yaml
 
 install-openbanking:
