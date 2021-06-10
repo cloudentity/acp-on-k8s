@@ -1,0 +1,38 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: echo-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "echo.ingress.istio"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: echo-virtual
+spec:
+  hosts:
+  - "echo.ingress.istio"
+  gateways:
+  - echo-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    - uri:
+        prefix: /{tenantId}/dashboard/{dashboardid}
+    - uri:
+        prefix: /{tenantId}/dashboard
+    route:
+    - destination:
+        port:
+          number: 9080
+        host: echo
+

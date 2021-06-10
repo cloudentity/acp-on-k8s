@@ -1,0 +1,57 @@
+##################################################################################################
+# Echo service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: echo
+  labels:
+    app: echo
+    service: echo
+spec:
+  ports:
+  - port: 9080
+    name: http
+  selector:
+    app: echo
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: echo-service
+  labels:
+    account: echo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-v1
+  labels:
+    app: echo
+    version: v1
+  annotations:
+    services.k8s.cloudentity.com/spec-url: https://raw.githubusercontent.com/lradosz/oas-examples/master/dashboard-multitenant-oas.yaml
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: echo
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: echo
+        version: v1
+    spec:
+      serviceAccountName: echo-service
+      containers:
+      - name: echo
+        image: docker.io/jmalloc/echo-server
+        env:
+        - name: PORT
+          value: "9080"
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9080
+        securityContext:
+          runAsUser: 1000
