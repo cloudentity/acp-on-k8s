@@ -2,7 +2,7 @@ package acp.authz
 
 default allow = false
 
-
+### Extract and inject permissions for the authenticated user into the header 
 permissions = {
         "user": ["123","124"], 
         "user1": ["125","126"], 

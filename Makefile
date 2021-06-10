@@ -56,3 +56,6 @@ check-istio-ingress:
 
 install-example:
 	kubectl apply -f ./examples/httpbin
+	kubectl apply -f ./examples/echo
+	kubectl apply -f ./examples/fortune-teller
+	

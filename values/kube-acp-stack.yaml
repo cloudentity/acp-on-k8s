@@ -12,9 +12,42 @@ cockroachdb:
 acp:
   enabled: true
   serverURL: "https://acp.acp-system:8443"
+  args:
+    - server
+    - start
+    - --config
+    - /config/reference.yaml,/data/config.yaml
+    - --demo
+    - --metrics
+    - --create-default-tenant
+    - --create-default-workspaces
+    - --swagger
+    - --dev
+    - --system.secret
+    - Akjncqpoentehsmxuwotshxnd1Akjncqpoentehsmxuwotshxnd1
   ingress:
     enabled: true
     hosts:
       - host: acp.acp-system
         paths:
           - path: /
+  features:
+    integration_endpoints: true # enables import, export, global accept, deny, introspect endpoints
+    dev_mode: false # realod templates, adds local redirects urls to frontend apps
+    demo_app: true # enables demo app endpoints
+    swagger_ui: true  # enables swagger ui
+    script_transformer: true # enable javascript transformer
+    system_openbanking_consents_management: true # enable system openbanking consent management apis
+    system_clients_management: true # enable system client management apis
+    jwt_bearer_grant_type: true # enable jwt bearer grant type
+    pyron_on_prem: false # enable, when ACP is running on-prem, and Pyron is used as gateway
+    faas_provider: "" # default not secure embedded script runtime or fission
+    openbanking_domestic_scheduled_payment_consents: false # enable openbanking domestic scheduled payment consent apis
+    openbanking_domestic_payment_consents: false # enable openbanking domestic payment consent apis
+    openbanking_domestic_standing_order_consents: false # enable openbanking domestic standing order consent apis
+    openbanking_international_payment_consents: false # enable openbanking international payment consent apis
+    openbanking_international_scheduled_payment_consents: false # enable openbanking international scheduled payment consent apis
+    openbanking_international_standing_order_consents: false # enable openbanking international standing order consent apis
+    openbanking_file_payment_consents: false # enable openbanking file payment consent apis
+    openbanking_jws_verification: false # enable verification middleware for POST payment consent endpoints
+    web_rotation_keys: true # enable roatation keys in frontend

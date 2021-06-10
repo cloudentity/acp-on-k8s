@@ -2,6 +2,11 @@ apiVersion: install.istio.io/v1alpha1
 kind: IstioOperator
 spec:
   meshConfig:
+    extensionProviders:
+    - name: "acp-authorizer"
+      envoyExtAuthzGrpc:
+        service: "istio-authorizer.acp-system.svc.cluster.local"
+        port: "9001"
     accessLogFile: /dev/stdout
   components:
     egressGateways:

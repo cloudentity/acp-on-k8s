@@ -2,6 +2,8 @@ package acp.authz
 
 default allow = false
 
+tid = input.authn_ctx.tid
+
 allow {
   input.request.method == "GET"
   id := input.scopes["dashboard.read.*"][_].params[0]

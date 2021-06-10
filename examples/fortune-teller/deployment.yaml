@@ -2,7 +2,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: fortune-teller-service
-  namespace: default
 spec:
   selector:
     app: fortune-teller-app
@@ -16,7 +15,6 @@ metadata:
   name: fortune-teller-app
   labels:
     app: fortune-teller-app
-  namespace: default
   annotations:
     services.k8s.cloudentity.com/spec-url: "https://raw.githubusercontent.com/cloudentity/acp-on-k8s/master/examples/fortune-teller/service.proto"
 spec:
