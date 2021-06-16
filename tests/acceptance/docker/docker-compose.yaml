@@ -1,0 +1,13 @@
+version: "2.4"
+
+services:
+  standalone-chrome:
+    mem_limit: 2048M
+    container_name: standalone-chrome
+    volumes:
+      - /dev/shm:/dev/shm
+    image: docker.artifactory.syntegrity.com/selenium/standalone-chrome:3.141.59
+    extra_hosts:
+      - "acp.acp-system:127.0.0.1"
+    ports:
+      - "4444:4444"

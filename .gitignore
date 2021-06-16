@@ -1,0 +1,14 @@
+# tests
+tests/**/target
+tests/**/allure-results
+tests/**/logs
+standalone-chrome.log
+.allure
+
+# intellij
+.idea
+*.iml
+
+# project ide files
+.settings
+.project

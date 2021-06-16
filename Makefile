@@ -1,3 +1,5 @@
+ENV_URL ?= acp.acp-system:8443
+
 ifneq (,$(wildcard ./.env))
     include .env
     export
@@ -72,3 +74,38 @@ install-cert-manager:
 install-openbanking:
 	kubectl create namespace acp-ob
 	helm install acp-ob acp/openbanking	-n acp-ob
+
+## Testing
+.PHONY: test-prepare
+test-prepare:
+	./scripts/test-acceptance.sh update
+
+.PHONY: test-clean
+test-clean:  test-clean-grid test-clean-data 
+
+.PHONY: test-clean-grid
+test-clean-grid:
+	./scripts/test-acceptance.sh clean-grid
+
+.PHONY: test-clean-data
+test-clean-data:
+	./scripts/test-acceptance.sh clean-data
+
+.PHONY: test-smoke-web
+test-smoke-web:
+	./scripts/test-acceptance.sh web-smoke ${ENV_URL}
+
+.PHONY: test-acceptance-rest
+test-acceptance-rest:
+	./scripts/test-acceptance.sh rest ${ENV_URL}
+
+.PHONY: test-acceptance-web
+test-acceptance-web:
+	./scripts/test-acceptance.sh web ${ENV_URL}
+
+.PHONY: test-acceptance-enforcement
+test-acceptance-enforcement:
+	./scripts/test-acceptance.sh enforcement ${ENV_URL}
+
+.PHONY: test-acceptance
+test-acceptance: test-acceptance-rest test-acceptance-enforcement test-acceptance-web
