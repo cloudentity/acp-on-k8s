@@ -12,6 +12,8 @@ cockroachdb:
 acp:
   enabled: true
   serverURL: "https://acp.acp-system:8443"
+  features:
+    integration_endpoints: true
   ingress:
     enabled: true
     hosts:

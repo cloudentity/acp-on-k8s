@@ -8,6 +8,17 @@ services:
       - /dev/shm:/dev/shm
     image: docker.artifactory.syntegrity.com/selenium/standalone-chrome:3.141.59
     extra_hosts:
-      - "acp.acp-system:127.0.0.1"
+      - "acp.acp-system:10.160.0.1"
     ports:
       - "4444:4444"
+    networks: 
+      - chromebr
+
+networks:
+  chromebr:
+    driver: bridge
+    name: chrome_vpcbr
+    ipam:
+      config:
+        - subnet: 10.160.0.0/16
+          gateway: 10.160.0.1
