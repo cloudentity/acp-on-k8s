@@ -22,7 +22,6 @@ acp:
     - --create-default-tenant
     - --create-default-workspaces
     - --swagger
-    - --dev
   ingress:
     enabled: true
     hosts:
