@@ -23,8 +23,6 @@ acp:
     - --create-default-workspaces
     - --swagger
     - --dev
-    - --system.secret
-    - Akjncqpoentehsmxuwotshxnd1Akjncqpoentehsmxuwotshxnd1
   ingress:
     enabled: true
     hosts:
