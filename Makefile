@@ -13,6 +13,7 @@ create-cluster:
 prepare-helm:
 	helm repo add acp https://charts.cloudentity.io
 	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+	helm repo add jetstack https://charts.jetstack.io
 	helm repo update
 
 prepare-cluster:
@@ -59,3 +60,18 @@ install-example:
 	kubectl apply -f ./examples/echo
 	kubectl apply -f ./examples/fortune-teller
 	
+
+install-cert-manager:
+	kubectl create namespace cert-manager
+	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.crds.yaml
+	helm install \
+		cert-manager jetstack/cert-manager \
+		--namespace cert-manager \
+		--create-namespace \
+		--version v1.3.1
+	kubectl -n cert-manager wait deploy/cert-manager-webhook --for condition=available --timeout=10m
+	kubectl apply -f config/cert-issuer.yaml
+
+install-openbanking:
+	kubectl create namespace acp-ob
+	helm install acp-ob acp/openbanking	-n acp-ob
