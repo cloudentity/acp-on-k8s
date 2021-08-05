@@ -59,6 +59,12 @@ install-example:
 	kubectl apply -f ./examples/httpbin
 	kubectl apply -f ./examples/echo
 	kubectl apply -f ./examples/fortune-teller
+
+
+uninstall-example:
+	kubectl delete -f ./examples/httpbin
+	kubectl delete -f ./examples/echo
+	kubectl delete -f ./examples/fortune-teller
 	
 
 install-cert-manager:
