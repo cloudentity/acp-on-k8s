@@ -89,7 +89,7 @@ test-prepare-runner:
 		-v ${HOME}/.m2:/m2 \
 		--name test-runner \
 		--user $(shell id -u):$(shell id -g) \
-    docker.cloudentity.io/acceptance-tests:latest /bin/sh
+		docker.cloudentity.io/acceptance-tests:latest /bin/sh
 
 test-prepare: test-prepare-grid test-prepare-runner
 
