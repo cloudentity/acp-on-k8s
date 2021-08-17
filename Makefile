@@ -72,3 +72,30 @@ install-cert-manager:
 install-openbanking:
 	kubectl create namespace acp-ob
 	helm install acp-ob acp/openbanking	-n acp-ob
+
+## tests
+
+test-prepare-grid:
+	docker run -d --rm \
+		-v /dev/shm:/dev/shm \
+		-m 2048M \
+		--name standalone-chrome \
+		--network="host" \
+		docker.cloudentity.io/selenium/standalone-chrome:3.141.59
+
+test-prepare-runner:
+	docker run -t -d \
+    --network host \
+    -v ${HOME}/.m2:/m2 \
+    --name test-runner \
+    --user $(shell id -u):$(shell id -g) \
+    docker.cloudentity.io/acceptance-tests:latest /bin/sh
+
+test-prepare: test-prepare-grid test-prepare-runner
+
+test-%:
+	docker exec -e BASE_URL="https://acp.acp-system:8443" test-runner /qa/test-acceptance.sh $*
+
+test-clean:
+	docker stop standalone-chrome test-runner; true
+	docker rm standalone-chrome test-runner; true
