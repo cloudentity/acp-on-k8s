@@ -73,6 +73,16 @@ install-openbanking:
 	kubectl create namespace acp-ob
 	helm install acp-ob acp/openbanking	-n acp-ob
 
+debug:
+	kubectl get all -A
+	kubectl -n kube-system logs daemonset/kindnet
+	kubectl -n kube-system logs daemonset/kube-proxy
+	kubectl -n acp-system logs deploy/acp
+	kubectl -n nginx logs deploy/ingress-nginx-controller
+	kubectl -n kube-system logs deploy/coredns
+	kubectl -n local-path-storage logs deploy/local-path-provisioner
+	kubectl -n acp describe pods acp || true
+
 ## tests
 
 TEST_DOCKER_VERSION=latest
