@@ -26,4 +26,8 @@ jobs:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
         run: make all
+      - name: test
+        run: make test-prepare test-web-smoke
+      - name: test-clean
+        run: make test-clean
         

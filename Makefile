@@ -75,21 +75,24 @@ install-openbanking:
 
 ## tests
 
+TEST_DOCKER_VERSION=latest
+
 test-prepare-grid:
 	docker run -d --rm \
 		-v /dev/shm:/dev/shm \
 		-m 2048M \
 		--name standalone-chrome \
-		--network="host" \
+		--network=host \
 		docker.cloudentity.io/selenium/standalone-chrome:3.141.59
 
 test-prepare-runner:
-	docker run -t -d \
-		--network host \
+	docker pull docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION}
+	docker run -t -d --rm \
+		--network=host \
 		-v ${HOME}/.m2:/m2 \
 		--name test-runner \
 		--user $(shell id -u):$(shell id -g) \
-		docker.cloudentity.io/acceptance-tests:latest /bin/sh
+		docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION} /bin/sh
 
 test-prepare: test-prepare-grid test-prepare-runner
 
@@ -98,4 +101,3 @@ test-%:
 
 test-clean:
 	docker stop standalone-chrome test-runner; true
-	docker rm standalone-chrome test-runner; true

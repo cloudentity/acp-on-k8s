@@ -14,6 +14,7 @@ acp:
   serverURL: "https://acp.acp-system:8443"
   features:
     integration_endpoints: true
+    swagger_ui: true
   ingress:
     enabled: true
     hosts:
