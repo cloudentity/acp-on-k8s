@@ -93,7 +93,7 @@ test-prepare-grid:
 		-m 2048M \
 		--name standalone-chrome \
 		--network=host \
-		docker.cloudentity.io/selenium/standalone-chrome:3.141.59
+		selenium/standalone-chrome:3.141.59
 
 test-prepare-runner:
 	docker pull docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION}
