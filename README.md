@@ -60,4 +60,4 @@ system_openbanking_consents_management: true
 openbanking_domestic_payment_consents: true
 system_clients_management: true
 ```
-2. Run `install-openbanking`
+2. Run `make install-openbanking`
