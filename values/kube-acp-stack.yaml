@@ -18,3 +18,53 @@ acp:
       - host: acp.acp-system
         paths:
           - path: /
+  importJob:
+    enabled: true
+    data:
+      clients:
+        - tenant_id: default
+          authorization_server_id: system
+          client_id: my_test_gateway_client
+          client_secret: 5c8f3f5b353ba0f55c8f3f5b353ba0f5
+          name: My Test Gateway Client
+          token_endpoint_auth_method: client_secret_basic
+          grant_types:
+          - client_credentials
+          scopes:
+          - read_gateway_configuration
+      gateways:
+        - tenant_id: default
+          authorization_server_id: default
+          id: my_test_gateway
+          name: My Test Gateway
+          type: istio
+          client_id: my_test_gateway_client
+          last_active: "2021-07-15T12:39:56.099Z"
+      policies:
+        - tenant_id: default
+          server_id: default
+          id: dupa
+          policy_name: dupa
+          language: cloudentity
+          type: api
+          validators:
+          - name: "false"
+        - tenant_id: default
+          server_id: default
+          id: block
+          policy_name: block
+          language: cloudentity
+          type: api
+          validators:
+          - name: "false"
+      services:
+        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
+          tenant_id: default
+          authorization_server_id: default
+          gateway_id: my_test_gateway
+          name: My Test Service 2
+          apis:
+            - method: GET
+              path: /test
+              policy_id: block
+              can_have_policy: true
