@@ -1,0 +1,4 @@
+clientCredentials:
+  clientID: "my_test_gateway_client"
+  clientSecret: "5c8f3f5b353ba0f55c8f3f5b353ba0f5"
+issuerURL: "https://acp.acp-system:8443/system/system"

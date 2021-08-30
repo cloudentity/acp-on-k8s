@@ -32,6 +32,10 @@ install-acp-stack:
 	helm upgrade --install acp acp/kube-acp-stack --values ./values/kube-acp-stack.yaml -n acp-system
 	kubectl -n acp-system wait deploy/acp --for condition=available --timeout=10m
 
+install-istio-authorizer:
+	helm upgrade --install istio-authorizer acp/istio-authorizer --values ./values/istio-authorizer.yaml -n acp-system
+	kubectl -n acp-system wait deploy/acp-istio-authorizer --for condition=available --timeout=10m
+
 install-istio:
 	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.9.3 TARGET_ARCH=x86_64  sh -
 	./istio-1.9.3/bin/istioctl install -f ./config/ce-istio-profile.yaml -y
