@@ -26,7 +26,7 @@ acp:
           authorization_server_id: system
           client_id: my_test_gateway_client
           client_secret: 5c8f3f5b353ba0f55c8f3f5b353ba0f5
-          name: My Test Gateway Client
+          client_name: My Test Gateway Client
           token_endpoint_auth_method: client_secret_post
           grant_types:
           - client_credentials
