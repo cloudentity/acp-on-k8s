@@ -85,7 +85,7 @@ debug:
 
 ## tests
 
-TEST_DOCKER_VERSION=latest
+TEST_DOCKER_VERSION=WIP
 
 test-prepare-grid:
 	docker run -d --rm \
