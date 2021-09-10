@@ -18,6 +18,10 @@ acp:
       - host: acp.acp-system
         paths:
           - path: /
+  features:
+    integration_endpoints: true
+    dev_mode: true
+    demo_app: true
   importJob:
     enabled: true
     data:
