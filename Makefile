@@ -20,9 +20,10 @@ prepare-cluster:
 	kubectl create namespace acp-system
 	kubectl create namespace nginx
 	kubectl create -n acp-system secret docker-registry artifactory \
-		--docker-server=acp.artifactory.cloudentity.com \
+		--docker-server=docker.cloudentity.io \
 		--docker-username=${DOCKER_USER} \
 		--docker-password=${DOCKER_PWD}
+	kubectl create secret tls acp-server-tls --cert=tls/tls.crt --key=tls/tls.key -n acp-system
 
 install-ingress-controller:
 	helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --values ./values/ingress-nginx.yaml -n nginx

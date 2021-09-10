@@ -1,9 +1,12 @@
 hazelcast:
-  enabled: true
+  enabled: false
   cluster:
     memberCount: 1
   mancenter:
     enabled: false
+redis:
+  replica:
+    replicaCount: 0
 cockroachdb:
   enabled: true
   single-node: true
@@ -11,13 +14,105 @@ cockroachdb:
     replicas: 1
 acp:
   enabled: true
-  serverURL: "https://acp.acp-system:8443"
-  features:
-    integration_endpoints: true
-    swagger_ui: true
+  serverURL: "https://acp.cloudentity.local:8443"
+  image:
+    repository: docker.cloudentity.io/acp
+    tag: latest
+  env:
+    - name: SERVER_DISABLE_CSRF
+      value: 'true'
+    - name: CLIENT_INSECURE_SKIP_VERIFY
+      value: 'true'
   ingress:
     enabled: true
     hosts:
-      - host: acp.acp-system
+      - host: acp.cloudentity.local
         paths:
           - path: /
+    tls:
+      - secretName: acp-server-tls
+        hosts:
+          - acp.cloudentity.local
+  features:
+    initialize_demo_workspace: false # when display_workspace_wizard is true and this option is enabled demo workspace with preconfigured IDPs will be create instead displaying welcome screens
+    integration_endpoints: true # enables import, export, global accept, deny, introspect endpoints
+    dev_mode: true # realod templates, adds local redirects urls to frontend apps
+    demo_app: true # enables demo app endpoints
+    swagger_ui: true # enables swagger ui
+    script_transformer: true # enable javascript transformer
+    system_openbanking_consents_management: false # enable system openbanking consent management apis
+    system_clients_management: true # enable system client management apis
+    jwt_bearer_grant_type: true # enable jwt bearer grant type
+    pyron_on_prem: false # enable, when ACP is running on-prem, and Pyron is used as gateway
+    faas_provider: "" # default not secure embedded script runtime or fission
+    openbanking_domestic_scheduled_payment_consents: false # enable openbanking domestic scheduled payment consent apis
+    openbanking_domestic_payment_consents: false # enable openbanking domestic payment consent apis
+    openbanking_domestic_standing_order_consents: false # enable openbanking domestic standing order consent apis
+    openbanking_international_payment_consents: false # enable openbanking international payment consent apis
+    openbanking_international_scheduled_payment_consents: false # enable openbanking international scheduled payment consent apis
+    openbanking_international_standing_order_consents: false # enable openbanking international standing order consent apis
+    openbanking_file_payment_consents: false # enable openbanking file payment consent apis
+    openbanking_jws_verification: false # enable verification middleware for POST payment consent endpoints
+    client_secrets_stored_as_one_way_hash: false # store client secrets as a one way hash
+    trust_anchor_integration: false # enable trust anchor integration
+    openbanking_brasil_consents: false # enable openbanking brasil consent endpoints
+    openbanking_brasil_payments: false # enable openbanking brasil payment endpoints
+    login_with_select_account: true # enable login with select_account param
+    ciba: true # enable ciba
+    quick_access: true # enable quick access functionality on UI
+    external_datastore: true # enable external datastore idp
+  certificate:
+    cert: |
+      -----BEGIN CERTIFICATE-----
+      MIID/TCCAuWgAwIBAgIUcA3EaT2aWKj7mf87XjjozJ6AhHwwDQYJKoZIhvcNAQEL
+      BQAwczELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAldBMRAwDgYDVQQHDAdTZWF0dGxl
+      MRQwEgYDVQQKDAtDbG91ZGVudGl0eTETMBEGA1UECwwKQ1RPIE9mZmljZTEaMBgG
+      A1UEAwwRY2xvdWRlbnRpdHkubG9jYWwwHhcNMjEwODE3MDEwMTIwWhcNMjIxMjMw
+      MDEwMTIwWjB3MQswCQYDVQQGEwJVUzELMAkGA1UECAwCV0ExEDAOBgNVBAcMB1Nl
+      YXR0bGUxFDASBgNVBAoMC0Nsb3VkZW50aXR5MRMwEQYDVQQLDApDVE8gT2ZmaWNl
+      MR4wHAYDVQQDDBVhY3AuY2xvdWRlbnRpdHkubG9jYWwwggEiMA0GCSqGSIb3DQEB
+      AQUAA4IBDwAwggEKAoIBAQC/NwuC9XEMOwCSXV5wFxMJ/6MFnyCb05rtA9sjscy7
+      NhiNAqGhL6tn4Ku6gVMAIyvU0kMe5tnYCeQBBaLY3mRyE53SJoxZR3ynzm0jn5mI
+      cn5jH0AwTIIDTzVkGPJTNzdTzXJqa40a6B3CFZNlEORzpxaO5YRvaSfb5zYOBwDi
+      OCHDugdnDGBn5kPUdJ/vzUDVJoccefPF/uBCAsQvb3WYbq2P4B53L2RwsiIZ4JVn
+      izo/bKA+is4AM2Z9BN55FCGgQKNDuuhA5TT9ekn4y7vZtrz6KEaxdpZne8jXjQm8
+      h0FRdMTSYsS7HA4Alw5fWpHke3cl6lv0vbvzfCmSWC0nAgMBAAGjgYQwgYEwHwYD
+      VR0jBBgwFoAUGkJ/3lpuRu/ti/t/6+KI5IiPfZ8wCQYDVR0TBAIwADALBgNVHQ8E
+      BAMCBPAwRgYDVR0RBD8wPYIVYWNwLmNsb3VkZW50aXR5LmxvY2FsggNhY3CCDmFj
+      cC5hY3Atc3lzdGVtgglsb2NhbGhvc3SHBH8AAAEwDQYJKoZIhvcNAQELBQADggEB
+      AA98TzLZ9x+XC88RPjKPrc1z1xiAmvs2sLnBeIg4oAZcaQe1KbkDujYlx5B2d+y1
+      M5pB4e4qQwt8DQ4Fu8aH2nn+ri9aHYQGg3aYPUB9D0bJRgAgLRkLQ16j0ZeHVO4e
+      f/fLzPLLzcKH4I7GsT14DhjAT7baCvqry2i7p4PqlvBIbG4TzTUdTvIEBFXx7OJ6
+      b6/xpity25WD9UtLiUA4qtmpNtD4WDjJa6edkokqwmAmpgtMvVRBGG1GSsCQ/yNb
+      6TfXcU8/93+JDOm15vf8IsI9Anw2wdahWVFKxjY0hJVQ8r2kGQl/ThvPkx+xZay3
+      Sm3+DCB9fuveEMPp53bE30U=
+      -----END CERTIFICATE-----
+    key: |
+      -----BEGIN PRIVATE KEY-----
+      MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC/NwuC9XEMOwCS
+      XV5wFxMJ/6MFnyCb05rtA9sjscy7NhiNAqGhL6tn4Ku6gVMAIyvU0kMe5tnYCeQB
+      BaLY3mRyE53SJoxZR3ynzm0jn5mIcn5jH0AwTIIDTzVkGPJTNzdTzXJqa40a6B3C
+      FZNlEORzpxaO5YRvaSfb5zYOBwDiOCHDugdnDGBn5kPUdJ/vzUDVJoccefPF/uBC
+      AsQvb3WYbq2P4B53L2RwsiIZ4JVnizo/bKA+is4AM2Z9BN55FCGgQKNDuuhA5TT9
+      ekn4y7vZtrz6KEaxdpZne8jXjQm8h0FRdMTSYsS7HA4Alw5fWpHke3cl6lv0vbvz
+      fCmSWC0nAgMBAAECggEAGD1uJCfhMN+57tQPSL5kF3xkui22AIsOtMUsXpYHkiQF
+      cLrIqppUbFK68mW6k+XhhJUzFRPGwfBfCxIf1sY6jYuXEjD40ciSMOOmSkHNQNLi
+      2sX3aSgJw0mjRxEyhwIU7Xa57mu785FBVH1PthwyGccwwOSvqT/3YZUp8RVKM2Ma
+      GeTsai2I0QOUwuB79BbIiTRlp83y2RZ/K5wByCz+SjJ9HY8mnghqq0v//w/gkmZ0
+      zGAXyIQkwND7ex/Y1PG+G7TPTDT5y+Zq2GOthPEQAVBD7h1/Cya2xAQ45lDkWTBa
+      Lmmz2wuFw0ypUVR19FO5Twg37EMSd/kEeUu6FJsDgQKBgQDot0Vxuc6XZR+rsdsY
+      G4HDFeKHMn1Yqrj6HTZNfprAXnYl7Il2K3HmUe5IaPs+VW4gisnMZKz4qfbUd6i2
+      OGD0L1rlObo+cMEwr39rtS563VxhPqM7Y8OOpQ6FiLT+ZNJbFragwXKQm8crftwA
+      pb/0jeiekFa3sye5Ifak/uCWNwKBgQDSWMe137c42PrsPgwR+umbkzwlgB+HSs7T
+      tsHxsXwilAvHW/dAubaRmm41yolnRSvK2823HSp1akYNRbg61v3GmhkMByjIWm0F
+      snpgxZGD9o05ZPNx1NsHbcgyWAhmu8SSdE5m+G4FkYOUTUrp9PYE6ROOXsJk7sZQ
+      Jq8yemmokQKBgHuM4ZeRWDdUfs3+7R0NbYUPV2cDzTyH1xEi9TOLZcl/3SYhQJG2
+      WxA2q1VSNyFO5drtFFopkROr2NnQdYfYwtChW5abYV/JKSgZ5IJgfL7KS0Ntp+fd
+      /XL7+ou2mrD9AhlOI8ORMKvJqKJVBaRqW1ERDlEwvHlm6k4F1BahIsddAoGAPB2X
+      Zgk76glJHT9WX8UgApB/vg/x8s6UcblnkFWzLoa1HxLPhTYOUWqbWNA7mMISE/Xh
+      wxWYztnCj4R/dIGBIcNkqSVaqHf/dINfqkyMm/RYxDBvyvaUankboBe8vu+m7FxF
+      E/SoLPs7aaT1ZgvWS+z449V9JS+AieOkan7Ft6ECgYEA5f4HxcBEUtzUPqAj93cy
+      4S+fwVN1SEMuuNdLnVZtTlby9cmeAXJltp2pCNVwaVlNaKUDlHAFemYOPGMeCiLC
+      tTnC7oyDAFr+BVwtPBGsb7HVO0RQHMKitY9IHPd8RCFO0KATPH25w72pI+EQvdUX
+      ZLE1fWMZn98vRG7c0U1K8P0=
+      -----END PRIVATE KEY-----    
