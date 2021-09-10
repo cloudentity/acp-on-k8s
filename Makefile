@@ -20,7 +20,7 @@ prepare-cluster:
 	kubectl create namespace acp-system
 	kubectl create namespace nginx
 	kubectl create -n acp-system secret docker-registry artifactory \
-		--docker-server=docker.cloudentity.io \
+		--docker-server=acp.artifactory.cloudentity.com \
 		--docker-username=${DOCKER_USER} \
 		--docker-password=${DOCKER_PWD}
 
