@@ -86,7 +86,7 @@ debug:
 
 ## tests
 
-TEST_DOCKER_VERSION=WIP
+TEST_DOCKER_VERSION=latest
 
 test-prepare-grid:
 	docker run -d --rm \
@@ -99,9 +99,8 @@ test-prepare-grid:
 test-prepare-runner:
 	docker pull docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION}
 	docker run -t -d --rm \
-		--network=host \
-		-v ${HOME}/.m2:/m2 \
 		--name test-runner \
+		--network=host \
 		--user $(shell id -u):$(shell id -g) \
 		docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION} /bin/sh
 
