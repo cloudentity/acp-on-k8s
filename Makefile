@@ -114,3 +114,8 @@ test-%:
 
 test-clean:
 	docker stop standalone-chrome test-runner; true
+
+test-copy-results:
+	rm -rf temp; \
+	mkdir temp &&	\
+	docker cp test-runner:/qa/tests/web/target/allure-results temp

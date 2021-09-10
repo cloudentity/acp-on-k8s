@@ -20,8 +20,7 @@ acp:
           - path: /
   features:
     integration_endpoints: true
-    dev_mode: true
-    demo_app: true
+    swagger_ui: true
   importJob:
     enabled: true
     data:
