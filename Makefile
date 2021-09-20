@@ -106,6 +106,7 @@ test-prepare-runner:
 		--name test-runner \
 		--network=host \
 		--add-host=acp.acp-system:127.0.0.1 \
+		--add-host=standalone-chrome:127.0.0.1 \
 		--user 1000:1000 \
 		docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION} /bin/sh
 
