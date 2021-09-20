@@ -76,3 +76,49 @@ install-cert-manager:
 install-openbanking:
 	kubectl create namespace acp-ob
 	helm install acp-ob acp/openbanking	-n acp-ob
+
+debug:
+	kubectl get all -A
+	kubectl -n kube-system logs daemonset/kindnet
+	kubectl -n kube-system logs daemonset/kube-proxy
+	kubectl -n acp-system logs deploy/acp
+	kubectl -n nginx logs deploy/ingress-nginx-controller
+	kubectl -n kube-system logs deploy/coredns
+	kubectl -n local-path-storage logs deploy/local-path-provisioner
+	kubectl -n acp describe pods acp || true
+
+## tests
+
+TEST_DOCKER_VERSION=latest
+
+test-prepare-grid:
+	docker run -d --rm \
+		-v /dev/shm:/dev/shm \
+		-m 2048M \
+		--name standalone-chrome \
+		--network=host \
+		--add-host=acp.acp-system:127.0.0.1 \
+		selenium/standalone-chrome:3.141.59
+
+test-prepare-runner:
+	docker pull docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION}
+	docker run -t -d --rm \
+		--name test-runner \
+		--network=host \
+		--add-host=acp.acp-system:127.0.0.1 \
+		--add-host=standalone-chrome:127.0.0.1 \
+		--user 1000:1000 \
+		docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION} /bin/sh
+
+test-prepare: test-prepare-grid test-prepare-runner
+
+test-%:
+	docker exec -e BASE_URL="https://acp.acp-system:8443" test-runner /qa/test-acceptance.sh $*
+
+test-clean:
+	docker stop standalone-chrome test-runner; true
+
+test-copy-results:
+	rm -rf temp; \
+	mkdir temp &&	\
+	docker cp test-runner:/qa/tests/web/target/allure-results temp

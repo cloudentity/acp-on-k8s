@@ -18,6 +18,9 @@ acp:
       - host: acp.acp-system
         paths:
           - path: /
+  features:
+    integration_endpoints: true
+    swagger_ui: true
   importJob:
     enabled: true
     data:
