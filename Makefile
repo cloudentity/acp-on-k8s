@@ -97,6 +97,7 @@ test-prepare-grid:
 		-m 2048M \
 		--name standalone-chrome \
 		--network=host \
+		--add-host=acp.acp-system:127.0.0.1 \
 		selenium/standalone-chrome:3.141.59
 
 test-prepare-runner:
@@ -104,6 +105,7 @@ test-prepare-runner:
 	docker run -t -d --rm \
 		--name test-runner \
 		--network=host \
+		--add-host=acp.acp-system:127.0.0.1 \
 		--user 1000:1000 \
 		docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION} /bin/sh
 
