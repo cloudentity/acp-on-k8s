@@ -104,7 +104,7 @@ test-prepare-runner:
 	docker run -t -d --rm \
 		--name test-runner \
 		--network=host \
-		--user $(shell id -u):$(shell id -g) \
+		--user 1000:1000 \
 		docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION} /bin/sh
 
 test-prepare: test-prepare-grid test-prepare-runner
