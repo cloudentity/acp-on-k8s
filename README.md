@@ -44,6 +44,7 @@ Next go to `https://acp.acp-system:8443/` and log in with `admin`:`admin`
 * `make uninstall-acp` - Uninstalls the `acp` release
 * `make delete-cluster` - Deletes Kind based Kubernetes cluster
 * `make deploy-cmd-pod` - Deploys the CMD pod in the default namespace; this pod is helpful with the Istio authorization testing.
+* `make install-countries` - Deploys the countries GraphQL API in the default namespace; this pod is helpful for testing GraphQL authorization. The Coutries API is publicly available https://countries.trevorblades.com/
 
 ## Usage of the CMD Pod
 

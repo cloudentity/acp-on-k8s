@@ -66,6 +66,11 @@ check-istio-ingress:
 install-example:
 	kubectl apply -f ./examples/httpbin
 
+install-countries:
+	docker build examples/countries/ -t countries:demo
+	kind load docker-image countries:demo --name acp
+	kubectl apply -f ./examples/countries
+
 install-cert-manager:
 	kubectl create namespace cert-manager
 	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.crds.yaml
