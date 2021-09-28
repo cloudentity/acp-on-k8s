@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: insurance-uc-demo-app-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - "insurance-uc-demo-app.ingress.istio"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: insurance-uc-demo-app-virtual
+spec:
+  hosts:
+    - "insurance-uc-demo-app.ingress.istio"
+  gateways:
+    - insurance-uc-demo-app-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            port:
+              number: 5000
+            host: insurance-uc-demo-app

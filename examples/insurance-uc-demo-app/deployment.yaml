@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: insurance-uc-demo-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: insurance-uc-demo-app
+  labels:
+    app: insurance-uc-demo-app
+    service: insurance-uc-demo-app
+spec:
+  selector:
+    app: insurance-uc-demo-app
+  ports:
+    - port: 5000
+      name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: insurance-uc-demo-app
+  labels:
+    app: insurance-uc-demo-app
+  annotations:
+    services.k8s.cloudentity.com/spec-url: "https://hastebin.com/raw/sorokitipi"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: insurance-uc-demo-app
+  template:
+    metadata:
+      labels:
+        app: insurance-uc-demo-app
+    spec:
+      serviceAccountName: insurance-uc-demo-app
+      containers:
+        - name: insurance-uc-demo-app
+          image: docker.cloudentity.io/insurance-uc-demo-app:1.0
+          # env:
+          # - name: PORT
+          #   value: "5000"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+              name: http
+      imagePullSecrets:
+      - name: docker.cloudentity.io
