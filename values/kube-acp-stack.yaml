@@ -29,22 +29,80 @@ acp:
         paths:
           - path: /
   features:
-    integration_endpoints: true # enables import, export, global accept, deny, introspect endpoints
-    dev_mode: false # realod templates, adds local redirects urls to frontend apps
-    demo_app: true # enables demo app endpoints
-    swagger_ui: true  # enables swagger ui
-    script_transformer: true # enable javascript transformer
-    system_openbanking_consents_management: true # enable system openbanking consent management apis
-    system_clients_management: true # enable system client management apis
-    jwt_bearer_grant_type: true # enable jwt bearer grant type
-    pyron_on_prem: false # enable, when ACP is running on-prem, and Pyron is used as gateway
-    faas_provider: "" # default not secure embedded script runtime or fission
-    openbanking_domestic_scheduled_payment_consents: false # enable openbanking domestic scheduled payment consent apis
-    openbanking_domestic_payment_consents: false # enable openbanking domestic payment consent apis
-    openbanking_domestic_standing_order_consents: false # enable openbanking domestic standing order consent apis
-    openbanking_international_payment_consents: false # enable openbanking international payment consent apis
-    openbanking_international_scheduled_payment_consents: false # enable openbanking international scheduled payment consent apis
-    openbanking_international_standing_order_consents: false # enable openbanking international standing order consent apis
-    openbanking_file_payment_consents: false # enable openbanking file payment consent apis
-    openbanking_jws_verification: false # enable verification middleware for POST payment consent endpoints
-    web_rotation_keys: true # enable roatation keys in frontend
+    initialize_demo_workspace: true # when enabled and the display_workspace_wizard feature flag is set to true, a demo workspace with a set of preconfigured IDPs is created and no welcome screen is displayed (tenant)
+    integration_endpoints: true # enable global import and export configuration endpoints (system)
+    admin_workspace_access: true # enable admin workspace access (tenant)
+    system_workspace_access: true # enable admin workspace access (tenant)
+    dev_mode: false # realod templates and adds local redirects urls to frontend apps (system)
+    demo_app: true # enable demo app endpoints (system)
+    swagger_ui: true # enable swagger ui (system)
+    script_transformer: true # enable the javascript transformer (tenant)
+    system_clients_management: true # enable system client management APIs (system)
+    pyron_on_prem: false # enable when ACP is running on-prem and Pyron is used as a gateway (tenant)
+    client_secrets_stored_as_one_way_hash: true # store client secrets as a one way hash (tenant)
+    trust_anchor_integration: false # enable trust anchor integration (system)
+    login_with_select_account: true # enable login with select_account param (tenant)
+    ciba: true # enable ciba (system)
+    mfa: true # enable mfa (tenant)
+    quick_access: true # enable quick access functionality on UI (system)
+    external_datastore: true # enable external datastore idp (system)
+    scripts: false # enable custom scripts (tenant)
+    fission_v2: false # fission runtime v2 (tenant)
+    gateway_type_standalone: true # enable gateway type standalone (tenant)
+  importJob:
+    enabled: true
+    data:
+      clients:
+        - tenant_id: system
+          authorization_server_id: system
+          client_id: my_test_gateway_client
+          client_secret: 5c8f3f5b353ba0f55c8f3f5b353ba0f5
+          client_name: My Test Gateway Client
+          token_endpoint_auth_method: client_secret_post
+          grant_types:
+          - client_credentials
+          scopes:
+          - read_gateway_configuration
+          - write_gateway_configuration
+          - push_gateway_requests
+          - introspect_tokens
+        - tenant_id: default
+          authorization_server_id: system
+          client_id: my_local_gateway_client_id
+          client_secret: 5c8f3f5b353ba0f55c8f3f5b353ba0f5aaa
+          client_name: My Locl Gateway
+          token_endpoint_auth_method: client_secret_post
+          grant_types:
+          - client_credentials
+          scopes:
+          - read_gateway_configuration
+          - write_gateway_configuration
+          - push_gateway_requests
+          - introspect_tokens
+      gateways:
+        - tenant_id: default
+          authorization_server_id: default
+          id: local_istio_gateway
+          name: My Locl Istio Gateway
+          type: istio
+          client_id: my_local_gateway_client_id
+      policies:
+        - tenant_id: system
+          server_id: system
+          id: block
+          policy_name: block
+          language: cloudentity
+          type: api
+          validators:
+          - name: "false"
+      services:
+        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
+          tenant_id: system
+          authorization_server_id: system
+          gateway_id: my_test_gateway
+          name: My Test Service 2
+          apis:
+            - method: GET
+              path: /test
+              policy_id: block
+              can_have_policy: true

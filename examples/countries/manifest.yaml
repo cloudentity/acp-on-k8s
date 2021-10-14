@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: countries
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: countries
+spec:
+  selector:
+    app: countries
+  ports:
+  - port: 80
+    name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: countries
+  labels:
+    app: countries
+  annotations:
+    services.k8s.cloudentity.com/spec-url: "https://gist.githubusercontent.com/morus12/d48b7e68094dfe1acb514a0b6417c14d/raw/9fe75fec7922fa6cfdd4d6735ca3e92a484bc702/countries"
+    services.k8s.cloudentity.com/graphql-path: "/"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: countries
+  template:
+    metadata:
+      labels:
+        app: countries
+    spec:
+      serviceAccountName: countries
+      containers:
+      - name: countries
+        image: "countries:demo"
+        ports:
+        - containerPort: 80
+          name: http

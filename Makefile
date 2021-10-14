@@ -23,6 +23,10 @@ prepare-cluster:
 		--docker-server=acp.artifactory.cloudentity.com \
 		--docker-username=${DOCKER_USER} \
 		--docker-password=${DOCKER_PWD}
+	kubectl create -n acp-system secret docker-registry docker.cloudentity.io \
+		--docker-server=docker.cloudentity.io \
+		--docker-username=${DOCKER_USER} \
+		--docker-password=${DOCKER_PWD}
 
 install-ingress-controller:
 	helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --values ./values/ingress-nginx.yaml -n nginx
@@ -31,6 +35,10 @@ install-ingress-controller:
 install-acp-stack:
 	helm upgrade --install acp acp/kube-acp-stack --values ./values/kube-acp-stack.yaml -n acp-system
 	kubectl -n acp-system wait deploy/acp --for condition=available --timeout=10m
+
+install-istio-authorizer:
+	helm upgrade --install istio-authorizer acp/istio-authorizer --values ./values/istio-authorizer.yaml -n acp-system
+	kubectl -n acp-system wait deploy/istio-authorizer --for condition=available --timeout=10m
 
 install-istio:
 	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.9.3 TARGET_ARCH=x86_64  sh -
@@ -67,6 +75,11 @@ uninstall-example:
 	kubectl delete -f ./examples/fortune-teller
 	
 
+install-countries:
+	docker build examples/countries/ -t countries:demo
+	kind load docker-image countries:demo --name acp
+	kubectl apply -f ./examples/countries
+
 install-cert-manager:
 	kubectl create namespace cert-manager
 	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.crds.yaml
@@ -81,3 +94,49 @@ install-cert-manager:
 install-openbanking:
 	kubectl create namespace acp-ob
 	helm install acp-ob acp/openbanking	-n acp-ob
+
+debug:
+	kubectl get all -A
+	kubectl -n kube-system logs daemonset/kindnet
+	kubectl -n kube-system logs daemonset/kube-proxy
+	kubectl -n acp-system logs deploy/acp
+	kubectl -n nginx logs deploy/ingress-nginx-controller
+	kubectl -n kube-system logs deploy/coredns
+	kubectl -n local-path-storage logs deploy/local-path-provisioner
+	kubectl -n acp describe pods acp || true
+
+## tests
+
+TEST_DOCKER_VERSION=latest
+
+test-prepare-grid:
+	docker run -d --rm \
+		-v /dev/shm:/dev/shm \
+		-m 2048M \
+		--name standalone-chrome \
+		--network=host \
+		--add-host=acp.acp-system:127.0.0.1 \
+		selenium/standalone-chrome:3.141.59
+
+test-prepare-runner:
+	docker pull docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION}
+	docker run -t -d --rm \
+		--name test-runner \
+		--network=host \
+		--add-host=acp.acp-system:127.0.0.1 \
+		--add-host=standalone-chrome:127.0.0.1 \
+		--user 1000:1000 \
+		docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION} /bin/sh
+
+test-prepare: test-prepare-grid test-prepare-runner
+
+test-%:
+	docker exec -e BASE_URL="https://acp.acp-system:8443" test-runner /qa/test-acceptance.sh $*
+
+test-clean:
+	docker stop standalone-chrome test-runner; true
+
+test-copy-results:
+	rm -rf temp; \
+	mkdir temp &&	\
+	docker cp test-runner:/qa/tests/web/target/allure-results temp
