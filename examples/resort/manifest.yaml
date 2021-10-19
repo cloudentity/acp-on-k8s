@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: resort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: resort
+spec:
+  selector:
+    app: resort
+  ports:
+  - port: 9002
+    name: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resort
+  labels:
+    app: resort
+  annotations:
+    services.k8s.cloudentity.com/spec-url: "https://gist.githubusercontent.com/lgonczarik/3699bcab234ed32b4d2daed91c5e9ad3/raw/resort.graphql"
+    services.k8s.cloudentity.com/graphql-path: "/"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resort
+  template:
+    metadata:
+      labels:
+        app: resort
+    spec:
+      serviceAccountName: resort
+      containers:
+      - name: resort
+        image: "resort:demo"
+        ports:
+        - containerPort: 9002
+          name: http
