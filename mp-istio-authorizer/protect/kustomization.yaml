@@ -1,0 +1,11 @@
+## Example showing how to import the API and Policies deffinition to declaratively protect the service
+resources:
+- protect-apis-dataload.yaml
+- istio-policy.yaml
+secretGenerator:
+- name: import-job-secrets
+  namespace: acp-system
+  literals:
+  - ISSUER_URL=https://<tenantid>.us.authz.cloudentity.io/<tenantid>/system
+  - IMPORT_JOB_CLIENT_ID=<IMPORT_JOB_CLIENT_ID>
+  - IMPORT_JOB_CLIENT_SECRET=<IMPORT_JOB_CLIENT_SECRET>

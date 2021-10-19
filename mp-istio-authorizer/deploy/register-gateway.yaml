@@ -1,0 +1,83 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: acp-import-job
+  namespace: acp-system
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      imagePullSecrets:
+        - name: docker.cloudentity.io
+      volumes:
+        - name: import
+          configMap:
+            name: acp-import
+      containers:
+        - name: acp-import
+          image: "docker.cloudentity.io/acp:1.14.1"
+          imagePullPolicy: IfNotPresent
+          args:
+            - import
+            - --client-id
+            - "$(CLIENT_ID)"
+            - --client-secret
+            - "$(CLIENT_SECRET)"
+            - --issuer-url
+            - "$(ISSUER_URL)"
+            - --mode
+            - update
+            - --format
+            - yaml
+            - --input
+            - /import/seed.yaml
+          env:
+          - name: CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: import-job-secrets
+                key: IMPORT_JOB_CLIENT_ID
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: import-job-secrets
+                key: IMPORT_JOB_CLIENT_SECRET
+          - name: ISSUER_URL
+            valueFrom:
+              secretKeyRef:
+                name: import-job-secrets
+                key: ISSUER_URL
+          volumeMounts:
+            - mountPath: /import
+              name: import
+              readOnly: true
+      restartPolicy: Never
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: acp-import
+  namespace: acp-system
+data:
+  seed.yaml: |
+    clients:
+      - tenant_id: skynet
+        authorization_server_id: system
+        client_id: my_local_gateway_client_id
+        client_secret: my_local_gateway_secret_that_I_need_to_change
+        client_name: My Local Gateway
+        token_endpoint_auth_method: client_secret_post
+        grant_types:
+          - client_credentials
+        scopes:
+          - read_gateway_configuration
+          - write_gateway_configuration
+          - push_gateway_requests
+          - introspect_tokens
+    gateways:
+      - tenant_id: skynet
+        authorization_server_id: default
+        id: local_istio_gateway
+        name: My Local Istio Gateway import
+        type: istio
+        client_id: my_local_gateway_client_id

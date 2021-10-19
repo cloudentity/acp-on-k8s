@@ -1,0 +1,61 @@
+##################################################################################################
+# DataLoad service
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: dataload
+  labels:
+    app: dataload
+    service: dataload
+spec:
+  ports:
+  - port: 9100
+    name: http
+  selector:
+    app: dataload
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: dataload
+  labels:
+    account: dataload
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dataload
+  labels:
+    app: dataload
+  annotations:
+    services.k8s.cloudentity.com/spec-url: https://raw.githubusercontent.com/lradosz/oas-examples/master/dataload-service-oas.yaml
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dataload
+  template:
+    metadata:
+      labels:
+        app: dataload
+    spec:
+      serviceAccountName: dataload
+      containers:
+      - name: dataload
+        image: docker.io/cloudentity/example-dataload
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        env:
+        - name: PORT
+          value: "9100"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9100
+        securityContext:
+          runAsUser: 1000

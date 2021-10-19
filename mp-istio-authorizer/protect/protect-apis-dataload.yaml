@@ -1,0 +1,123 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: dataload-protect-apis-job
+  namespace: acp-system
+spec:
+  backoffLimit: 4
+  template:
+    spec:
+      imagePullSecrets:
+        - name: docker.cloudentity.io
+      volumes:
+        - name: import
+          configMap:
+            name: acp-import
+      containers:
+        - name: acp-import
+          image: "docker.cloudentity.io/acp:1.14.1"
+          imagePullPolicy: IfNotPresent
+          args:
+            - import
+            - --client-id
+            - "$(CLIENT_ID)"
+            - --client-secret
+            - "$(CLIENT_SECRET)"
+            - --issuer-url
+            - "$(ISSUER_URL)"
+            - --mode
+            - update
+            - --format
+            - yaml
+            - --input
+            - /import/seed.yaml
+          env:
+          - name: CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: import-job-secrets
+                key: IMPORT_JOB_CLIENT_ID
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: import-job-secrets
+                key: IMPORT_JOB_CLIENT_SECRET
+          - name: ISSUER_URL
+            valueFrom:
+              secretKeyRef:
+                name: import-job-secrets
+                key: ISSUER_URL
+          volumeMounts:
+            - mountPath: /import
+              name: import
+              readOnly: true
+      restartPolicy: Never
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: acp-import
+  namespace: acp-system
+data:
+  seed.yaml: |
+    gateway_api_groups:
+      - tenant_id: skynet
+        server_id: default
+        service_id: dataload
+        gateway_id: local_istio_gateway
+        name: "default/dataload"
+        id: {{ encSpiffeID "spiffe://cluster.local/ns/default/sa/dataload" }}
+        apis:
+          - method: GET
+            path: /datasets
+            can_have_policy: true
+          - method: GET
+            path: /datasets/{datasetUUID}
+            can_have_policy: true
+          - method: DELETE
+            path: /datasets/{datasetUUID}
+            policy_id: allow_test_policy
+            can_have_policy: true
+          - method: POST
+            path: /datasets/{datasetUUID}
+            can_have_policy: true
+    policies:
+      - tenant_id: skynet
+        server_id: default
+        id: block_test_policy
+        policy_name: block_test
+        language: cloudentity
+        type: api
+        validators:
+          - name: "false"
+      - tenant_id: skynet
+        server_id: default
+        id: allow_test_policy
+        policy_name: allow_test
+        language: cloudentity
+        type: api
+        validators:
+          - name: "true"
+    services:
+      - id: dataload
+        tenant_id: skynet
+        authorization_server_id: default
+        gateway_id: local_istio_gateway
+        name: default/dataload
+        apis:
+          - method: GET
+            path: /datasets
+            policy_id: allow_test_policy
+            can_have_policy: true
+          - method: GET
+            path: /datasets/{datasetUUID}
+            policy_id: allow_test_policy
+            can_have_policy: true
+          - method: DELETE
+            path: /datasets/{datasetUUID}
+            policy_id: allow_test_policy
+            can_have_policy: true
+          - method: POST
+            path: /datasets/{datasetUUID}
+            policy_id: allow_test_policy
+            can_have_policy: true

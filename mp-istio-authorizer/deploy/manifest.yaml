@@ -1,0 +1,170 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: acp-system
+---
+apiVersion: v1
+kind: ServiceAccount
+imagePullSecrets:
+- name: docker.cloudentity.io
+metadata:
+  name: istio-authorizer
+  namespace: acp-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: istio-authorizer
+  namespace: acp-system
+roleRef:
+  apiGroup: ""
+  kind: ClusterRole
+  name: istio-authorizer
+subjects:
+- kind: ServiceAccount
+  name: istio-authorizer
+  namespace: acp-system
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: istio-authorizer-auth-delegator
+  namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+- kind: ServiceAccount
+  name: istio-authorizer
+  namespace: acp-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: istio-authorizer
+  namespace: acp-system
+rules:
+- apiGroups:
+  - "apps"
+  resources:
+  - "deployments"
+  verbs:
+  - "list"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: istio-authorizer-data
+  namespace: acp-system
+data:
+  ca.pem: |
+    -----BEGIN CERTIFICATE-----
+    MIIDfjCCAmagAwIBAgIUHOLlcMhX8uJyFafYYNXYBMBJr2swDQYJKoZIhvcNAQEL
+    BQAwVzELMAkGA1UEBhMCVVMxEzARBgNVBAgTCldhc2hpbmd0b24xEDAOBgNVBAcT
+    B1NlYXR0bGUxFDASBgNVBAoTC0Nsb3VkZW50aXR5MQswCQYDVQQLEwJDQTAeFw0y
+    MTAxMjAwOTQ4MDBaFw0yNjAxMTkwOTQ4MDBaMFcxCzAJBgNVBAYTAlVTMRMwEQYD
+    VQQIEwpXYXNoaW5ndG9uMRAwDgYDVQQHEwdTZWF0dGxlMRQwEgYDVQQKEwtDbG91
+    ZGVudGl0eTELMAkGA1UECxMCQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+    AoIBAQDKJroMoumr9jY129z7uf0WrvMxmzexP72ogINlQlM/p910YfnLYSWOUEIH
+    kQ5eyq3ATuesPzamNxjq4JkafopsMBeieCeVzir4VTmsxLxbBZG2GjdsGpyXmrXb
+    LXTb5dgNcolYh6LLPb11cBeb9TAy2D97Vx4t1Hr2SeLG1VvkNyNnoog6tZdmJUis
+    ufW9GOyXgiAv46rtgvvpzYn+LbE7oiXlQHICHNpeTh7140HG7eWMPubINuilGZBY
+    W80IGTpGUf2Vmuwo2LA17z5/3IB0dqlY5eT321TYVoqH1TYZrMllSLc+2x750e+l
+    E9sHil8QPptAS74UWUsq2PgIvyZbAgMBAAGjQjBAMA4GA1UdDwEB/wQEAwIBBjAP
+    BgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBTKWQeEZBRJ/UO1Py7EfTaOqVujbTAN
+    BgkqhkiG9w0BAQsFAAOCAQEAsg5ker9FPcq1u5E+y4Qq1yjUeuOT0kap+aIE1mp2
+    LSQoEA+tb40s/iNmTMdvCGReeoRoVYKz66+3zGoFYg5W1c5Ct9whjiLhKP1Pzc4I
+    JbPGklSrnnAwD72ypLF4yrTMTD65gTMsr2ao0MOe6vy/Z8R2uz48QJHhhi71VGhi
+    FstSiWvb4AgNhN39Ag5ufLtrGCbuZw5TSeW0J7PTBoYV1Z/0jrsdqxk8MjnbR8Qe
+    VyZGyIRnGkXUtC239/Lz0v0PXVwAPUF8ITb0JYcG/ojIc5VfTOkQOeOHHBaS+dXt
+    HBJjBbnwpN4tNFhczJkbga16hL+vV0I4z61mJG8OkDr25Q==
+    -----END CERTIFICATE-----
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: istio-authorizer
+  namespace: acp-system
+  name: istio-authorizer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: istio-authorizer
+  template:
+    metadata:
+      labels:
+        app: istio-authorizer
+      name: istio-authorizer
+    spec:
+      serviceAccountName: istio-authorizer
+      containers:
+        - image: docker.cloudentity.io/istio-authorizer:latest
+          imagePullPolicy: IfNotPresent
+          name: istio-authorizer
+          args:
+          - --client-id
+          - "$(CLIENT_ID)"
+          - --client-secret
+          - "$(CLIENT_SECRET)"
+          - --issuer-url
+          - "$(ISSUER_URL)"
+          - --disable-service-discovery
+          - "true"
+          - --root-ca
+          - /data/ca.pem
+          env:
+          - name: LOGGING_LEVEL
+            value: "INFO"
+          - name: CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: istio-authorizer-secrets
+                key: CLIENT_ID
+          - name: CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: istio-authorizer-secrets
+                key: CLIENT_SECRET
+          - name: ISSUER_URL
+            valueFrom:
+              secretKeyRef:
+                name: istio-authorizer-secrets
+                key: ISSUER_URL
+          volumeMounts:
+          - mountPath: /data
+            name: data
+          ports:
+          - containerPort: 9001
+          readinessProbe:
+            tcpSocket:
+              port: 9001
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 9001
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      volumes:
+        - name: data
+          configMap:
+            name: istio-authorizer-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: istio-authorizer
+  namespace: acp-system
+  labels:
+    app: istio-authorizer
+spec:
+  ports:
+    - port: 9001
+      name: grpc
+    - port: 9002
+      name: http
+  selector:
+    app: istio-authorizer
