@@ -21,8 +21,8 @@ metadata:
   labels:
     app: resort
   annotations:
-    services.k8s.cloudentity.com/spec-url: "https://gist.githubusercontent.com/lgonczarik/3699bcab234ed32b4d2daed91c5e9ad3/raw/resort.graphql"
-    services.k8s.cloudentity.com/graphql-path: "/"
+    services.k8s.cloudentity.com/spec-url: "https://gist.githubusercontent.com/lgonczarik/3699bcab234ed32b4d2daed91c5e9ad3/raw/7e7a72e6b586253ca78dc8b1020b2afe7eee98e8/resort.graphql"
+    services.k8s.cloudentity.com/graphql-path: "/graphql"
 spec:
   replicas: 1
   selector:
