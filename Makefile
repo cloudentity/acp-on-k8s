@@ -80,6 +80,14 @@ install-countries:
 	kind load docker-image countries:demo --name acp
 	kubectl apply -f ./examples/countries
 
+install-example-resort:
+	docker build examples/resort/ -t resort:demo
+	kind load docker-image resort:demo --name acp
+	kubectl apply -f ./examples/resort
+
+uninstall-example-resort:
+	kubectl delete -f ./examples/resort
+
 install-cert-manager:
 	kubectl create namespace cert-manager
 	kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.crds.yaml
