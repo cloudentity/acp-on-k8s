@@ -38,14 +38,14 @@ type SkiPatrol implements Employee {
 }
 
 type Query {
-  employee: Employee!
+  employee(id: ID!): Employee
   employees: [Employee!]!
-  bartender: Bartender!
+  bartender(id: ID!): Bartender!
   bartenders: [Bartender!]!
-  instructor: Instructor!
+  instructor(id: ID!): Instructor!
   instructors: [Instructor!]!
-  liftOperator: LiftOperator!
+  liftOperator(id: ID!): LiftOperator!
   liftOperators: [LiftOperator!]!
-  skiPatrol: SkiPatrol!
+  skiPatrol(id: ID!): SkiPatrol!
   skiPatrols: [SkiPatrol!]!
 }
