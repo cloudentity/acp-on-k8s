@@ -1,0 +1,51 @@
+interface Employee {
+  id: ID!
+  firstName: String!
+  lastName: String!
+}
+
+type Bartender implements Employee {
+  id: ID!
+  firstName: String! @fake(type: firstName, locale: en_US)
+  lastName: String! @fake(type: lastName, locale: en_US)
+  address: String @fake(type: streetAddress, options: { useFullAddress: true })
+  assignment: String! @examples(values: ["bar", "table", "fruits"])
+  supervisor: Boolean!
+  shift: Int! @fake(type: number, options: { minNumber : 1, maxNumber: 5 })
+}
+
+type Instructor implements Employee {
+  id: ID!
+  firstName: String! @fake(type: firstName, locale: en_US)
+  lastName: String! @fake(type: lastName, locale: en_US)
+  level: Int! @fake(type: number, options: { minNumber : 1, maxNumber: 5 })
+  privateLessons: Boolean!
+}
+
+type LiftOperator implements Employee {
+  id: ID!
+  firstName: String! @fake(type: firstName, locale: en_US)
+  lastName: String! @fake(type: lastName, locale: en_US)
+  yearsExperience: Int! @fake(type: number, options: { minNumber : 0, maxNumber: 100 })
+}
+
+type SkiPatrol implements Employee {
+  id: ID!
+  firstName: String! @fake(type: firstName, locale: en_US)
+  lastName: String! @fake(type: lastName, locale: en_US)
+  certified: Boolean!
+  aviLevel: Int! @fake(type: number, options: { minNumber : 1, maxNumber: 5 })
+}
+
+type Query {
+  employee(id: ID!): Employee
+  employees: [Employee!]!
+  bartender(id: ID!): Bartender!
+  bartenders: [Bartender!]!
+  instructor(id: ID!): Instructor!
+  instructors: [Instructor!]!
+  liftOperator(id: ID!): LiftOperator!
+  liftOperators: [LiftOperator!]!
+  skiPatrol(id: ID!): SkiPatrol!
+  skiPatrols: [SkiPatrol!]!
+}
