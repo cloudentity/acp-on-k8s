@@ -1,3 +1,5 @@
+# Example showing how to import the API and Policies definition to declaratively protect the dataload service
+
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -61,37 +63,32 @@ metadata:
 data:
   seed.yaml: |
     gateway_api_groups:
-      - tenant_id: skynet
-        server_id: default
+      - tenant_id: {tid}
+        server_id: {aid}
         service_id: dataload
-        gateway_id: local_istio_gateway
+        gateway_id: {your_gateway_id}
         name: "default/dataload"
         id: {{ encSpiffeID "spiffe://cluster.local/ns/default/sa/dataload" }}
         apis:
           - method: GET
             path: /datasets
-            can_have_policy: true
           - method: GET
             path: /datasets/{datasetUUID}
-            can_have_policy: true
           - method: DELETE
             path: /datasets/{datasetUUID}
-            policy_id: allow_test_policy
-            can_have_policy: true
           - method: POST
             path: /datasets/{datasetUUID}
-            can_have_policy: true
     policies:
-      - tenant_id: skynet
-        server_id: default
+      - tenant_id: {tid}
+        server_id: {aid}
         id: block_test_policy
         policy_name: block_test
         language: cloudentity
         type: api
         validators:
           - name: "false"
-      - tenant_id: skynet
-        server_id: default
+      - tenant_id: {tid}
+        server_id: {aid}
         id: allow_test_policy
         policy_name: allow_test
         language: cloudentity
@@ -100,9 +97,9 @@ data:
           - name: "true"
     services:
       - id: dataload
-        tenant_id: skynet
-        authorization_server_id: default
-        gateway_id: local_istio_gateway
+        tenant_id: {tid}
+        authorization_server_id: {aid}
+        gateway_id: {your_gateway_id}
         name: default/dataload
         apis:
           - method: GET

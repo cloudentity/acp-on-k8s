@@ -1,4 +1,4 @@
-## Example showing how to import the  MicroPerimeter Authorizer configuration using the ACP import job
+## Example showing how to import the  MicroPerimeter Istio Authorizer configuration using the ACP import job
 resources:
 - register-gateway.yaml
 - manifest.yaml
@@ -6,12 +6,12 @@ secretGenerator:
 - name: istio-authorizer-secrets
   namespace: acp-system
   literals:
-  - CLIENT_ID=my_local_gateway_client_id
-  - CLIENT_SECRET=my_local_gateway_secret_that_I_need_to_change
-  - ISSUER_URL=https://skynet.us.authz.cloudentity.io/skynet/system
+  - CLIENT_ID={your_gateway_client_id}
+  - CLIENT_SECRET={your_gateway_client_secret}
+  - ISSUER_URL=https://{tid}.us.authz.cloudentity.io/{tid}/system
 - name: import-job-secrets
   namespace: acp-system
   literals:
-  - ISSUER_URL=https://<tenantid>.us.authz.cloudentity.io/<tenantid>/system
-  - IMPORT_JOB_CLIENT_ID=<IMPORT_JOB_CLIENT_ID>
-  - IMPORT_JOB_CLIENT_SECRET=<IMPORT_JOB_CLIENT_SECRET>
+  - ISSUER_URL=https://{tid}.us.authz.cloudentity.io/{tid}/system
+  - IMPORT_JOB_CLIENT_ID={IMPORT_JOB_CLIENT_ID}
+  - IMPORT_JOB_CLIENT_SECRET={IMPORT_JOB_CLIENT_SECRET}
