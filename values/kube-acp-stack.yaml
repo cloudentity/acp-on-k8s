@@ -10,6 +10,8 @@ cockroachdb:
   statefulset:
     replicas: 1
 acp:
+  imagePullSecrets:
+    - name: docker.cloudentity.io
   enabled: true
   serverURL: "https://acp.acp-system:8443"
   ingress:
