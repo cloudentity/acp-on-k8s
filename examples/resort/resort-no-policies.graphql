@@ -1,6 +1,3 @@
-directive @auth(
-  policy: ID,
-) on FIELD_DEFINITION | OBJECT | INTERFACE
 
 interface Employee  {
   id: ID!
