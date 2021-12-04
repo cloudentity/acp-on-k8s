@@ -9,7 +9,7 @@ type Bartender implements Employee  {
   id: ID!
   firstName: String!
   lastName: String!
-  address: String! 
+  address: String!
   assignment: String!
   supervisor: Boolean!
   shift: Int!
