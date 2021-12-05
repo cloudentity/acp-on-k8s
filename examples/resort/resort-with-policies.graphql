@@ -8,8 +8,8 @@ interface Employee @auth(policy: "nist-aal-1_default_api") {
   lastName: String!
 }
 
-type Bartender implements Employee  {
-  id: ID!
+type Bartender implements Employee @auth(policy: "nist-aal-2_default_api")   {
+  id: ID! @auth(policy: "block_default_api") 
   firstName: String!
   lastName: String!
   address: String!
@@ -19,7 +19,7 @@ type Bartender implements Employee  {
 }
 
 type Instructor implements Employee {
-  id: ID!
+  id: ID! @auth(policy: "block_default_api")
   firstName: String!
   lastName: String!
   level: Int!
