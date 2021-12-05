@@ -1,0 +1,55 @@
+directive @auth(
+  policy: ID,
+) on FIELD_DEFINITION | OBJECT | INTERFACE
+
+interface Employee @auth(policy: "nist-aal-1_default_api") {
+  id: ID!
+  firstName: String! 
+  lastName: String!
+}
+
+type Bartender implements Employee  {
+  id: ID @auth(policy: "block_default_api") !
+  firstName: String!
+  lastName: String!
+  address: String!
+  assignment: String!
+  supervisor: Boolean!
+  shift: Int!
+}
+
+type Instructor implements Employee {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  level: Int!
+  privateLessons: Boolean!
+}
+
+type LiftOperator implements Employee {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  yearsExperience: Int!
+}
+
+type SkiPatrol implements Employee {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  certified: Boolean!
+  aviLevel: Int!
+}
+
+type Query {
+  employee(id: ID!): Employee
+  employees: [Employee!]!
+  bartender(id: ID!): Bartender!
+  bartenders: [Bartender!]!
+  instructor(id: ID!): Instructor!
+  instructors: [Instructor!]!
+  liftOperator(id: ID!): LiftOperator!
+  liftOperators: [LiftOperator!]!
+  skiPatrol(id: ID!): SkiPatrol!
+  skiPatrols: [SkiPatrol!]!
+}
