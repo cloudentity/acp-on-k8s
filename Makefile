@@ -5,7 +5,7 @@ endif
 
 all: prepare install-acp-stack
 
-prepare: create-cluster prepare-helm prepare-cluster install-ingress-controller
+prepare: create-cluster prepare-helm prepare-cluster install-ingress-controller prepare-cert
 
 create-cluster:
 	kind create cluster --name acp --config=./config/kind-cluster-config.yaml
@@ -19,14 +19,18 @@ prepare-helm:
 prepare-cluster:
 	kubectl create namespace acp-system
 	kubectl create namespace nginx
-	kubectl create -n acp-system secret docker-registry artifactory \
-		--docker-server=acp.artifactory.cloudentity.com \
-		--docker-username=${DOCKER_USER} \
-		--docker-password=${DOCKER_PWD}
 	kubectl create -n acp-system secret docker-registry docker.cloudentity.io \
 		--docker-server=docker.cloudentity.io \
 		--docker-username=${DOCKER_USER} \
 		--docker-password=${DOCKER_PWD}
+
+prepare-cert:
+	#openssl genrsa -out ./cert/rootCA.key 2048
+	#openssl req -x509 -new -nodes -key ./cert/rootCA.key -sha256 -days 365  -out ./cert/rootCA.pem -subj "/C=US/ST=WA/L=Seattle/O=Cloudentity/OU=SE/CN=acp-system/emailAddress=info@acp.acp-system"
+	openssl req -new -nodes -out ./cert/server.csr -newkey rsa:2048 -keyout ./cert/server.key -subj "/C=US/ST=WA/L=Seattle/O=Cloudentity/OU=SE/CN=acp.acp-system/emailAddress=info@acp.acp-system"
+	openssl x509 -req -in ./cert/server.csr -CA ./cert/rootCA.pem -CAkey ./cert/rootCA.key -CAcreateserial -out ./cert/server.crt -days 356 -sha256 -extfile ./cert/certv3.ext
+	kubectl delete secret -n acp-system acp-server-tls --ignore-not-found=true
+	kubectl create secret tls acp-server-tls --cert=./cert/server.crt --key=./cert/server.key -n acp-system	
 
 install-ingress-controller:
 	helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --values ./values/ingress-nginx.yaml -n nginx
@@ -41,10 +45,10 @@ install-istio-authorizer:
 	kubectl -n acp-system wait deploy/istio-authorizer --for condition=available --timeout=10m
 
 install-istio:
-	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.9.3 TARGET_ARCH=x86_64  sh -
-	./istio-1.9.3/bin/istioctl install -f ./config/ce-istio-profile.yaml -y
+	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.12.1 TARGET_ARCH=x86_64  sh -
+	./istio-1.12.1/bin/istioctl install -f ./config/ce-istio-profile.yaml -y
 	kubectl label namespace default istio-injection=enabled
-	rm -rf ./istio-1.9.3
+	rm -rf ./istio-1.12.1
 
 watch:
 	watch kubectl get pods -A

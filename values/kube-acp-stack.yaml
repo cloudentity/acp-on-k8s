@@ -1,7 +1,5 @@
 hazelcast:
-  enabled: true
-  cluster:
-    memberCount: 1
+  enabled: false
   mancenter:
     enabled: false
 cockroachdb:
@@ -12,22 +10,16 @@ cockroachdb:
 acp:
   enabled: true
   serverURL: "https://acp.acp-system:8443"
-  args:
-    - server
-    - start
-    - --config
-    - /config/reference.yaml,/data/config.yaml
-    - --demo
-    - --metrics
-    - --create-default-tenant
-    - --create-default-workspaces
-    - --swagger
   ingress:
     enabled: true
     hosts:
       - host: acp.acp-system
         paths:
           - path: /
+    tls:
+      - secretName: acp-server-tls
+        hosts:
+          - acp.acp-system
   features:
     initialize_demo_workspace: true # when enabled and the display_workspace_wizard feature flag is set to true, a demo workspace with a set of preconfigured IDPs is created and no welcome screen is displayed (tenant)
     integration_endpoints: true # enable global import and export configuration endpoints (system)
@@ -53,19 +45,6 @@ acp:
     enabled: true
     data:
       clients:
-        - tenant_id: system
-          authorization_server_id: system
-          client_id: my_test_gateway_client
-          client_secret: 5c8f3f5b353ba0f55c8f3f5b353ba0f5
-          client_name: My Test Gateway Client
-          token_endpoint_auth_method: client_secret_post
-          grant_types:
-          - client_credentials
-          scopes:
-          - read_gateway_configuration
-          - write_gateway_configuration
-          - push_gateway_requests
-          - introspect_tokens
         - tenant_id: default
           authorization_server_id: system
           client_id: my_local_gateway_client_id
@@ -79,6 +58,16 @@ acp:
           - write_gateway_configuration
           - push_gateway_requests
           - introspect_tokens
+        - tenant_id: default
+          authorization_server_id: system
+          client_id: import_job_client_id
+          client_secret: importjobclientsecretthatshouldbechanged
+          client_name: Import Job Client
+          token_endpoint_auth_method: client_secret_post
+          grant_types:
+          - client_credentials
+          scopes:
+          - manage_configuration
       gateways:
         - tenant_id: default
           authorization_server_id: default
@@ -87,22 +76,22 @@ acp:
           type: istio
           client_id: my_local_gateway_client_id
       policies:
-        - tenant_id: system
-          server_id: system
-          id: block
-          policy_name: block
+        - tenant_id: default
+          server_id: default
+          id: block_imported_example
+          policy_name: Block API Request
           language: cloudentity
           type: api
           validators:
           - name: "false"
       services:
         - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
-          tenant_id: system
-          authorization_server_id: system
+          tenant_id: default
+          authorization_server_id: default
           gateway_id: my_test_gateway
           name: My Test Service 2
           apis:
             - method: GET
               path: /test
-              policy_id: block
+              policy_id: block_imported_example
               can_have_policy: true

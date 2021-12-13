@@ -6,12 +6,12 @@ secretGenerator:
 - name: istio-authorizer-secrets
   namespace: acp-system
   literals:
-  - CLIENT_ID={your_gateway_client_id}
-  - CLIENT_SECRET={your_gateway_client_secret}
-  - ISSUER_URL=https://{tid}.us.authz.cloudentity.io/{tid}/system
+  - CLIENT_ID=local_gateway_client_id
+  - CLIENT_SECRET=localgatewayclientsecretthatshouldbechanged
+  - ISSUER_URL=https://acp.acp-system:8443/default/system
 - name: import-job-secrets
   namespace: acp-system
   literals:
-  - ISSUER_URL=https://{tid}.us.authz.cloudentity.io/{tid}/system
-  - IMPORT_JOB_CLIENT_ID={IMPORT_JOB_CLIENT_ID}
-  - IMPORT_JOB_CLIENT_SECRET={IMPORT_JOB_CLIENT_SECRET}
+  - ISSUER_URL=https://acp.acp-system:8443/default/system
+  - IMPORT_JOB_CLIENT_ID=import_job_client_id
+  - IMPORT_JOB_CLIENT_SECRET=importjobclientsecretthatshouldbechanged
