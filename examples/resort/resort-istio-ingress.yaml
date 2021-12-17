@@ -1,0 +1,33 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: resort-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - "resort.ingress.istio"
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: resort-virtual
+spec:
+  hosts:
+  - "resort.ingress.istio"
+  gateways:
+  - resort-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /graphql
+    route:
+    - destination:
+        port:
+          number: 9002
+        host: resort

@@ -1,0 +1,55 @@
+directive @auth(
+  policy: ID,
+) on FIELD_DEFINITION | OBJECT | INTERFACE
+
+interface Employee @auth(policy: "nist-aal-1_demo_api") {
+  id: ID!
+  firstName: String! 
+  lastName: String!
+}
+
+type Bartender implements Employee @auth(policy: "nist-aal-1_demo_api)   {
+  id: ID! @auth(policy: "block_default_api") 
+  firstName: String!
+  lastName: String!
+  address: String!
+  assignment: String!
+  supervisor: Boolean!
+  shift: Int!
+}
+
+type Instructor implements Employee {
+  id: ID! @auth(policy: "block_default_api")
+  firstName: String!
+  lastName: String!
+  level: Int!
+  privateLessons: Boolean!
+}
+
+type LiftOperator implements Employee {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  yearsExperience: Int!
+}
+
+type SkiPatrol implements Employee {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  certified: Boolean!
+  aviLevel: Int!
+}
+
+type Query {
+  employee(id: ID!): Employee @auth(policy: "nist-aal-1_demo_api) 
+  employees: [Employee!]! @auth(policy: "nist-aal-1_demo_api") 
+  bartender(id: ID!): Bartender!
+  bartenders: [Bartender!]! @auth(policy: "nist-aal-1_demo_api") 
+  instructor(id: ID!): Instructor! @auth(policy: "nist-aal-1_demo_api") 
+  instructors: [Instructor!]! @auth(policy: "nist-aal-1_demo_api") 
+  liftOperator(id: ID!): LiftOperator! @auth(policy: "nist-aal-1_demo_api") 
+  liftOperators: [LiftOperator!]! @auth(policy: "nist-aal-1_demo_api") 
+  skiPatrol(id: ID!): SkiPatrol! @auth(policy: "nist-aal-1_demo_api") 
+  skiPatrols: [SkiPatrol!]! @auth(policy: "nist-aal-1_demo_api") 
+}
