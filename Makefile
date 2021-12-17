@@ -51,7 +51,6 @@ watch:
 
 uninstall-acp:
 	helm uninstall acp -n acp-system
-	helm uninstall ingress-nginx -n nginx
 
 delete-cluster:
 	kind delete cluster --name=acp
