@@ -106,7 +106,7 @@ debug:
 
 ## tests
 
-TEST_DOCKER_VERSION=1.16.2
+TEST_DOCKER_VERSION=1.16.1
 
 test-prepare-grid:
 	docker run -d --rm \
