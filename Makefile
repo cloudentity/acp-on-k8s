@@ -37,25 +37,25 @@ install-ingress-controller:
 	kubectl -n nginx wait deploy/ingress-nginx-controller --for condition=available --timeout=10m
 
 install-acp-stack:
-	helm upgrade --install acp acp/kube-acp-stack --values ./values/kube-acp-stack.yaml -n acp-system
+	helm upgrade --install acp acp/kube-acp-stack --values ./values/kube-acp-stack.yaml -n acp-system 
 	kubectl -n acp-system wait deploy/acp --for condition=available --timeout=10m
+	
 
 install-istio-authorizer:
 	helm upgrade --install istio-authorizer acp/istio-authorizer --values ./values/istio-authorizer.yaml -n acp-system
 	kubectl -n acp-system wait deploy/istio-authorizer --for condition=available --timeout=10m
 
 install-istio:
-	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.12.1 TARGET_ARCH=x86_64  sh -
-	./istio-1.12.1/bin/istioctl install -f ./config/ce-istio-profile.yaml -y
+	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.11.4 TARGET_ARCH=x86_64  sh -
+	./istio-1.11.4/bin/istioctl install -f ./config/ce-istio-profile.yaml -y
 	kubectl label namespace default istio-injection=enabled
-	rm -rf ./istio-1.12.1
+	rm -rf ./istio-1.11.4
 
 watch:
 	watch kubectl get pods -A
 
 uninstall-acp:
 	helm uninstall acp -n acp-system
-	helm uninstall ingress-nginx -n nginx
 
 delete-cluster:
 	kind delete cluster --name=acp

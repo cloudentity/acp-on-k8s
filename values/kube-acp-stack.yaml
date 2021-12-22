@@ -31,7 +31,7 @@ acp:
     script_transformer: true # enable the javascript transformer (tenant)
     system_clients_management: true # enable system client management APIs (system)
     pyron_on_prem: false # enable when ACP is running on-prem and Pyron is used as a gateway (tenant)
-    client_secrets_stored_as_one_way_hash: true # store client secrets as a one way hash (tenant)
+    client_secrets_stored_as_one_way_hash: false # store client secrets as a one way hash (tenant)
     trust_anchor_integration: false # enable trust anchor integration (system)
     login_with_select_account: true # enable login with select_account param (tenant)
     ciba: true # enable ciba (system)
@@ -84,14 +84,14 @@ acp:
           type: api
           validators:
           - name: "false"
-      services:
-        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
-          tenant_id: default
-          authorization_server_id: default
-          gateway_id: my_test_gateway
-          name: My Test Service 2
-          apis:
-            - method: GET
-              path: /test
-              policy_id: block_imported_example
-              can_have_policy: true
+#      services:
+#        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
+#          tenant_id: default
+#          authorization_server_id: default
+#          gateway_id: local_istio_gateway
+#          name: My Test Service 2
+#          apis:
+#            - method: GET
+#              path: /test
+#              policy_id: block_imported_example
+#              can_have_policy: true

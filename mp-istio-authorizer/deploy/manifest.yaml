@@ -102,7 +102,7 @@ spec:
     spec:
       serviceAccountName: istio-authorizer
       containers:
-        - image: docker.cloudentity.io/istio-authorizer:latest
+        - image: docker.cloudentity.io/istio-authorizer:1.16.1
           imagePullPolicy: IfNotPresent
           name: istio-authorizer
           args:
@@ -114,11 +114,12 @@ spec:
           - "$(ISSUER_URL)"
           - --disable-service-discovery
           - "true"
+          - -insecure-skip-verify
           - --root-ca
           - /data/ca.pem
           env:
           - name: LOGGING_LEVEL
-            value: "INFO"
+            value: "DEBUG"
           - name: CLIENT_ID
             valueFrom:
               secretKeyRef:
