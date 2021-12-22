@@ -4,14 +4,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: dataload
+  name: dataload-svc
   labels:
     app: dataload
     service: dataload
 spec:
   ports:
   - port: 9100
-    name: http
+    name: http-web
   selector:
     app: dataload
 ---

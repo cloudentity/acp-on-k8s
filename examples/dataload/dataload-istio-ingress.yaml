@@ -12,7 +12,6 @@ spec:
       protocol: HTTP
     hosts:
     - "dataload.ingress.istio"
-    - "app.octanner.cloudentity-se.com"
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
@@ -29,9 +28,7 @@ spec:
         prefix: /
     route:
     - destination:
-        port:
-          number: 9100
-        host: dataload
+        host: dataload-svc
     corsPolicy:
       allowOrigins:
       - exact: http://localhost:3000
