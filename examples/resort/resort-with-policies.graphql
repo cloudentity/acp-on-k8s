@@ -2,13 +2,13 @@ directive @auth(
   policy: ID,
 ) on FIELD_DEFINITION | OBJECT | INTERFACE
 
-interface Employee @auth(policy: "nist-aal-1_default_api") {
+interface Employee @auth(policy: "nist-aal-1_demo_api") {
   id: ID!
   firstName: String! 
   lastName: String!
 }
 
-type Bartender implements Employee @auth(policy: "nist-aal-2_default_api")   {
+type Bartender implements Employee @auth(policy: "nist-aal-1_demo_api)   {
   id: ID! @auth(policy: "block_default_api") 
   firstName: String!
   lastName: String!
@@ -42,14 +42,14 @@ type SkiPatrol implements Employee {
 }
 
 type Query {
-  employee(id: ID!): Employee @auth(policy: "nist-aal-1_default_api") 
-  employees: [Employee!]! @auth(policy: "nist-aal-1_default_api") 
-  bartender(id: ID!): Bartender! @auth(policy: "nist-aal-1_default_api") 
-  bartenders: [Bartender!]! @auth(policy: "nist-aal-1_default_api") 
-  instructor(id: ID!): Instructor! @auth(policy: "nist-aal-1_default_api") 
-  instructors: [Instructor!]! @auth(policy: "nist-aal-1_default_api") 
-  liftOperator(id: ID!): LiftOperator! @auth(policy: "nist-aal-1_default_api") 
-  liftOperators: [LiftOperator!]! @auth(policy: "nist-aal-1_default_api") 
-  skiPatrol(id: ID!): SkiPatrol! @auth(policy: "nist-aal-1_default_api") 
-  skiPatrols: [SkiPatrol!]! @auth(policy: "nist-aal-1_default_api") 
+  employee(id: ID!): Employee @auth(policy: "nist-aal-1_demo_api) 
+  employees: [Employee!]! @auth(policy: "nist-aal-1_demo_api") 
+  bartender(id: ID!): Bartender!
+  bartenders: [Bartender!]! @auth(policy: "nist-aal-1_demo_api") 
+  instructor(id: ID!): Instructor! @auth(policy: "nist-aal-1_demo_api") 
+  instructors: [Instructor!]! @auth(policy: "nist-aal-1_demo_api") 
+  liftOperator(id: ID!): LiftOperator! @auth(policy: "nist-aal-1_demo_api") 
+  liftOperators: [LiftOperator!]! @auth(policy: "nist-aal-1_demo_api") 
+  skiPatrol(id: ID!): SkiPatrol! @auth(policy: "nist-aal-1_demo_api") 
+  skiPatrols: [SkiPatrol!]! @auth(policy: "nist-aal-1_demo_api") 
 }
