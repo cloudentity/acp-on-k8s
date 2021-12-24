@@ -117,24 +117,34 @@ data:
             path: /datasets/{datasetUUID}
             policy_id: allow_test_policy
             can_have_policy: true
-            position: 20
+            position: 11
           - method: DELETE
             path: /datasets/{datasetUUID}
             policy_id: allow_test_policy
             can_have_policy: true
-            position: 30
+            position: 12
           - method: POST
             path: /datasets/{datasetUUID}
             policy_id: allow_test_policy
             can_have_policy: true
-            position: 40
+            position: 13
+          - method: GET
+            path: /test.*
+            policy_id: block_test_policy
+            can_have_policy: true
+            position: 14
+          - method: POST
+            path: /test.*
+            policy_id: block_test_policy
+            can_have_policy: true
+            position: 15
           - method: GET
             path: /.*
             policy_id: block_test_policy
             can_have_policy: true
-            position: 50
+            position: 16
           - method: POST
             path: /.*
             policy_id: block_test_policy
             can_have_policy: true
-            position: 60
+            position: 17
