@@ -17,7 +17,7 @@ spec:
             name: acp-import
       containers:
         - name: acp-import
-          image: "docker.cloudentity.io/acp:1.14.1"
+          image: "docker.cloudentity.io/acp:1.17.0"
           imagePullPolicy: IfNotPresent
           args:
             - import
@@ -34,6 +34,8 @@ spec:
             - --input
             - /import/seed.yaml
           env:
+          - name: CLIENT_INSECURE_SKIP_VERIFY
+            value: "true"            
           - name: CLIENT_ID
             valueFrom:
               secretKeyRef:
@@ -63,10 +65,10 @@ metadata:
 data:
   seed.yaml: |
     gateway_api_groups:
-      - tenant_id: {tid}
-        server_id: {aid}
+      - tenant_id: default
+        server_id: default
         service_id: dataload
-        gateway_id: {your_gateway_id}
+        gateway_id: local_gateway_id
         name: "default/dataload"
         id: {{ encSpiffeID "spiffe://cluster.local/ns/default/sa/dataload" }}
         apis:
@@ -78,17 +80,21 @@ data:
             path: /datasets/{datasetUUID}
           - method: POST
             path: /datasets/{datasetUUID}
+          - method: GET
+            path: /.*
+          - method: POST
+            path: /.*
     policies:
-      - tenant_id: {tid}
-        server_id: {aid}
+      - tenant_id: default
+        server_id: default
         id: block_test_policy
         policy_name: block_test
         language: cloudentity
         type: api
         validators:
           - name: "false"
-      - tenant_id: {tid}
-        server_id: {aid}
+      - tenant_id: default
+        server_id: default
         id: allow_test_policy
         policy_name: allow_test
         language: cloudentity
@@ -97,24 +103,38 @@ data:
           - name: "true"
     services:
       - id: dataload
-        tenant_id: {tid}
-        authorization_server_id: {aid}
-        gateway_id: {your_gateway_id}
+        tenant_id: default
+        authorization_server_id: default
+        gateway_id: local_gateway_id
         name: default/dataload
         apis:
           - method: GET
             path: /datasets
             policy_id: allow_test_policy
             can_have_policy: true
+            position: 10
           - method: GET
             path: /datasets/{datasetUUID}
             policy_id: allow_test_policy
             can_have_policy: true
+            position: 20
           - method: DELETE
             path: /datasets/{datasetUUID}
             policy_id: allow_test_policy
             can_have_policy: true
+            position: 30
           - method: POST
             path: /datasets/{datasetUUID}
             policy_id: allow_test_policy
             can_have_policy: true
+            position: 40
+          - method: GET
+            path: /.*
+            policy_id: block_test_policy
+            can_have_policy: true
+            position: 50
+          - method: POST
+            path: /.*
+            policy_id: block_test_policy
+            can_have_policy: true
+            position: 60

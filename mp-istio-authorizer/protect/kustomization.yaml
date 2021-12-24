@@ -6,6 +6,6 @@ secretGenerator:
 - name: import-job-secrets
   namespace: acp-system
   literals:
-  - ISSUER_URL=https://{tid}.us.authz.cloudentity.io/{tid}/system
-  - IMPORT_JOB_CLIENT_ID={IMPORT_JOB_CLIENT_ID}
-  - IMPORT_JOB_CLIENT_SECRET={IMPORT_JOB_CLIENT_SECRET}
+  - ISSUER_URL=https://acp.acp-system:8443/default/system
+  - IMPORT_JOB_CLIENT_ID=c72dkmavg1ajov9nvvjg
+  - IMPORT_JOB_CLIENT_SECRET=8ZecN12mSG7dWuFsf_ycO-xCi65WJbVxaJHtvnQ_zuM

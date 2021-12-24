@@ -47,51 +47,69 @@ acp:
       clients:
         - tenant_id: default
           authorization_server_id: system
-          client_id: my_local_gateway_client_id
-          client_secret: 5c8f3f5b353ba0f55c8f3f5b353ba0f5aaa
-          client_name: My Locl Gateway
-          token_endpoint_auth_method: client_secret_post
-          grant_types:
-          - client_credentials
-          scopes:
-          - read_gateway_configuration
-          - write_gateway_configuration
-          - push_gateway_requests
-          - introspect_tokens
-        - tenant_id: default
-          authorization_server_id: system
-          client_id: import_job_client_id
-          client_secret: importjobclientsecretthatshouldbechanged
+          client_id: c72dkmavg1ajov9nvvjg
+          client_secret: 8ZecN12mSG7dWuFsf_ycO-xCi65WJbVxaJHtvnQ_zuM
           client_name: Import Job Client
           token_endpoint_auth_method: client_secret_post
           grant_types:
           - client_credentials
           scopes:
           - manage_configuration
-      gateways:
-        - tenant_id: default
-          authorization_server_id: default
-          id: local_istio_gateway
-          name: My Locl Istio Gateway
-          type: istio
-          client_id: my_local_gateway_client_id
-      policies:
-        - tenant_id: default
-          server_id: default
-          id: block_imported_example
-          policy_name: Block API Request
-          language: cloudentity
-          type: api
-          validators:
-          - name: "false"
 #      services:
-#        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
+#        - id: dataload
 #          tenant_id: default
 #          authorization_server_id: default
-#          gateway_id: local_istio_gateway
-#          name: My Test Service 2
+#          gateway_id: local_gateway_id
+#          name: default/dataload
 #          apis:
 #            - method: GET
-#              path: /test
-#              policy_id: block_imported_example
+#              path: /datasets
+#              policy_id: allow_test_policy
 #              can_have_policy: true
+#              position: 20
+#            - method: GET
+#              path: /datasets/{datasetUUID}
+#              policy_id: allow_test_policy
+#              can_have_policy: true
+#              position: 19
+#            - method: DELETE
+#              path: /datasets/{datasetUUID}
+#              policy_id: allow_test_policy
+#              can_have_policy: true
+#              position: 18
+#            - method: POST
+#              path: /datasets/{datasetUUID}
+#              policy_id: allow_test_policy
+#              can_have_policy: true
+#              position: 17
+#            - method: GET
+#              path: /dupa/.*
+#              policy_id: allow_test_policy
+#              can_have_policy: true
+#              position: 16
+#            - method: POST
+#              path: /dupa/.*
+#              policy_id: allow_test_policy
+#              can_have_policy: true
+#              position: 15
+#            - method: GET
+#              path: /.*
+#              policy_id: block_test_policy
+#              can_have_policy: true
+#              position: 14
+#            - method: POST
+#              path: /.*
+#              policy_id: block_test_policy
+#              can_have_policy: true
+#              position: 13   
+##       services:
+##        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
+##          tenant_id: default
+##          authorization_server_id: default
+##          gateway_id: local_istio_gateway
+##          name: My Test Service 2
+##          apis:
+##            - method: GET
+##              path: /test
+##              policy_id: block_imported_example
+##              can_have_policy: true

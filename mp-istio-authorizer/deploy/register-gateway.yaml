@@ -15,7 +15,7 @@ spec:
             name: acp-import
       containers:
         - name: acp-import
-          image: "docker.cloudentity.io/acp:latest"
+          image: "docker.cloudentity.io/acp:1.17.0"
           imagePullPolicy: IfNotPresent
           args:
             - import
