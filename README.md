@@ -13,13 +13,14 @@ This repository's primary purpose is to enable you to rapidly stand up Cloudenti
 
 ## Quickstart
 1. For `kind` tool please follow the instructions below to install globally. For the rest tools please follow the official instructions linked above.
-On Linux
+
+On Linux:
 ```
 curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
 chmod +x ./kind
 sudo mv ./kind /usr/local/bin/
 ```
-On macOS
+On macOS:
 ```
 brew install kind
 ```
