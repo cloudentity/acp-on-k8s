@@ -12,9 +12,16 @@ This repository's primary purpose is to enable you to rapidly stand up Cloudenti
 * Credentials to access Cloudentity Private Docker Repo - if you are our client, you can find it in your Support Portal; if you are not and you want to check out our product, feel free to request access via our [website](https://cloudentity.com).
 
 ## Quickstart
-1. For `kind` tool please follow instructions above. Additionally on Linux copy `kind` binary to `/usr/local/bin` directory with permission to execute.
+1. For `kind` tool please follow the instructions below to install globally. For the rest tools please follow the official instructions linked above.
+On Linux
 ```
-sudo mv kind /usr/local/bin/
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/
+```
+On macOS
+```
+brew install kind
 ```
 2. Add environment variables `DOCKER_USER` and `DOCKER_PWD` for Cloudentity Private Docker Repo:
 ```
