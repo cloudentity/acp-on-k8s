@@ -38,6 +38,7 @@ acp:
           - write_gateway_configuration
           - push_gateway_requests
           - introspect_tokens
+          - gateway_exchange_tokens
       gateways:
         - tenant_id: system
           authorization_server_id: system
