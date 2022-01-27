@@ -32,8 +32,8 @@ prepare-helm:
 	helm repo add jetstack https://charts.jetstack.io
 	helm repo update
 ifdef ACP_CHARTS_PATH
-	yq eval '(.dependencies[]|select(.name == "acp").repository) |= "file://../acp"' "${ACP_CHARTS_PATH}"/kube-acp-stack/Chart.yaml --inplace
-	helm dependency update "${ACP_CHARTS_PATH}"/kube-acp-stack
+	yq eval '(.dependencies[]|select(.name == "acp").repository) |= "file://../acp"' "${KUBE_ACP_STACK_CHART}/Chart.yaml --inplace
+	helm dependency update "${KUBE_ACP_STACK_CHART}"
 endif
 
 prepare-cluster:
@@ -125,7 +125,7 @@ install-cert-manager:
 
 install-openbanking:
 	kubectl create namespace acp-ob
-	helm install acp-ob acp/openbanking	--namespace acp-ob
+	helm install acp-ob acp/openbanking --namespace acp-ob
 
 check-acp-server-responsivness:
 	curl "${ACP_SERVER_URL}"/alive \
