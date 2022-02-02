@@ -46,6 +46,7 @@ acp:
           type: istio
           client_id: my_test_gateway_client
           last_active: "2021-07-15T12:39:56.099Z"
+          create_and_bind_services_automatically: true
       policies:
         - tenant_id: system
           server_id: system

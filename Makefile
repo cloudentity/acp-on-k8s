@@ -134,3 +134,13 @@ test-copy-results:
 	rm -rf temp; \
 	mkdir temp &&	\
 	docker cp test-runner:/qa/tests/web/target/allure-results temp
+
+graphql-demo:
+	make all
+	make install-istio
+	kubectl get configmaps  istio -n istio-system -o yaml | python examples/graphql-demo/istio-configmap.py | kubectl apply -f -
+	kubectl apply -f  examples/graphql-demo/authorization_policy.yaml
+	kubectl rollout restart deployment/istiod -n istio-system
+	make install-istio-authorizer
+	kubectl apply -f  examples/graphql-demo/parse-body.yaml
+	make install-countries

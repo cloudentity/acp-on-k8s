@@ -73,3 +73,24 @@ openbanking_domestic_payment_consents: true
 system_clients_management: true
 ```
 2. Run `make install-openbanking`
+
+## GraphQL demo
+Instruction ow to run a GraphQL service and be able to play around.
+
+Prerequisites: make sure you use ACP version that supports GraphQL - 2.0.0 or latest.
+
+1. `make graphql-demo` - installs ACP and all components
+2. Add local domain to `/etc/hosts`:
+```
+127.0.0.1 countries.ingress.k8s
+```
+3. Go to `https://acp.acp-system:8443/app/system/admin/`, log in with `admin` and default system password, switch to system workspace, and go to APIs to start applying policies.
+4. Query GraphQL UI service `http://countries.ingress.k8s:9080`, example query:
+```
+{
+  country(code:"PL") {
+    name
+    code
+  }
+}
+```
