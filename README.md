@@ -84,8 +84,10 @@ Prerequisites: make sure you use ACP version that supports GraphQL - 2.0.0 or la
 ```
 127.0.0.1 countries.ingress.k8s
 ```
-3. Go to `https://acp.acp-system:8443/app/system/admin/`, log in with `admin` and default system password, switch to system workspace, and go to APIs to start applying policies.
-4. Query GraphQL UI service `http://countries.ingress.k8s:9080`, example query:
+3. Go to `https://acp.acp-system:8443/system/admin/app`, log in with `admin` and default system password, switch to system workspace. GraphQL service should be discovered.
+4. Go to GraphQL UI service `http://countries.ingress.k8s:9080`, change
+5. Change API URL to `http://countries.ingress.k8s:9080/gqlapi`
+6. Run queries, example:
 ```
 {
   country(code:"PL") {
