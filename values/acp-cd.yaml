@@ -2,7 +2,7 @@
 ##
 ## This values.yaml is responsible for importing an Istio Authorizer with its client application,
 ## and importing policies, API groups and services for the imported authorizer. It assumes that you
-## have the httpbin.org
+## have the httpbin.org deployed behind Istio Service Mesh to get the full scenario working.
 ##
 ## For prerequisites and to learn how to import your configuration, see the following:
 ## * [Declarative configuration import for ACP](https://docs.authorization.cloudentity.com/guides/developer/protect/declarative_configuration/)
