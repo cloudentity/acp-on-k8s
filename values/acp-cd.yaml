@@ -1,3 +1,13 @@
+## Example values.yaml file for declarative configuration import using acp-cd Helm Chart
+##
+## This values.yaml is responsible for importing an Istio Authorizer with its client application,
+## and importing policies, API groups and services for the imported authorizer. It assumes that you
+## have the httpbin.org
+##
+## For prerequisites and to learn how to import your configuration, see the following:
+## * [Declarative configuration import for ACP](https://docs.authorization.cloudentity.com/guides/developer/protect/declarative_configuration/)
+## * [Istio Authorizer-specific declarative configuration import](https://docs.authorization.cloudentity.com/guides/developer/protect/istio/configuration_import/)
+##
 clientCredentials:
   clientID: "{yourClientID}"
   clientSecret: "{yourClientSecret}"
@@ -16,7 +26,7 @@ data:
   clients:
     - tenant_id: {tid}
       authorization_server_id: system
-      client_id: istio-authorizer-client-6
+      client_id: istio-authorizer-client
       client_secret: cf53caab-fb55-40a7-8c63-620ce11102e2
       token_endpoint_auth_method: client_secret_basic
       trusted: false
@@ -32,6 +42,23 @@ data:
         - read_gateway_configuration
         - write_gateway_configuration
         - gateway_exchange_tokens
+  policies:
+    - tenant_id: { tid }
+      server_id: { aid }
+      id: block_test_policy
+      policy_name: block_test
+      language: cloudentity
+      type: api
+      validators:
+        - name: "false"
+    - tenant_id: { tid }
+      server_id: { aid }
+      id: allow_test_policy
+      policy_name: allow_test
+      language: cloudentity
+      type: api
+      validators:
+        - name: "true"
   gateway_api_groups:
     - tenant_id: {tid}
       server_id: {aid}
@@ -54,6 +81,8 @@ data:
         - method: GET
           path: /deny
           can_have_policy: true
+          policy_id: block_test_policy
         - method: GET
           path: /anything
           can_have_policy: true
+          policy_id: allow_test_policy
