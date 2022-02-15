@@ -60,6 +60,13 @@ install-acp-stack:
 		--timeout 5m \
 		--install
 
+install-acp-cd:
+	helm upgrade acp acp/acp-cd \
+		--values ./values/acp-cd.yaml \
+		--namespace acp-system \
+		--timeout 2m \
+		--install
+
 install-istio-authorizer:
 	helm upgrade istio-authorizer acp/istio-authorizer \
 		--values ./values/istio-authorizer.yaml \

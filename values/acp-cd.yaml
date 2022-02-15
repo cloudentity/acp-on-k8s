@@ -1,0 +1,59 @@
+clientCredentials:
+  clientID: "{yourClientID}"
+  clientSecret: "{yourClientSecret}"
+  issuerURL: "https://acp.acp-system:8443/system/system"
+data:
+  gateways:
+    - tenant_id: {aid}
+      authorization_server_id: {tid}
+      id: sample-istio-authorizer
+      client_id: istio-authorizer-client
+      client_secret: cf53caab-fb55-40a7-8c63-620ce11102e2
+      name: Sample Istio Authorizer
+      description: Sample imported Istio Authorizer
+      type: istio
+      create_and_bind_services_automatically: true
+  clients:
+    - tenant_id: {tid}
+      authorization_server_id: system
+      client_id: istio-authorizer-client-6
+      client_secret: cf53caab-fb55-40a7-8c63-620ce11102e2
+      token_endpoint_auth_method: client_secret_basic
+      trusted: false
+      client_name: Istio Authorizer client
+      application_type: web
+      grant_types:
+        - client_credentials
+      response_types:
+        - code
+      scopes:
+        - introspect_tokens
+        - push_gateway_requests
+        - read_gateway_configuration
+        - write_gateway_configuration
+        - gateway_exchange_tokens
+  gateway_api_groups:
+    - tenant_id: {tid}
+      server_id: {aid}
+      id: {{ encSpiffeID "spiffe://cluster.local/ns/default/sa/httpbin" }}
+      service_id: httpbin-service
+      gateway_id: istio-authorizer
+      name: default/httpbin_api_group
+      apis:
+        - method: GET
+          path: /deny
+        - method: GET
+          path: /anything
+  services:
+    - id: httpbin-service
+      tenant_id: {tid}
+      authorization_server_id: {aid}
+      gateway_id: istio-authorizer
+      name: default/httpbin_service
+      apis:
+        - method: GET
+          path: /deny
+          can_have_policy: true
+        - method: GET
+          path: /anything
+          can_have_policy: true
