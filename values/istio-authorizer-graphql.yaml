@@ -1,0 +1,11 @@
+clientCredentials:
+  clientID: "my_test_gateway_client"
+  clientSecret: "5c8f3f5b353ba0f55c8f3f5b353ba0f5"
+issuerURL: "https://acp.acp-system:8443/system/system"
+parseBody:
+  enabled: true
+data:
+  config: |
+    http_client:
+      root_ca: /data/ca.crt
+    do_not_fail_on_non_matching_requests: true

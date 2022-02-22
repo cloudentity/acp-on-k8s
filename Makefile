@@ -185,10 +185,13 @@ test-copy-results:
 graphql-demo:
 	make all
 	make install-istio
-	kubectl apply -f  examples/graphql-demo/authorization-policy.yaml
-	kubectl rollout restart deployment/istiod -n istio-system
 
-	make install-istio-authorizer
-	kubectl apply -f examples/graphql-demo/parse-body.yaml
+	helm upgrade istio-authorizer acp/istio-authorizer \
+	--values ./values/istio-authorizer-graphql.yaml \
+	--namespace acp-istio-authorizer \
+	--create-namespace \
+	--timeout 5m \
+	--install \
+	--wait
  
 	make install-countries

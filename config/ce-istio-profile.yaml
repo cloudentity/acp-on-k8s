@@ -6,7 +6,7 @@ spec:
     extensionProviders:
     - name: "acp-authorizer"
       envoyExtAuthzGrpc:
-        service: "istio-authorizer.acp-system.svc.cluster.local"
+        service: "istio-authorizer.acp-istio-authorizer.svc.cluster.local"
         port: "9001"
   components:
     egressGateways:
