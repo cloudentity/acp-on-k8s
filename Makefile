@@ -32,7 +32,7 @@ prepare-helm:
 	helm repo add jetstack https://charts.jetstack.io
 	helm repo update
 ifdef ACP_CHARTS_PATH
-	yq eval '(.dependencies[]|select(.name == "acp").repository) |= "file://../acp"' "${KUBE_ACP_STACK_CHART}/Chart.yaml --inplace
+	yq eval '(.dependencies[]|select(.name == "acp").repository) |= "file://../acp"' "${KUBE_ACP_STACK_CHART}/Chart.yaml" --inplace
 	helm dependency update "${KUBE_ACP_STACK_CHART}"
 endif
 
