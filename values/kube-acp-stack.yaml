@@ -18,6 +18,7 @@ acp:
       - host: acp.acp-system
         paths:
           - path: /
+            pathType: ImplementationSpecific
   features:
     integration_endpoints: true
     swagger_ui: true
