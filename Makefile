@@ -63,7 +63,8 @@ install-acp-stack:
 install-istio-authorizer:
 	helm upgrade istio-authorizer acp/istio-authorizer \
 		--values ./values/istio-authorizer.yaml \
-		--namespace acp-system \
+		--namespace acp-istio-authorizer \
+		--create-namespace \
 		--timeout 5m \
 		--install \
 		--wait
