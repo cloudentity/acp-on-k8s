@@ -182,3 +182,17 @@ test-copy-results:
 	rm --recursive --force temp; \
 	mkdir temp &&	\
 	docker cp test-runner:/qa/tests/web/target/allure-results temp
+
+graphql-demo:
+	make all
+	make install-istio
+
+	helm upgrade istio-authorizer acp/istio-authorizer \
+	--values ./values/istio-authorizer-graphql.yaml \
+	--namespace acp-istio-authorizer \
+	--create-namespace \
+	--timeout 5m \
+	--install \
+	--wait
+ 
+	make install-countries
