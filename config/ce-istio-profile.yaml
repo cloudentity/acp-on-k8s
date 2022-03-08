@@ -3,6 +3,11 @@ kind: IstioOperator
 spec:
   meshConfig:
     accessLogFile: /dev/stdout
+    extensionProviders:
+    - name: "acp-authorizer"
+      envoyExtAuthzGrpc:
+        service: "istio-authorizer.acp-istio-authorizer.svc.cluster.local"
+        port: "9001"
   components:
     egressGateways:
     - name: istio-egressgateway
