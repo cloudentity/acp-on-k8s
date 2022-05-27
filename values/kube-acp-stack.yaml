@@ -16,11 +16,11 @@ acp:
       - host: acp.acp-system
         paths:
           - path: /
+            pathType: ImplementationSpecific
     tls:
       - secretName: acp-server-tls
         hosts:
           - acp.acp-system
-            pathType: ImplementationSpecific
   features:
     initialize_demo_workspace: true # when enabled and the display_workspace_wizard feature flag is set to true, a demo workspace with a set of preconfigured IDPs is created and no welcome screen is displayed (tenant)
     integration_endpoints: true # enable global import and export configuration endpoints (system)
@@ -60,32 +60,33 @@ acp:
           - write_gateway_configuration
           - push_gateway_requests
           - introspect_tokens
-      gateways:
-        - tenant_id: system
-          authorization_server_id: system
-          id: my_test_gateway
-          name: My Test Gateway
-          type: istio
-          client_id: my_test_gateway_client
-          last_active: "2021-07-15T12:39:56.099Z"
-          create_and_bind_services_automatically: true
-      policies:
-        - tenant_id: system
-          server_id: system
-          id: block
-          policy_name: block
-          language: cloudentity
-          type: api
-          validators:
-          - name: "false"
-      services:
-        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
-          tenant_id: system
-          authorization_server_id: system
-          gateway_id: my_test_gateway
-          name: My Test Service 2
-          apis:
-            - method: GET
-              path: /test
-              policy_id: block
-              can_have_policy: true
+#      gateways:
+#        - tenant_id: system
+#          authorization_server_id: system
+#          id: my_test_gateway
+#          name: My Test Gateway
+#          type: istio
+#          client_id: my_test_gateway_client
+#          last_active: "2021-07-15T12:39:56.099Z"
+#          create_and_bind_services_automatically: true
+#      policies:
+#        - tenant_id: system
+#          server_id: system
+#          id: block
+#          policy_name: block
+#          language: cloudentity
+#          type: api
+#          validators:
+#          - name: "false"
+#      services:
+#        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
+#          tenant_id: system
+#          authorization_server_id: system
+#          gateway_id: my_test_gateway
+#          name: My Test Service 2
+#          apis:
+#            - method: GET
+#              path: /test
+#              policy_id: block
+#              can_have_policy: true
+#
