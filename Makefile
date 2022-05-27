@@ -73,7 +73,7 @@ install-istio:
 	curl --location https://istio.io/downloadIstio | ISTIO_VERSION=1.13.4 TARGET_ARCH=x86_64  sh -
 	./istio-1.13.4/bin/istioctl install --filename ./config/ce-istio-profile.yaml --skip-confirmation
 	kubectl label namespace default istio-injection=enabled
-	rm --recursive --force ./istio-1.13.4
+	rm -r -f ./istio-1.13.4
 
 wait-acp:
 	kubectl wait deploy/acp \
