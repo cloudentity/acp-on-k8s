@@ -20,6 +20,7 @@ acp:
       - secretName: acp-server-tls
         hosts:
           - acp.acp-system
+            pathType: ImplementationSpecific
   features:
     initialize_demo_workspace: true # when enabled and the display_workspace_wizard feature flag is set to true, a demo workspace with a set of preconfigured IDPs is created and no welcome screen is displayed (tenant)
     integration_endpoints: true # enable global import and export configuration endpoints (system)
@@ -55,61 +56,36 @@ acp:
           - client_credentials
           scopes:
           - manage_configuration
-#      services:
-#        - id: dataload
-#          tenant_id: default
-#          authorization_server_id: default
-#          gateway_id: local_gateway_id
-#          name: default/dataload
-#          apis:
-#            - method: GET
-#              path: /datasets
-#              policy_id: allow_test_policy
-#              can_have_policy: true
-#              position: 20
-#            - method: GET
-#              path: /datasets/{datasetUUID}
-#              policy_id: allow_test_policy
-#              can_have_policy: true
-#              position: 19
-#            - method: DELETE
-#              path: /datasets/{datasetUUID}
-#              policy_id: allow_test_policy
-#              can_have_policy: true
-#              position: 18
-#            - method: POST
-#              path: /datasets/{datasetUUID}
-#              policy_id: allow_test_policy
-#              can_have_policy: true
-#              position: 17
-#            - method: GET
-#              path: /dupa/.*
-#              policy_id: allow_test_policy
-#              can_have_policy: true
-#              position: 16
-#            - method: POST
-#              path: /dupa/.*
-#              policy_id: allow_test_policy
-#              can_have_policy: true
-#              position: 15
-#            - method: GET
-#              path: /.*
-#              policy_id: block_test_policy
-#              can_have_policy: true
-#              position: 14
-#            - method: POST
-#              path: /.*
-#              policy_id: block_test_policy
-#              can_have_policy: true
-#              position: 13   
-##       services:
-##        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
-##          tenant_id: default
-##          authorization_server_id: default
-##          gateway_id: local_istio_gateway
-##          name: My Test Service 2
-##          apis:
-##            - method: GET
-##              path: /test
-##              policy_id: block_imported_example
-##              can_have_policy: true
+          - read_gateway_configuration
+          - write_gateway_configuration
+          - push_gateway_requests
+          - introspect_tokens
+      gateways:
+        - tenant_id: system
+          authorization_server_id: system
+          id: my_test_gateway
+          name: My Test Gateway
+          type: istio
+          client_id: my_test_gateway_client
+          last_active: "2021-07-15T12:39:56.099Z"
+          create_and_bind_services_automatically: true
+      policies:
+        - tenant_id: system
+          server_id: system
+          id: block
+          policy_name: block
+          language: cloudentity
+          type: api
+          validators:
+          - name: "false"
+      services:
+        - id: "{{ encServiceID \"spiffe://cluster.local/ns/default/sa/hello\" }}"
+          tenant_id: system
+          authorization_server_id: system
+          gateway_id: my_test_gateway
+          name: My Test Service 2
+          apis:
+            - method: GET
+              path: /test
+              policy_id: block
+              can_have_policy: true

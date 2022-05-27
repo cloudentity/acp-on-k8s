@@ -12,9 +12,24 @@ This repository's primary purpose is to enable you to rapidly stand up Cloudenti
 * Credentials to access Cloudentity Private Docker Repo - if you are our client, you can find it in your Support Portal; if you are not and you want to check out our product, feel free to request access via our [website](https://cloudentity.com).
 
 ## Quickstart
+1. For `kind` tool please follow the instructions below to install globally. For the rest tools please follow the official instructions linked above.
 
-Add
-
+On Linux:
+```
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/
+```
+On macOS:
+```
+brew install kind
+```
+2. Add environment variables `DOCKER_USER` and `DOCKER_PWD` for Cloudentity Private Docker Repo:
+```
+export DOCKER_USER=<user>
+export DOCKER_PWD=<password>
+```
+3. Add local domain to `/etc/hosts`:
 ``` sh
 127.0.0.1 acp.acp-system
 ```
@@ -24,6 +39,9 @@ to /etc/hosts and run
 `make all`.
 
 Next go to `https://acp.acp-system:8443/` and log in with `admin`:`admin`
+=======
+4. Run `make all`.
+5. Next go to `https://acp.acp-system:8443/` and log in with `admin`:`admin`
 
 ## What is next?
 
@@ -73,3 +91,26 @@ Next go to `https://acp.acp-system:8443/` and log in with `admin`:`admin`
 The `mp-istio-authorier` folder contains examples on how to declaratively provide your ACP
 configuration and import it to any ACP tenant. To learn more about it, visit
 [ACP configuration import documentation](https://docs.authorization.cloudentity.com/guides/developer/protect/istio/configuration_import/?q=configuration%20imp)
+=======
+## GraphQL demo
+Instruction ow to run a GraphQL service and be able to play around.
+
+Prerequisites: make sure you use ACP version that supports GraphQL - 2.0.0 or latest.
+
+1. `make graphql-demo` - installs ACP and all components
+2. Add local domain to `/etc/hosts`:
+```
+127.0.0.1 countries.ingress.k8s
+```
+3. Go to `https://acp.acp-system:8443/system/admin/app`, log in with `admin` and default system password, switch to system workspace. GraphQL service should be discovered.
+4. Go to GraphQL UI service `http://countries.ingress.k8s:9080`, change
+5. Change API URL to `http://countries.ingress.k8s:9080/gqlapi`
+6. Run queries, example:
+```
+{
+  country(code:"PL") {
+    name
+    code
+  }
+}
+```

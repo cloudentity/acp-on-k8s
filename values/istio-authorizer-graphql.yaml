@@ -2,6 +2,8 @@ clientCredentials:
   clientID: "my_test_gateway_client"
   clientSecret: "5c8f3f5b353ba0f55c8f3f5b353ba0f5"
 issuerURL: "https://acp.acp-system:8443/system/system"
+parseBody:
+  enabled: true
 httpClient:
   rootCa: |
     -----BEGIN CERTIFICATE-----
@@ -25,3 +27,7 @@ httpClient:
     VyZGyIRnGkXUtC239/Lz0v0PXVwAPUF8ITb0JYcG/ojIc5VfTOkQOeOHHBaS+dXt
     HBJjBbnwpN4tNFhczJkbga16hL+vV0I4z61mJG8OkDr25Q==
     -----END CERTIFICATE-----
+
+extraConfig:
+  enforcement:
+    allow_unknown: true
