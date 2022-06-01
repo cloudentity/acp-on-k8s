@@ -47,13 +47,17 @@ prepare-cluster:
 		--docker-username ${DOCKER_USER} \
 		--docker-password ${DOCKER_PWD}
 
+
 prepare-cert:
 	#openssl genrsa -out ./cert/rootCA.key 2048
 	#openssl req -x509 -new -nodes -key ./cert/rootCA.key -sha256 -days 365  -out ./cert/rootCA.pem -subj "/C=US/ST=WA/L=Seattle/O=Cloudentity/OU=SE/CN=acp-system/emailAddress=info@acp.acp-system"
 	openssl req -new -nodes -out ./cert/server.csr -newkey rsa:2048 -keyout ./cert/server.key -subj "/C=US/ST=WA/L=Seattle/O=Cloudentity/OU=SE/CN=acp.acp-system/emailAddress=info@acp.acp-system"
 	openssl x509 -req -in ./cert/server.csr -CA ./cert/rootCA.pem -CAkey ./cert/rootCA.key -CAcreateserial -out ./cert/server.crt -days 356 -sha256 -extfile ./cert/certv3.ext
 	kubectl delete secret -n acp-system acp-server-tls --ignore-not-found=true
-	kubectl create secret tls acp-server-tls --cert=./cert/server.crt --key=./cert/server.key -n acp-system	
+	kubectl create secret tls acp-server-tls --cert=./cert/server.crt --key=./cert/server.key -n acp-system
+	kubectl delete secret -n acp-system acp-tls --ignore-not-found=true
+	kubectl create secret tls acp-tls --cert=./cert/server.crt --key=./cert/server.key -n acp-system
+
 
 install-ingress-controller:
 	helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
@@ -67,12 +71,51 @@ install-acp-stack:
 	helm upgrade acp ${KUBE_ACP_STACK_CHART} \
 		--values ./values/kube-acp-stack.yaml \
 		--namespace acp-system \
-		--timeout 5m \
+		--timeout 10m \
 		--install
 
-install-istio-authorizer:
+register-istio-authorizer-local:
+	kubectl create secret docker-registry docker.cloudentity.io \
+		--namespace acp-istio-authorizer \
+		--docker-server docker.cloudentity.io \
+		--docker-username ${DOCKER_USER} \
+		--docker-password ${DOCKER_PWD}
+	helm upgrade register-istio-authorizer-job ../acp-helm-charts/charts/acp-cd/ \
+		--values ./values/istio-authorizer/register-istio-authorizer-local.yaml \
+		--set clientCredentials.clientID=${IMPORT_JOB_CLIENT_ID} \
+		--set clientCredentials.clientSecret=${IMPORT_JOB_SECRET} \
+		--set clientCredentials.issuerURL=${ACP_SERVER_URL}/default/system/ \
+		--namespace acp-istio-authorizer \
+		--create-namespace \
+		--timeout 5m \
+		--install \
+		--wait
+
+register-istio-authorizer-multitenant:
+	helm upgrade register-istio-authorizer-job ../acp-helm-charts/charts/acp-cd/ \
+		--values ./values/istio-authorizer/register-istio-authorizer-multitenant.yaml \
+		--set clientCredentials.clientID=${SYS_IMPORT_JOB_CLIENT_ID} \
+		--set clientCredentials.clientSecret=${SYS_IMPORT_JOB_SECRET} \
+		--set clientCredentials.issuerURL=${ACP_SERVER_URL}/system/system/ \
+		--namespace acp-istio-authorizer \
+		--create-namespace \
+		--timeout 5m \
+		--install \
+		--wait
+
+
+install-istio-authorizer-local:
 	helm upgrade istio-authorizer acp/istio-authorizer \
-		--values ./values/istio-authorizer.yaml \
+		--values ./values/istio-authorizer/install-istio-authorizer-local.yaml \
+		--namespace acp-istio-authorizer \
+		--create-namespace \
+		--timeout 5m \
+		--install \
+		--wait
+
+install-istio-authorizer-multitenant:
+	helm upgrade istio-authorizer acp/istio-authorizer \
+		--values ./values/istio-authorizer/install-istio-authorizer-multitenant.yaml \
 		--namespace acp-istio-authorizer \
 		--create-namespace \
 		--timeout 5m \
@@ -80,10 +123,10 @@ install-istio-authorizer:
 		--wait
 
 install-istio:
-	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.11.4 TARGET_ARCH=x86_64  sh -
-	./istio-1.11.4/bin/istioctl install -f ./config/ce-istio-profile.yaml -y
+	curl -L https://istio.io/downloadIstio | ISTIO_VERSION=1.13.4 TARGET_ARCH=x86_64  sh -
+	./istio-1.13.4/bin/istioctl install -f ./config/ce-istio-profile.yaml -y
 	kubectl label namespace default istio-injection=enabled
-	rm -rf ./istio-1.11.4
+	rm -rf ./istio-1.13.4
 
 wait-acp:
 	kubectl wait deploy/acp \
@@ -154,6 +197,32 @@ check-acp-server-responsivness:
 		--retry-max-time 60 \
 		--insecure \
 		--fail
+
+protect-httpbin-multitenant:
+	helm upgrade protect-httpbin ../acp-helm-charts/charts/acp-cd/ \
+		--values ./values/protected-services/define-and-protect-httpbin-multitenant-v1.yaml \
+		--set clientCredentials.clientID=${SYS_IMPORT_JOB_CLIENT_ID} \
+		--set clientCredentials.clientSecret=${SYS_IMPORT_JOB_SECRET} \
+		--set clientCredentials.issuerURL=${ACP_SERVER_URL}/system/system/ \
+		--namespace acp-istio-authorizer \
+		--create-namespace \
+		--timeout 5m \
+		--install \
+		--wait
+
+protect-httpbin-local:
+	helm upgrade protect-httpbin ../acp-helm-charts/charts/acp-cd/ \
+		--values ./values/protected-services/assign-local-policy-httpbin.yaml \
+		--set clientCredentials.clientID=${IMPORT_JOB_CLIENT_ID} \
+		--set clientCredentials.clientSecret=${IMPORT_JOB_SECRET} \
+		--set clientCredentials.issuerURL=${ACP_SERVER_URL}/default/system/ \
+		--namespace acp-istio-authorizer \
+		--create-namespace \
+		--timeout 5m \
+		--install \
+		--wait
+
+
 
 debug:
 	-kubectl get all --all-namespaces

@@ -1,0 +1,25 @@
+config:
+  ## The data should match acp configuration options
+  ## https://docs.operations.cloudentity.com/reference/acp-configuration/
+  ##
+  data:
+    client:
+        insecure_skip_verify: true
+data:
+  cross_tenant_api_policy_bindings:
+  - policy_tenant_id: default
+    policy_server_id: default
+    policy_id: nist-aal-2_default_api
+    api_tenant_id: system
+    api_id: alive123
+  - policy_tenant_id: default
+    policy_server_id: default
+    policy_id: nist-aal-1_default_api
+    api_tenant_id: system
+    api_id: get123
+  - policy_tenant_id: default
+    policy_server_id: default
+    policy_id: nist-aal-1_default_api
+    api_tenant_id: system
+    api_id: test123
+

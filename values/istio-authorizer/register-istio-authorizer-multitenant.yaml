@@ -1,0 +1,63 @@
+###
+#client:
+#  rootCa: |
+#    -----BEGIN CERTIFICATE-----
+#    MIIDjjCCAnYCCQCkYimCrjt5tDANBgkqhkiG9w0BAQsFADCBiDELMAkGA1UEBhMC
+#    VVMxCzAJBgNVBAgMAldBMRAwDgYDVQQHDAdTZWF0dGxlMRQwEgYDVQQKDAtDbG91
+#    ZGVudGl0eTELMAkGA1UECwwCU0UxEzARBgNVBAMMCmFjcC1zeXN0ZW0xIjAgBgkq
+#    hkiG9w0BCQEWE2luZm9AYWNwLmFjcC1zeXN0ZW0wHhcNMjExMjEzMDA0MDExWhcN
+#    MjIxMjEzMDA0MDExWjCBiDELMAkGA1UEBhMCVVMxCzAJBgNVBAgMAldBMRAwDgYD
+#    VQQHDAdTZWF0dGxlMRQwEgYDVQQKDAtDbG91ZGVudGl0eTELMAkGA1UECwwCU0Ux
+#    EzARBgNVBAMMCmFjcC1zeXN0ZW0xIjAgBgkqhkiG9w0BCQEWE2luZm9AYWNwLmFj
+#    cC1zeXN0ZW0wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDBJdr9bgGx
+#    fE3nHl/oCYYSMpowkGmbSDUijHNA8p47q+7VgC0AXS5iScySiUptfEn8UdilvhKR
+#    Fdtfz7epp4zsZSLYQpAafmTrBP4eJLE240dm1k0egp6/cho6S7DdrF8loJoJs+84
+#    GhDJonX5ktIQAXEOc25CBwukxYUk09x+aiqsFD25Ohxpqc/6Yari3ibfhbZ6aDIR
+#    EDMze34oM95c86DJGg9nuKfdkC44MbcG0kGByF3+JUwLQ2cWU2+8BHN/mW4VTgRS
+#    yilX2iXwumvtE00GpMr2xoUsLHC3Vetp7en+3hUE/DulcdTQFyXDqipDZIwSfI+O
+#    2llr+SlsexzxAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAK3p6DRNsJTZhuA5zBey
+#    QPKlAtYWGa2Y3JdTNg5qR6tbrATD42A05zFmAqCppSKCcOEdg0SrRONXC709IW36
+#    dE/W1roNrcdQVV2xXdSFt4+7I5pfjdl3hq0xC67fau8QMfAfxHxZe3BnEQinT+bn
+#    joYu3RdMigwq/36cuuVIOQsKm1ukYH66+sWCRs48yKc3a0o56uLM783Cn3l2KtdQ
+#    a1gohl732YrZOA45IPu19EuckfiYSfXF6X5Dc6POYRPF+VJVXF3RaZfOEN6so2WW
+#    eGimUwKTQVKERIMHGwb/WuGlQ1AZEb2GqoRkdIoVqZgNuk9bouikvU2U9yQOf+si
+#    mqE=
+#    -----END CERTIFICATE-----
+config:
+  ## The data should match acp configuration options
+  ## https://docs.operations.cloudentity.com/reference/acp-configuration/
+  ##
+  data:
+    client:
+        insecure_skip_verify: true
+
+data:
+  gateways:
+    - tenant_id: system
+      authorization_server_id: system
+      id: multitenant-istio-authorizer
+      client_id: multitenant-istio-authorizer-client
+      client_secret: cf53caac-fb55-40a7-8c63-620ce11102e2
+      name: Multitenant Istio Authorizer
+      description: Multitenant imported Istio Authorizer
+      type: istio
+      create_and_bind_services_automatically: false
+  clients:
+    - tenant_id: system
+      authorization_server_id: system
+      client_id: multitenant-istio-authorizer-client
+      client_secret: cf53caac-fb55-40a7-8c63-620ce11102e2
+      token_endpoint_auth_method: client_secret_basic
+      system: false
+      trusted: false
+      client_name: Multitenant Istio Authorizer client
+      application_type: web
+      grant_types:
+        - client_credentials
+      response_types:
+        - code
+      scopes:
+        - introspect_tokens
+        - push_gateway_requests
+        - read_gateway_configuration
+        - write_gateway_configuration

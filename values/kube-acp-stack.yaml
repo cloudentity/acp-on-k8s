@@ -33,15 +33,18 @@ acp:
     system_clients_management: true # enable system client management APIs (system)
     pyron_on_prem: false # enable when ACP is running on-prem and Pyron is used as a gateway (tenant)
     client_secrets_stored_as_one_way_hash: false # store client secrets as a one way hash (tenant)
-    trust_anchor_integration: false # enable trust anchor integration (system)
     login_with_select_account: true # enable login with select_account param (tenant)
-    ciba: true # enable ciba (system)
-    mfa: true # enable mfa (tenant)
     quick_access: true # enable quick access functionality on UI (system)
     external_datastore: true # enable external datastore idp (system)
     scripts: false # enable custom scripts (tenant)
     fission_v2: false # fission runtime v2 (tenant)
     gateway_type_standalone: true # enable gateway type standalone (tenant)
+
+  certificate:
+  ## If true certificate will be taken from files/ folder stored in this chart
+  ## root folder.
+  ##
+    create: false
   importJob:
     enabled: true
     data:
@@ -51,6 +54,20 @@ acp:
           client_id: c72dkmavg1ajov9nvvjg
           client_secret: 8ZecN12mSG7dWuFsf_ycO-xCi65WJbVxaJHtvnQ_zuM
           client_name: Import Job Client
+          token_endpoint_auth_method: client_secret_post
+          grant_types:
+          - client_credentials
+          scopes:
+          - manage_configuration
+          - read_gateway_configuration
+          - write_gateway_configuration
+          - push_gateway_requests
+          - introspect_tokens
+        - tenant_id: system
+          authorization_server_id: system
+          client_id: 0ZsjT0SNl68gRnAJGYen
+          client_secret: 9Ern1sqzSh7s3we9MaRZeLLBaJqls7GpURk4kIXumWT
+          client_name: System Import Job Client
           token_endpoint_auth_method: client_secret_post
           grant_types:
           - client_credentials

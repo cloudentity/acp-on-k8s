@@ -1,0 +1,62 @@
+config:
+  ## The data should match acp configuration options
+  ## https://docs.operations.cloudentity.com/reference/acp-configuration/
+  ##
+  data:
+    client:
+        insecure_skip_verify: true
+data:
+  gateway_api_groups:
+    - tenant_id: system
+      server_id: system
+      id: "{{ encSpiffeID \"spiffe://cluster.local/ns/default/sa/httpbin\" }}"
+      service_id: httpbin-service
+      gateway_id: multitenant-istio-authorizer
+      name: default/httpbin_api_group
+      apis:
+        - method: GET
+          path: /get
+          can_have_policy: true
+          policy_id: nist-aal-1_system_api
+          api_type: rest
+          position: 0
+          id: get123
+        - method: GET
+          can_have_policy: true
+          policy_id: nist-aal-1_system_api
+          path: /alive
+          api_type: rest
+          position: 1
+          id: alive123
+        - method: GET
+          can_have_policy: true
+          policy_id: nist-aal-1_system_api
+          path: /test
+          api_type: rest
+          position: 2
+          id: test123
+  services:
+    - id: httpbin-service
+      tenant_id: system
+      authorization_server_id: system
+      gateway_id: multitenant-istio-authorizer
+      name: default/httpbin_service
+      apis:
+        - method: GET
+          path: /get
+          can_have_policy: true
+          policy_id: nist-aal-1_system_api
+          api_type: rest
+          id: get123
+        - method: GET
+          path: /alive
+          can_have_policy: true
+          policy_id: nist-aal-1_system_api
+          api_type: rest
+          id: alive123
+        - method: GET
+          can_have_policy: true
+          policy_id: nist-aal-1_system_api
+          path: /test
+          api_type: rest
+          id: test123

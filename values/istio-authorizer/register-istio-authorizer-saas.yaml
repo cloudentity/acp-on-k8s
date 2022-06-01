@@ -1,0 +1,30 @@
+data:
+  gateways:
+    - tenant_id: cedemo-se1
+      authorization_server_id: demo
+      id: sample-istio-authorizer
+      client_id: istio-authorizer-client
+      client_secret: cf53caab-fb55-40a7-8c63-620ce11102e2
+      name: Sample Istio Authorizer
+      description: Sample imported Istio Authorizer
+      type: istio
+      create_and_bind_services_automatically: true
+  clients:
+    - tenant_id: cedemo-se1
+      authorization_server_id: system
+      client_id: istio-authorizer-client
+      client_secret: cf53caab-fb55-40a7-8c63-620ce11102e2
+      token_endpoint_auth_method: client_secret_basic
+      system: false
+      trusted: false
+      client_name: Istio Authorizer client
+      application_type: web
+      grant_types:
+        - client_credentials
+      response_types:
+        - code
+      scopes:
+        - introspect_tokens
+        - push_gateway_requests
+        - read_gateway_configuration
+        - write_gateway_configuration
