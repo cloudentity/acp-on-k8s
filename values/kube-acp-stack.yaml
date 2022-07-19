@@ -9,6 +9,8 @@ cockroachdb:
   single-node: true
   statefulset:
     replicas: 1
+mailhog:
+  enabled: true
 acp:
   enabled: true
   serverURL: "https://acp.acp-system:8443"
@@ -22,6 +24,13 @@ acp:
   features:
     integration_endpoints: true
     swagger_ui: true
+  email:
+    enabled: true
+    host: mailhog
+    port: 1025
+    auth: "CRAMMD5"
+    start_tls: true
+    insecure_skip_verify: true
   importJob:
     enabled: true
     data:
