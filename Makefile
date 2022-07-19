@@ -30,6 +30,7 @@ prepare-helm:
 	helm repo add acp https://charts.cloudentity.io
 	helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 	helm repo add jetstack https://charts.jetstack.io
+	helm repo add codecentric https://codecentric.github.io/helm-charts
 	helm repo update
 ifdef ACP_CHARTS_PATH
 	yq eval '(.dependencies[]|select(.name == "acp").repository) |= "file://../acp"' "${KUBE_ACP_STACK_CHART}/Chart.yaml" --inplace
