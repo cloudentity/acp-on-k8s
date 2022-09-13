@@ -70,10 +70,10 @@ install-istio-authorizer:
 		--wait
 
 install-istio:
-	curl --location https://istio.io/downloadIstio | ISTIO_VERSION=1.9.3 TARGET_ARCH=x86_64  sh -
-	./istio-1.9.3/bin/istioctl install --filename ./config/ce-istio-profile.yaml --skip-confirmation
+	curl --location https://istio.io/downloadIstio | ISTIO_VERSION=1.14.4 TARGET_ARCH=x86_64  sh -
+	./istio-1.14.4/bin/istioctl install --filename ./config/ce-istio-profile.yaml --skip-confirmation
 	kubectl label namespace default istio-injection=enabled
-	rm --recursive --force ./istio-1.9.3
+	rm -r -f ./istio-1.14.4
 
 wait-acp:
 	kubectl wait deploy/acp \
@@ -194,5 +194,5 @@ graphql-demo:
 	--timeout 5m \
 	--install \
 	--wait
- 
+
 	make install-countries
