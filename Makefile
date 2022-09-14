@@ -72,7 +72,8 @@ install-acp-stack:
 		--values ./values/kube-acp-stack.yaml \
 		--namespace acp-system \
 		--timeout 10m \
-		--install
+		--install \
+		--version 2.4.1
 
 register-istio-authorizer-local:
 	kubectl create secret docker-registry docker.cloudentity.io \

@@ -9,11 +9,16 @@ cockroachdb:
     replicas: 1
 acp:
   enabled: true
-  serverURL: "https://acp.acp-system:8443"
+  serverURL: "https://acp.local.cloudentity.io:8443/auth"
+#  serverURLMtls: "https://mtls.acp.local:8443/auth"
   ingress:
     enabled: true
     hosts:
-      - host: acp.acp-system
+#      - host: acp.local.cloudentity.io
+#        paths:
+#          - path: /
+#            pathType: ImplementationSpecific
+      - host: '*.local.cloudentity.io'
         paths:
           - path: /
             pathType: ImplementationSpecific
@@ -21,6 +26,28 @@ acp:
       - secretName: acp-server-tls
         hosts:
           - acp.acp-system
+  ##Disables TLS in ACP
+  ##
+  tlsDisabled: true
+  ingressMtls: 
+    enabled: false
+    ## mTLS Ingress additional custom annotations 
+    customAnnotations:
+    tls:
+      - hosts:
+        -  mtls.acp.acp-system
+    secret:
+      create: false
+      name: acp-server-tls
+      auth:
+        name: acp-server-tls
+    ## mTLS Ingress hostnames with paths 
+    hosts:
+      - host: mtls.acp.acp-system
+        https:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific 
   features:
     initialize_demo_workspace: true # when enabled and the display_workspace_wizard feature flag is set to true, a demo workspace with a set of preconfigured IDPs is created and no welcome screen is displayed (tenant)
     integration_endpoints: true # enable global import and export configuration endpoints (system)
@@ -39,12 +66,20 @@ acp:
     scripts: false # enable custom scripts (tenant)
     fission_v2: false # fission runtime v2 (tenant)
     gateway_type_standalone: true # enable gateway type standalone (tenant)
-
   certificate:
   ## If true certificate will be taken from files/ folder stored in this chart
   ## root folder.
   ##
     create: false
+  config:
+    create: true
+    data:
+      logging:
+        level: trace
+      server:
+        http_logs: false
+        disable_csrf: true # disable csrf protection
+        disable_security: true
   importJob:
     enabled: true
     data:
@@ -77,6 +112,9 @@ acp:
           - write_gateway_configuration
           - push_gateway_requests
           - introspect_tokens
+## Enable Default ACP config
+##
+
 #      gateways:
 #        - tenant_id: system
 #          authorization_server_id: system
