@@ -57,7 +57,7 @@ install-acp-stack:
 	helm upgrade acp ${KUBE_ACP_STACK_CHART} \
 		--values ./values/kube-acp-stack.yaml \
 		--namespace acp-system \
-		--timeout 15m \
+		--timeout 30m \
 		--install
 
 install-istio-authorizer:
