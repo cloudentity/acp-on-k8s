@@ -22,13 +22,17 @@ acp:
         paths:
           - path: /
             pathType: ImplementationSpecific
+      - host: '*.secure.cloudentity.io'
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
     tls:
       - secretName: acp-server-tls
         hosts:
           - acp.acp-system
   ##Disables TLS in ACP
   ##
-  tlsDisabled: true
+  tlsDisabled: false
   ingressMtls: 
     enabled: false
     ## mTLS Ingress additional custom annotations 
