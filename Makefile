@@ -149,16 +149,16 @@ debug:
 
 ## tests
 
-TEST_DOCKER_VERSION=2.7.0
+TEST_DOCKER_VERSION=2.8.0
 
 test-prepare-grid:
 	docker run --detach --rm \
-		--volume /dev/shm:/dev/shm \
-		--memory 2048M \
-		--name standalone-chrome \
+		--name selenium-grid-hub \
 		--network host \
 		--add-host acp.acp-system:127.0.0.1 \
-		selenium/standalone-chrome:3.141.59
+		--volume /dev/shm:/dev/shm \
+		--memory 2048M \
+		selenium/hub:4.2.2-20220609
 
 test-prepare-runner:
 	docker pull docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION}
@@ -166,7 +166,7 @@ test-prepare-runner:
 		--name test-runner \
 		--network host \
 		--add-host acp.acp-system:127.0.0.1 \
-		--add-host standalone-chrome:127.0.0.1 \
+		--add-host selenium-grid-hub:127.0.0.1 \
 		--user 1000:1000 \
 		docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION} /bin/sh
 
