@@ -149,7 +149,7 @@ debug:
 
 ## tests
 
-TEST_DOCKER_VERSION=2.8.0
+TEST_DOCKER_VERSION=2.7.0
 
 test-prepare-grid:
 	docker run --detach --rm \
