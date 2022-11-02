@@ -196,3 +196,4 @@ graphql-demo:
 	--wait
 
 	make install-countries
+
