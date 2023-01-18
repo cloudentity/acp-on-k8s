@@ -57,6 +57,12 @@ export DOCKER_PWD=<password>
 * `make deploy-cmd-pod` - Deploys the CMD pod in the default namespace; this pod is helpful with the Istio authorization testing.
 * `make install-countries` - Deploys the countries GraphQL API in the default namespace; this pod is helpful for testing GraphQL authorization. The Coutries API is publicly available https://countries.trevorblades.com/
 
+If you would like to test your modifications of the [ACP helm charts](https://charts.cloudentity.io), point `ACP_CHARTS_PATH` to your clone:
+
+* `make ACP_CHARTS_PATH=../acp-helm-charts/charts all`
+
+This is also a handy way to spin up older releases of ACP.
+
 ## Usage of the CMD Pod
 
 1. Run `make deploy-cmd-pod`
