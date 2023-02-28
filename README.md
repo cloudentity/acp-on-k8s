@@ -6,9 +6,9 @@ This repository's primary purpose is to enable you to rapidly stand up Cloudenti
 
 ## Prerequisites
 
-* [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) 0.10.x 
+* [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) 0.16.x 
 * [helm](https://helm.sh/docs/intro/install/) 3.x.x 
-* [kubectl](https://kubernetes.io/docs/tasks/tools/) 1.21.x
+* [kubectl](https://kubernetes.io/docs/tasks/tools/) 1.24.x
 * Credentials to access Cloudentity Private Docker Repo - if you are our client, you can find it in your Support Portal; if you are not and you want to check out our product, feel free to request access via our [website](https://cloudentity.com).
 
 ## Quickstart
@@ -16,9 +16,9 @@ This repository's primary purpose is to enable you to rapidly stand up Cloudenti
 
 On Linux:
 ```
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.16.0/kind-linux-amd64
 chmod +x ./kind
-sudo mv ./kind /usr/local/bin/
+sudo mv ./kind /usr/local/bin/kind
 ```
 On macOS:
 ```
