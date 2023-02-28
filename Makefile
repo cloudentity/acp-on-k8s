@@ -44,6 +44,7 @@ prepare-cluster:
 		--docker-server docker.cloudentity.io \
 		--docker-username ${DOCKER_USER} \
 		--docker-password ${DOCKER_PWD}
+	kubectl apply -f ./config/timescale-role-binding.yaml
 
 install-ingress-controller:
 	helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
