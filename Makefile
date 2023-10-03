@@ -44,6 +44,7 @@ prepare-cluster:
 		--docker-server docker.cloudentity.io \
 		--docker-username ${DOCKER_USER} \
 		--docker-password ${DOCKER_PWD}
+	kubectl apply -f ./config/timescale-role-binding.yaml
 
 install-ingress-controller:
 	helm upgrade ingress-nginx ingress-nginx/ingress-nginx \
@@ -57,7 +58,7 @@ install-acp-stack:
 	helm upgrade acp ${KUBE_ACP_STACK_CHART} \
 		--values ./values/kube-acp-stack.yaml \
 		--namespace acp-system \
-		--timeout 5m \
+		--timeout 11m \
 		--install
 
 install-istio-authorizer:
@@ -70,10 +71,10 @@ install-istio-authorizer:
 		--wait
 
 install-istio:
-	curl --location https://istio.io/downloadIstio | ISTIO_VERSION=1.9.3 TARGET_ARCH=x86_64  sh -
-	./istio-1.9.3/bin/istioctl install --filename ./config/ce-istio-profile.yaml --skip-confirmation
+	curl --location https://istio.io/downloadIstio | ISTIO_VERSION=1.14.4 TARGET_ARCH=x86_64  sh -
+	./istio-1.14.4/bin/istioctl install --filename ./config/ce-istio-profile.yaml --skip-confirmation
 	kubectl label namespace default istio-injection=enabled
-	rm --recursive --force ./istio-1.9.3
+	rm -r -f ./istio-1.14.4
 
 wait-acp:
 	kubectl wait deploy/acp \
@@ -140,25 +141,25 @@ check-acp-server-responsivness:
 debug:
 	-kubectl get all --all-namespaces
 	-kubectl logs daemonset/kindnet --namespace kube-system
-	-kubectl daemonset/kube-proxy --namespace kube-system
-	-kubectl deploy/acp --namespace kube-system
-	-kubectl deploy/ingress-nginx-controller --namespace kube-system
+	-kubectl logs daemonset/kube-proxy --namespace kube-system
+	-kubectl logs deploy/acp --namespace kube-system
+	-kubectl logs deploy/ingress-nginx-controller --namespace kube-system
 	-kubectl logs deploy/coredns --namespace kube-system
 	-kubectl logs deploy/local-path-provisioner --namespace local-path-storage
 	-kubectl describe pod --selector app.kubernetes.io/name=acp --namespace acp-system
 
 ## tests
 
-TEST_DOCKER_VERSION=bbfd227
+TEST_DOCKER_VERSION=2.8.0
 
 test-prepare-grid:
 	docker run --detach --rm \
-		--volume /dev/shm:/dev/shm \
-		--memory 2048M \
-		--name standalone-chrome \
+		--name selenium-grid-hub \
 		--network host \
 		--add-host acp.acp-system:127.0.0.1 \
-		selenium/standalone-chrome:3.141.59
+		--volume /dev/shm:/dev/shm \
+		--memory 2048M \
+		selenium/hub:4.2.2-20220609
 
 test-prepare-runner:
 	docker pull docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION}
@@ -166,7 +167,7 @@ test-prepare-runner:
 		--name test-runner \
 		--network host \
 		--add-host acp.acp-system:127.0.0.1 \
-		--add-host standalone-chrome:127.0.0.1 \
+		--add-host selenium-grid-hub:127.0.0.1 \
 		--user 1000:1000 \
 		docker.cloudentity.io/acceptance-tests:${TEST_DOCKER_VERSION} /bin/sh
 
@@ -194,5 +195,5 @@ graphql-demo:
 	--timeout 5m \
 	--install \
 	--wait
- 
+
 	make install-countries

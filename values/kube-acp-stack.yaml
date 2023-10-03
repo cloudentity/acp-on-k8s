@@ -69,3 +69,7 @@ acp:
               path: /test
               policy_id: block
               can_have_policy: true
+  config:
+    data:
+      timescale:
+        url: postgres://postgres:PaSsW0rD@timescale.acp-system.svc.cluster.local/postgres?sslmode=require

@@ -6,9 +6,9 @@ This repository's primary purpose is to enable you to rapidly stand up Cloudenti
 
 ## Prerequisites
 
-* [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) 0.10.x 
+* [kind](https://kind.sigs.k8s.io/docs/user/quick-start/#installation) 0.16.x 
 * [helm](https://helm.sh/docs/intro/install/) 3.x.x 
-* [kubectl](https://kubernetes.io/docs/tasks/tools/) 1.21.x
+* [kubectl](https://kubernetes.io/docs/tasks/tools/) 1.24.x
 * Credentials to access Cloudentity Private Docker Repo - if you are our client, you can find it in your Support Portal; if you are not and you want to check out our product, feel free to request access via our [website](https://cloudentity.com).
 
 ## Quickstart
@@ -16,9 +16,9 @@ This repository's primary purpose is to enable you to rapidly stand up Cloudenti
 
 On Linux:
 ```
-curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.10.0/kind-linux-amd64
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.16.0/kind-linux-amd64
 chmod +x ./kind
-sudo mv ./kind /usr/local/bin/
+sudo mv ./kind /usr/local/bin/kind
 ```
 On macOS:
 ```
@@ -56,6 +56,12 @@ export DOCKER_PWD=<password>
 * `make delete-cluster` - Deletes Kind based Kubernetes cluster
 * `make deploy-cmd-pod` - Deploys the CMD pod in the default namespace; this pod is helpful with the Istio authorization testing.
 * `make install-countries` - Deploys the countries GraphQL API in the default namespace; this pod is helpful for testing GraphQL authorization. The Coutries API is publicly available https://countries.trevorblades.com/
+
+If you would like to test your modifications of the [ACP helm charts](https://charts.cloudentity.io), point `ACP_CHARTS_PATH` to your clone:
+
+* `make ACP_CHARTS_PATH=../acp-helm-charts/charts all`
+
+This is also a handy way to spin up older releases of ACP.
 
 ## Usage of the CMD Pod
 
