@@ -1,0 +1,72 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+resources:
+  - alerts
+  - namespace.yaml
+  - repository.yaml
+  - release.yaml
+  - thanos.yaml
+  - objstorage.yaml
+  - ssl_exporter.yaml
+  - blackbox_exporter.yaml
+  - prom-sql-exporter.yaml
+  - prom-sql-exporter-secret.yaml
+  - secret.yaml
+images:
+  - name: ribbybibby/ssl-exporter
+    newTag: 2.4.2 # {"$imagepolicy": "monitoring:ssl-exporter-prod:tag"}
+  - name: ghcr.io/justwatchcom/sql_exporter
+    newTag: latest # {"$imagepolicy": "monitoring:prom-sql-exporter-prod:tag"}
+configMapGenerator:
+  - name: grafana-dashboards-acp
+    files:
+      - dashboards/golang.json
+      - dashboards/acp.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
+  - name: grafana-dashboards-cockroachdb
+    files:
+      - dashboards/cockroachdb-replicas.json
+      - dashboards/cockroachdb-runtime.json
+      - dashboards/cockroachdb-sql.json
+      - dashboards/cockroachdb-storage.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
+  - name: grafana-dashboards-timescaledb
+    files:
+      - dashboards/timescaledb-database.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
+  - name: grafana-dashboards-kyverno
+    files:
+      - dashboards/kyverno.json
+      - dashboards/kyverno-clusterpolicy-details.json
+      - dashboards/kyverno-overview.json
+      - dashboards/kyverno-policy-details.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
+  - name: grafana-dashboards-other
+    files:
+      - dashboards/control-plane.json
+      - dashboards/cluster.json
+      - dashboards/nginx.json
+      - dashboards/request-handling-performance.json
+      - dashboards/cert-manager.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled

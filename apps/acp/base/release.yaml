@@ -1,0 +1,241 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: acp
+spec:
+  releaseName: acp
+  chart:
+    spec:
+      chart: acp
+      sourceRef:
+        kind: HelmRepository
+        name: acp
+        namespace: acp
+      version: 2.15.1 # helm:autoupdate:acp-prod
+  interval: 5m
+  timeout: 20m
+  install:
+    remediation:
+      retries: 3
+  # https://github.com/cloudentity/acp-helm-charts/blob/master/charts/acp/values.yaml
+  values:
+    image:
+      repository: docker.cloudentity.io/acp-distroless
+    podDisruptionBudget:
+      minAvailable: 30%
+    ingress:
+      ingressClassName: public-nginx
+      customAnnotations:
+        cert-manager.io/cluster-issuer: "ca-issuer"
+      hosts:
+        - host: "*.${cluster_region_domain}"
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - secretName: acp-ingress-tls
+          hosts:
+            - "*.${cluster_region_domain}"
+    autoscaling:
+      enabled: false
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: acp
+            topologyKey: kubernetes.io/hostname
+    topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: acp
+        maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway
+    serviceAccount:
+      create: true
+      name: acp
+    args:
+      - server
+      - start
+      - --demo
+      - --create-default-tenant
+      - --create-default-workspaces
+    configPath: /data/config.yaml,/data/extraconfig.yaml,/secret/secret.yaml,/secret/embedded_idps.yaml
+    nodeSelector:
+      compute: "true"
+    tolerations:
+      - key: compute
+        value: "true"
+        effect: NoSchedule
+    resources:
+      requests:
+        cpu: 100m
+        memory: 100Mi
+      limits:
+        memory: 2Gi
+    secretConfig:
+      create: false
+      name: secret
+    certManager:
+      enabled: true
+      commonName: postgres
+      extraNames:
+        - acp-primary
+        - acp-primary.acp
+        - acp-primary.acp.svc.cluster.local
+    serverURL: "https://{{tenantID}}.${cluster_region_domain}:8443"
+    sql:
+      url: "postgres://acp@cockroachdb-local-public.cockroachdb-${cluster_region}:26257/${cockroachdb_database}?sslcert=%2Ftls%2Ftls.crt&sslkey=%2Ftls%2Ftls.key&sslmode=verify-full&sslrootcert=%2Ftls%2Fca.crt&pool_max_conn_lifetime=3m"
+      cockroachdb_use_limit_ordering_for_streaming_group_by: true
+    redis:
+      enabled: true
+      addrs:
+        - "redis-local-redis-cluster-headless.redis:6379"
+        - "redis-local-redis-cluster-headless.redis:6379"
+      redis_search: true
+      redis_search_index_name: acp-local
+      tls:
+        enabled: true
+        ca: "/tls/ca.crt"
+        key: "/tls/tls.key"
+        cert: "/tls/tls.crt"
+        insecure_skip_verify: true
+      max_retries: 10
+      min_retry_backoff: 32
+      max_retry_backoff: 1024
+    config:
+      create: true
+      name: acp-data
+      data:
+        server:
+          port: 8443
+          grpc_port: 9443
+          disable_gzip: false
+          client_certificate_header: X-SSL-CERT
+          client_auth_type: NoClientCert
+          http_metrics_per_tenant: true
+          disable_audit_logs_in_stdout: true
+          rate_limiting_threshold: 100
+        sql:
+          max_open_conns: 128
+          max_idle_conns: 128
+        redis:
+          max_backoff_retries: 10
+          number_of_workers: 32
+          number_of_consumers: 1
+          pool_size: 200
+          min_idle_conns: 100
+          streams:
+            disable_trim: false
+            max_length: 100000
+          consumer_groups:
+            refresh_tokens:
+              batch_size: 200
+            identity:
+              batch_size: 200
+            audit_logs_timescale:
+              batch_size: 400
+            gateway:
+              batch_size: 200
+            webhook:
+              batch_size: 400
+        timescale:
+          enabled: true
+        spicedb:
+          enabled: true
+          url: spicedb.spicedb:50051
+          ca: "/tls/ca.crt"
+        cache:
+          redis_ttl: 20m
+          local_ttl: 2m
+        fission:
+          max_pod_age: 0h
+        subject:
+          default_format: "hash"
+        captcha:
+          enabled: true
+    migrateJob:
+      enabled: true
+      configPath: /data/config.yaml,/secret/secret.yaml
+      config:
+        redis:
+          enabled: true
+          addrs:
+            - "redis-local-redis-cluster-headless.redis:6379"
+            - "redis-local-redis-cluster-headless.redis:6379"
+          redis_search: true
+          redis_search_index_name: acp-local
+          tls:
+            enabled: true
+            ca: "/tls/ca.crt"
+            key: "/tls/tls.key"
+            cert: "/tls/tls.crt"
+            insecure_skip_verify: true
+        sql:
+          migrations:
+            timeout: 30m
+        timescale:
+          enabled: true
+    env:
+      - name: LIGHTWEIGHT_IDP_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: lightweight-secret
+            key: lightweightIdpClientSecret
+    importJob:
+      enabled: true
+      configPath: /data/config.yaml,/data/extraconfig.yaml,/secret/secret.yaml
+      data:
+        tenants:
+          - id: lightweight-tests
+            name: lightweight-tests
+        servers:
+          - id: default
+            tenant_id: lightweight-tests
+            grant_types:
+              - client_credentials
+        clients:
+          - application_type: web
+            authorization_server_id: default
+            client_id: lightweight-tests-client-id
+            client_secret: '{{ env "LIGHTWEIGHT_IDP_CLIENT_SECRET" }}'
+            client_name: Test Step CI client
+            grant_types:
+              - client_credentials
+            tenant_id: lightweight-tests
+            token_endpoint_auth_method: client_secret_post
+    workers:
+      enabled: true
+      service:
+        enabled: true
+      podDisruptionBudget:
+        minAvailable: 30%
+      autoscaling:
+        enabled: false
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          memory: 2Gi
+      nodeSelector:
+        compute: "true"
+      tolerations:
+        - key: compute
+          value: "true"
+          effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: acp-workers
+              topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: acp-workers
+          maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway

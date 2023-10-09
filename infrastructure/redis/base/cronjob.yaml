@@ -1,0 +1,134 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: redis-node-sync
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: redis-node-sync
+rules:
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: redis-node-sync
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: redis-node-sync
+subjects:
+  - kind: ServiceAccount
+    name: redis-node-sync
+    namespace: redis
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: redis-node-sync
+spec:
+  successfulJobsHistoryLimit: 1
+  concurrencyPolicy: Forbid
+  schedule: "3 */2 * * *"
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 600
+      template:
+        spec:
+          imagePullSecrets:
+            - name: artifactory
+          serviceAccountName: redis-node-sync
+          restartPolicy: Never
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl
+              command:
+                - /bin/bash
+              args:
+                - -c
+                - /scripts/node-sync.sh
+              volumeMounts:
+                - name: scripts
+                  mountPath: /scripts
+                  readOnly: true
+              securityContext:
+                runAsUser: 1001
+                runAsGroup: 1001
+                runAsNonRoot: true
+                privileged: false
+                readOnlyRootFilesystem: true
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+          volumes:
+            - name: scripts
+              configMap:
+                name: redis-node-sync
+                defaultMode: 0755
+          tolerations:
+            - key: redis
+              value: "true"
+              effect: NoSchedule
+          nodeSelector:
+            redis: "true"
+          securityContext:
+            fsGroup: 1001
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-node-sync
+data:
+  node-sync.sh: |
+    #!/bin/bash
+
+    # Set the StatefulSet name
+    statefulset_name="redis-local-redis-cluster"
+
+    # Get the number of pods in the StatefulSet
+    num_pods=$(kubectl get statefulset "$statefulset_name" -o jsonpath='{.status.replicas}')
+
+    # Define the starting pod index
+    start_index=0
+
+    # Define the increment for pod indices
+    increment=6
+
+    # Calculate the pod indices to execute the action on
+    while [ "$start_index" -lt "$num_pods" ]
+    do
+        # Define the ending pod index for the current batch
+        end_index=$((start_index + 2))
+
+        # Calculate the pod indices to execute the action on
+        pod_indices=()
+        for index in $(seq "$start_index" "$end_index"); do
+            pod_indices+=("$index")
+        done
+
+        # Execute the action on the specified pods
+        for index in "$${pod_indices[@]}"
+        do
+            # Calculate the pod name
+            pod_name="$${statefulset_name}-$${index}"
+
+            echo "Connecting to pod $pod_name"
+            kubectl exec "$pod_name" -- /bin/bash -c '/scripts/failover.sh replica'
+        done
+
+        # Increment the starting index to skip the next 3 pods
+        start_index=$((start_index + increment))
+    done

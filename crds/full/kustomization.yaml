@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../base
+  - elastic.yaml
+  - fission.yaml
+  - flagger.yaml
+  - istio.yaml
+  - keda-http-add-on.yaml
+  - keda.yaml
+  - prometheus.yaml

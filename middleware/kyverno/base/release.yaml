@@ -1,0 +1,58 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kyverno
+spec:
+  releaseName: kyverno
+  chart:
+    spec:
+      chart: kyverno
+      sourceRef:
+        kind: HelmRepository
+        name: kyverno
+        namespace: kyverno
+      version: 3.0.5 # helm:autoupdate:kyverno-prod
+  interval: 1m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/kyverno/kyverno/blob/main/charts/kyverno/values.yaml
+  values:
+    crds:
+      install: false
+    admissionController:
+      container:
+        resources:
+          limits:
+            memory: 675Mi
+      replicas: 1
+      priorityClassName: system-cluster-critical
+      nodeSelector:
+        clusterCritical: "true"
+      tolerations:
+        - key: CriticalAddonsOnly
+          value: "true"
+          effect: NoSchedule
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: admission-controller
+            topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: admission-controller
+          maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+    backgroundController:
+      enabled: false
+    reportsController:
+      enabled: false
+    cleanupController:
+      enabled: false
+    features:
+      policyExceptions:
+        enabled: true

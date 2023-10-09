@@ -1,0 +1,149 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: kibana
+spec:
+  version: 8.7.0
+  count: 1
+  elasticsearchRef:
+    name: elastic
+  secureSettings:
+    - secretName: kibana-secret-settings
+  monitoring:
+    metrics:
+      elasticsearchRefs:
+        - name: elastic
+  config:
+    server.publicBaseUrl: https://kibana.acp.local:9443
+    logging.root.level: warn
+    csp:
+      script_src: ["self", "unsafe-eval", "unsafe-inline"]
+      strict: false
+      warnLegacyBrowsers: false
+    monitoring.ui.ccs.enabled: false
+    xpack.fleet.agents.elasticsearch.hosts:
+      ["https://elastic-es-http.elastic.svc:9200"]
+    xpack.fleet.agents.fleet_server.hosts:
+      ["https://apm-fleet-server-agent-http.elastic.svc:8220"]
+    xpack.fleet.packages:
+      - name: system
+        version: latest
+      - name: elastic_agent
+        version: latest
+      - name: fleet_server
+        version: latest
+      - name: apm
+        version: latest
+    xpack.fleet.agentPolicies:
+      - name: Fleet Server on ECK policy
+        id: eck-fleet-server
+        is_default_fleet_server: true
+        namespace: elastic
+        monitoring_enabled:
+          - logs
+          - metrics
+        unenroll_timeout: 900
+        package_policies:
+          - name: fleet_server-1
+            id: fleet_server-1
+            package:
+              name: fleet_server
+      - name: Elastic Agent on ECK policy
+        id: eck-agent
+        namespace: elastic
+        monitoring_enabled:
+          - logs
+          - metrics
+        unenroll_timeout: 900
+        is_default: true
+        package_policies:
+          - package:
+              name: apm
+            name: apm-1
+            inputs:
+              - type: apm
+                enabled: true
+                vars:
+                  - name: host
+                    value: 0.0.0.0:8200
+                  - name: tls_certificate
+                    value: "/tls/tls.crt"
+                  - name: tls_enabled
+                    value: true
+                  - name: tls_key
+                    value: "/tls/tls.key"
+                  - name: tls_supported_protocols
+                    value: ["TLSv1.1", "TLSv1.2", "TLSv1.3"]
+  podTemplate:
+    spec:
+      initContainers:
+        - name: elastic-internal-init-keystore
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add: ["NET_BIND_SERVICE"]
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+        - name: elastic-internal-init-config
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add: ["NET_BIND_SERVICE"]
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+      containers:
+        - name: kibana
+          image: kibana:8.7.0
+          env:
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=980"
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add: ["NET_BIND_SERVICE"]
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          resources:
+            requests:
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+        - name: metricbeat
+          image: docker.elastic.co/beats/metricbeat:8.7.0
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add: ["NET_BIND_SERVICE"]
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+      nodeSelector:
+        elastic: "true"
+      tolerations:
+        - key: elastic
+          value: "true"
+          effect: NoSchedule
+      securityContext:
+        capabilities:
+          drop:
+            - ALL
+          add: ["NET_BIND_SERVICE"]
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault

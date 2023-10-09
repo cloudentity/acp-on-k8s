@@ -1,0 +1,27 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: node-local-dns
+spec:
+  releaseName: node-local-dns
+  chart:
+    spec:
+      chart: node-local-dns
+      sourceRef:
+        kind: HelmRepository
+        name: node-local-dns
+        namespace: kube-system
+      version: 1.1.4 # helm:autoupdate:node-local-dns-prod
+  interval: 1m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/deliveryhero/helm-charts/blob/master/stable/node-local-dns/values.yaml
+  values:
+    config:
+      setupInterface: true
+      setupIptables: true
+      skipTeardown: false
+    serviceMonitor:
+      enabled: true

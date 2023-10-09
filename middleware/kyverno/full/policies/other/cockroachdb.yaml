@@ -1,0 +1,28 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: cockroachdb-add-monitoring-label
+  annotations:
+    policies.kyverno.io/category: Other
+    policies.kyverno.io/subject: Service,Label
+    policies.kyverno.io/minversion: 1.4.3
+    policies.kyverno.io/description: >-
+      Add monitoring label on service created by cockroach operator.
+spec:
+  failurePolicy: Fail
+  rules:
+    - name: add-monitoring-label
+      match:
+        any:
+          - resources:
+              kinds:
+                - Service
+              namespaces:
+                - cockroachdb-${cluster_region}
+              names:
+                - "cockroachdb-local"
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              monitoring: "true"

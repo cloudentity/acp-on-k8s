@@ -1,0 +1,16 @@
+kind: HTTPScaledObject
+apiVersion: http.keda.sh/v1alpha1
+metadata:
+  name: keda-add-ons-http-interceptor
+# fix for https://github.com/kedacore/http-add-on/issues/777
+spec:
+  hosts:
+    - dummy.com
+  targetPendingRequests: 1
+  scaleTargetRef:
+    deployment: dummy
+    service: dummy
+    port: 1234
+  replicas:
+    min: 0
+    max: 0

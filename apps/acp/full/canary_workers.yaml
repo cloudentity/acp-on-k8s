@@ -1,0 +1,57 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: acp-workers
+spec:
+  provider: kubernetes
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: acp-workers
+  autoscalerRef:
+    apiVersion: keda.sh/v1alpha1
+    kind: ScaledObject
+    name: acp-workers
+  progressDeadlineSeconds: 300
+  service:
+    port: 8443
+    targetPort: http
+    portDiscovery: true
+  skipAnalysis: false
+  analysis:
+    interval: 1m
+    iterations: 10
+    threshold: 2
+    webhooks:
+      - name: "check alive"
+        type: pre-rollout
+        url: http://loadtester/
+        timeout: 15s
+        metadata:
+          type: bash
+          cmd: "curl -k https://acp-workers-canary.acp:8443/alive"
+    metrics:
+      - name: "ACP 5XX percentage"
+        templateRef:
+          name: acp-error-rate
+        thresholdRange:
+          max: 2
+        interval: 60s
+      - name: "ACP P95 Latency"
+        templateRef:
+          name: acp-request-duration
+        thresholdRange:
+          max: 1000
+        interval: 60s
+      - name: "pending messages"
+        templateRef:
+          name: acp-workers-pending-messages
+        thresholdRange:
+          max: 5
+        interval: 60s
+      - name: "lag messages"
+        templateRef:
+          name: acp-workers-lag-messages
+        thresholdRange:
+          max: 15
+        interval: 60s

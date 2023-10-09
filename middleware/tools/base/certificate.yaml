@@ -1,0 +1,21 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: tools-cert
+spec:
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  commonName: postgres
+  dnsNames:
+    - acp
+    - root
+  secretName: tools-tls
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer

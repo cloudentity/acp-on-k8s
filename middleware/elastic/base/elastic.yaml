@@ -1,0 +1,140 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elastic
+spec:
+  version: 8.7.0
+  auth:
+    fileRealm:
+      - secretName: filerealm
+    roles:
+      - secretName: elastic-admin-role
+      - secretName: elastic-prometheus-role
+      - secretName: elastic-setup-role
+  monitoring:
+    metrics:
+      elasticsearchRefs:
+        - name: elastic
+  nodeSets:
+    - name: hot-nodes
+      count: 2
+      config:
+        node.roles:
+          [
+            master,
+            data_content,
+            data_hot,
+            transform,
+            remote_cluster_client,
+            ingest,
+          ]
+        logger.org.elasticsearch: warn
+      podTemplate:
+        spec:
+          serviceAccountName: elastic-sa
+          initContainers:
+            - name: elastic-internal-init-filesystem
+              securityContext:
+                privileged: false
+                seccompProfile:
+                  type: RuntimeDefault
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                  add: ["NET_BIND_SERVICE"]
+            - name: elastic-internal-suspend
+              securityContext:
+                privileged: false
+                seccompProfile:
+                  type: RuntimeDefault
+                allowPrivilegeEscalation: false
+                capabilities:
+                  drop:
+                    - ALL
+                  add: ["NET_BIND_SERVICE"]
+            - name: sysctl
+              securityContext:
+                privileged: true
+                runAsUser: 0
+                seccompProfile:
+                  type: RuntimeDefault
+                capabilities:
+                  drop:
+                    - ALL
+                  add: ["NET_BIND_SERVICE"]
+              command:
+                - sh
+                - -c
+                - sysctl -w vm.max_map_count=262144
+          containers:
+            - name: elasticsearch
+              image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
+              resources:
+                requests:
+                  cpu: 10m
+                  memory: 100Mi
+                limits:
+                  memory: 2Gi
+              securityContext:
+                privileged: false
+                allowPrivilegeEscalation: false
+                runAsUser: 1000
+                seccompProfile:
+                  type: RuntimeDefault
+                capabilities:
+                  drop:
+                    - ALL
+                  add: ["NET_BIND_SERVICE"]
+            - name: metricbeat
+              image: docker.elastic.co/beats/metricbeat:8.7.0
+              securityContext:
+                privileged: false
+                allowPrivilegeEscalation: false
+                runAsUser: 1000
+                seccompProfile:
+                  type: RuntimeDefault
+                capabilities:
+                  drop:
+                    - ALL
+                  add: ["NET_BIND_SERVICE"]
+          nodeSelector:
+            elastic: "true"
+          tolerations:
+            - key: elastic
+              value: "true"
+              effect: NoSchedule
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: elasticsearch.k8s.elastic.co/statefulset-name
+                        operator: In
+                        values:
+                          - elastic-es-hot-nodes
+                          - elastic-es-warm-nodes
+                          - elastic-es-cold-nodes
+                  topologyKey: kubernetes.io/hostname
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add: ["NET_BIND_SERVICE"]
+              runAsNonRoot: true
+              runAsUser: 1000
+              seccompProfile:
+                type: RuntimeDefault
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 2Gi
+  http:
+    tls:
+      certificate:
+        secretName: elastic-tls

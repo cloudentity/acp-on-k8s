@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: elastic
+spec:
+  groups:
+    - name: elastic
+      rules:
+        - alert: NewKibanaAlerts
+          expr: delta(elasticsearch_indices_docs_total{index="kibana-alerts"}[15m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: New kibana alerts available
+            description: There are {{ $value }} new Kibana alerts noticed in {{ $labels.env }} {{ $labels.region_name }}
+        - alert: ElasticUnassignedShards
+          expr: elasticsearch_cluster_health_unassigned_shards > 0
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: Elastic has some unassigned shards
+            description: There are {{ $value }} unassigned Elastic shards in {{ $labels.env }} {{ $labels.region_name }}
+        - alert: ElasticSnapshotFailed
+          expr: sum(elasticsearch_snapshot_stats_snapshot_number_of_failures) by (repository) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Elastic failed to create snapshot
+            description: There are {{ $value }} failed Elastic snapshots noticed in {{ $labels.env }} {{ $labels.region_name }}
+        - alert: ElasticSnapshotFailedShards
+          expr: sum(elasticsearch_snapshot_stats_snapshot_failed_shards) by (repository) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Elastic failed to create complete snapshot
+            description: There are {{ $value }} failed Elastic shards that was not included into snapshots in {{ $labels.env }} {{ $labels.region_name }}
+        - alert: ElasticSnapshotAge
+          expr: time() - elasticsearch_snapshot_stats_latest_snapshot_timestamp_seconds > 3600
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: Elastic latest snapshot is older than 2h
+            description: Last snapshot was taken more than 2h ago in {{ $labels.env }} {{ $labels.region_name }}

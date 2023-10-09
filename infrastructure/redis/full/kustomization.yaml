@@ -1,0 +1,46 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: redis
+resources:
+  - ../base
+patches:
+  - path: release.yaml
+  - target:
+      group: helm.toolkit.fluxcd.io
+      version: v2beta1
+      kind: HelmRelease
+      name: redis
+    patch: |-
+      - op: add
+        path: /spec/postRenderers/-
+        value:
+          kustomize:
+            patchesJson6902:
+            - patch:
+              - op: add
+                path: /spec/template/spec/containers/1/securityContext
+                value:
+                  allowPrivilegeEscalation: false
+                  runAsNonRoot: true
+                  capabilities:
+                    drop:
+                      - ALL
+                    add: ["NET_BIND_SERVICE"]
+              target:
+                group: apps
+                kind: StatefulSet
+                name: redis-local-redis-cluster
+                version: v1
+      - op: add
+        path: /spec/postRenderers/-
+        value:
+          kustomize:
+            patchesStrategicMerge:
+              - kind: ServiceMonitor
+                apiVersion: monitoring.coreos.com/v1
+                metadata:
+                  name: redis-local-redis-cluster
+                  namespace: redis
+                spec:
+                  podTargetLabels:
+                    - topology.kubernetes.io/zone

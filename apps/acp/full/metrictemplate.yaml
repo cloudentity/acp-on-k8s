@@ -1,0 +1,213 @@
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-tests-canary-quality-success
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    (
+    (sum(increase(
+      acp_tests_test_results_histogram_count{status=~"FAILED|SKIPPED",
+      test_application_mode=~"${test_mode:=basic|public}", flaky_test="false", namespace="acp-tests${namespace_suffix}" }
+    [{{ interval }}])))
+    /
+    (sum(increase(
+      acp_tests_test_results_histogram_count{
+        test_application_mode=~"${test_mode:=basic|public}", flaky_test="false", namespace="acp-tests${namespace_suffix}" }
+    [{{ interval }}])))
+    ) > 0 or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-tests-canary-quality-success-flaky
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    (
+    (sum(increase(
+      acp_tests_test_results_histogram_count{status=~"FAILED|SKIPPED",
+      test_application_mode=~"${test_mode:=basic|public}", flaky_test="true", namespace="acp-tests${namespace_suffix}" }
+    [{{ interval }}])))
+    /
+    (sum(increase(
+      acp_tests_test_results_histogram_count{
+        test_application_mode=~"${test_mode:=basic|public}", flaky_test="true", namespace="acp-tests${namespace_suffix}" }
+    [{{ interval }}])))
+    ) > 0 or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-error-rate
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    (100 - sum(
+      rate(
+        acp_tenant_http_duration_seconds_count{
+          job="acp-canary", namespace="acp${namespace_suffix}",
+          tenant!~".*amfudxn6.*", status_code!~"5.."}
+        [{{ interval }}]
+      )
+    )
+    /
+    sum(
+      rate(
+        acp_tenant_http_duration_seconds_count{
+          job="acp-canary", namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*"}
+        [{{ interval }}]
+      )
+    ) * 100) > 0 or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-error-rate-tests
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    (100 - sum(
+      rate(
+        acp_tenant_http_duration_seconds_count{
+          job="acp-canary", namespace="acp${namespace_suffix}",
+          tenant=~".*amfudxn6.*", status_code!~"5.."}
+        [{{ interval }}]
+      )
+    )
+    /
+    sum(
+      rate(
+        acp_tenant_http_duration_seconds_count{
+          job="acp-canary", namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*"}
+        [{{ interval }}]
+      )
+    ) * 100) > 0 or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-request-duration
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-canary",namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-request-duration-tests
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-canary",namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
+---
+
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-workers-pending-messages
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    sum(acp_redis_error_count{job="acp-workers-canary",namespace="acp${namespace_suffix}"}) or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-workers-lag-messages
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    avg(histogram_quantile(0.95, rate(acp_redis_lag_seconds_bucket{job="acp-workers-canary",namespace="acp${namespace_suffix}"}[{{ interval }}])) > 0) by (group, stream) or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-error-rate-primary
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    (100 - sum(
+      rate(
+        acp_tenant_http_duration_seconds_count{
+          job="acp-primary", namespace="acp${namespace_suffix}",
+          tenant!~".*amfudxn6.*", status_code!~"5.."}
+        [{{ interval }}]
+      )
+    )
+    /
+    sum(
+      rate(
+        acp_tenant_http_duration_seconds_count{
+          job="acp-primary", namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*"}
+        [{{ interval }}]
+      )
+    ) * 100) > 0 or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-error-rate-tests-primary
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    (100 - sum(
+      rate(
+        acp_tenant_http_duration_seconds_count{
+          job="acp-primary", namespace="acp${namespace_suffix}",
+          tenant=~".*amfudxn6.*", status_code!~"5.."}
+        [{{ interval }}]
+      )
+    )
+    /
+    sum(
+      rate(
+        acp_tenant_http_duration_seconds_count{
+          job="acp-primary", namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*"}
+        [{{ interval }}]
+      )
+    ) * 100) > 0 or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-request-duration-primary
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-primary",namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
+---
+apiVersion: flagger.app/v1beta1
+kind: MetricTemplate
+metadata:
+  name: acp-request-duration-tests-primary
+spec:
+  provider:
+    type: prometheus
+    address: http://prometheus-prometheus.monitoring:9090
+  query: |
+    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-primary",namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration"}[{{ interval }}])) > 0) * 1000 or on() vector(0)

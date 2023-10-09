@@ -1,0 +1,103 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: nginx
+spec:
+  interval: 2m
+  timeout: 2m
+  prune: true
+  path: ./infrastructure/nginx/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: public-nginx
+      namespace: nginx
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: private-nginx
+      namespace: nginx
+  dependsOn:
+    - name: kyverno
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cockroachdb
+spec:
+  interval: 2m
+  timeout: 2m
+  prune: false
+  path: ./infrastructure/cockroachdb/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: crdb.cockroachlabs.com/v1alpha1
+      kind: CrdbCluster
+      name: cockroachdb-local
+      namespace: cockroachdb-local
+  dependsOn:
+    - name: nginx
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: redis
+spec:
+  interval: 2m
+  timeout: 2m
+  prune: false
+  path: ./infrastructure/redis/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: redis
+      namespace: redis
+  dependsOn:
+    - name: nginx
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: timescaledb
+spec:
+  interval: 2m
+  timeout: 2m
+  prune: false
+  path: ./infrastructure/timescaledb/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: timescaledb
+      namespace: timescaledb-local
+  dependsOn:
+    - name: nginx
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: spicedb
+spec:
+  interval: 2m
+  timeout: 2m
+  prune: false
+  path: ./infrastructure/spicedb/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: authzed.com/v1alpha1
+      kind: SpiceDBCluster
+      name: spicedb
+      namespace: spicedb
+  dependsOn:
+    - name: cockroachdb

@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: state-metrics
+spec:
+  groups:
+    - name: state-metrics
+      rules:
+        - alert: KubernetesContainerOomKiller
+          expr: (kube_pod_container_status_restarts_total - kube_pod_container_status_restarts_total offset 10m >= 1) and ignoring (reason) min_over_time(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[10m]) == 1
+          for: 0m
+          labels:
+            severity: warning
+          annotations:
+            summary: Kubernetes container oom killed
+            description: Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 10 minutes.
+        - alert: KubernetesPodEvicted
+          expr: kube_pod_status_reason{reason="Evicted"} > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: Kubernetes pod evicted
+            description: Pod {{ $labels.namespace }}/{{ $labels.pod }} has been Evicted {{ $value }} in the last 10 minutes.
+        - alert: KubePersistentVolumeSpace
+          expr: (1 - (kubelet_volume_stats_used_bytes / kubelet_volume_stats_capacity_bytes)) * 100 < 20
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: PersistentVolume low space
+            description: The PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is only {{ $value | printf "%.2f" }}% free.
+        - alert: KubePersistentVolumeSpace
+          expr: (1 - (kubelet_volume_stats_used_bytes / kubelet_volume_stats_capacity_bytes)) * 100 < 10
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: PersistentVolume low space
+            description: The PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is only {{ $value | printf "%.2f" }}% free.

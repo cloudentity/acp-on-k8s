@@ -1,0 +1,91 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: elastic-cert
+spec:
+  secretName: elastic-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - elastic-es-http
+    - elastic-es-http.elastic
+    - elastic-es-http.elastic.svc
+    - elastic-es-http.elastic.svc.cluster.local
+    - elastic-es-master
+    - elastic-es-master.elastic
+    - elastic-es-master.elastic.svc
+    - elastic-es-master.elastic.svc.cluster.local
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kibana-cert
+spec:
+  secretName: kibana-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - kibana-kb-http
+    - kibana-kb-http.elastic
+    - kibana-kb-http.elastic.svc
+    - kibana-kb-http.elastic.svc.cluster.local
+    - kibana-kb-http-headless
+    - kibana-kb-http-headless.elastic
+    - kibana-kb-http-headless.elastic.svc
+    - kibana-kb-http-headless.elastic.svc.cluster.local
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: apm-cert
+spec:
+  secretName: apm-tls
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - apm.elastic
+    - apm.elastic.svc
+    - apm.elastic.svc.cluster.local
+    - apm-fleet-server-agent-http
+    - apm-fleet-server-agent-http.elastic.svc
+    - apm-fleet-server-agent-http.elastic.svc.cluster.local
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kibana-ingress-tls
+spec:
+  secretName: kibana-ingress-tls
+  dnsNames:
+    - kibana.tools.${cluster_region}.${cluster_domain}
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+    group: cert-manager.io

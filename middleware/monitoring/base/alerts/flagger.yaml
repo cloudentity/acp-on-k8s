@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: flagger
+spec:
+  groups:
+    - name: flagger
+      rules:
+        - alert: DeploymentFailure
+          expr: flagger_canary_status > 1
+          labels:
+            severity: warning
+          annotations:
+            description: "Deployment of {{ $labels.exported_namespace }}/{{ $labels.name }} has failed"
+            summary: Canary deployment has failed
+        - alert: DeploymentSuccess
+          expr: max by(image) (kube_pod_container_info{namespace="acp", pod=~"acp.*primary.*"}) unless max by(image) (kube_pod_container_info{namespace="acp", pod=~"acp.*primary.*"} offset 3m)
+          labels:
+            severity: info
+          annotations:
+            description: "The current ACP version in {{ $labels.env }} has been updated to image: {{ $labels.image }}"
+            summary: "New version of ACP has beed deployed"

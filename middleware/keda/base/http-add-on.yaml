@@ -1,0 +1,144 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: http-add-on
+spec:
+  releaseName: http-add-on
+  chart:
+    spec:
+      chart: keda-add-ons-http
+      sourceRef:
+        kind: HelmRepository
+        name: http-add-on
+        namespace: keda
+      version: 0.5.3 # helm:autoupdate:http-add-on-prod
+  interval: 1m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/kedacore/charts/blob/main/http-add-on/values.yaml
+  values:
+    operator:
+      nodeSelector:
+        system: "true"
+      tolerations:
+        - key: system
+          value: "true"
+          effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                      - keda-add-ons-http-controller-manager
+              topologyKey: "kubernetes.io/hostname"
+    scaler:
+      nodeSelector:
+        system: "true"
+      tolerations:
+        - key: system
+          value: "true"
+          effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                      - keda-add-ons-http-external-scaler
+              topologyKey: "kubernetes.io/hostname"
+    interceptor:
+      nodeSelector:
+        system: "true"
+      tolerations:
+        - key: system
+          value: "true"
+          effect: NoSchedule
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: name
+                    operator: In
+                    values:
+                      - keda-add-ons-http-interceptor
+              topologyKey: "kubernetes.io/hostname"
+    crds:
+      install: false
+  postRenderers:
+    - kustomize:
+        patchesStrategicMerge:
+          - kind: Deployment
+            apiVersion: apps/v1
+            metadata:
+              name: keda-add-ons-http-controller-manager
+              namespace: keda
+            spec:
+              template:
+                spec:
+                  securityContext:
+                    runAsNonRoot: true
+                    seccompProfile:
+                      type: RuntimeDefault
+                  containers:
+                    - name: keda-add-ons-http-operator
+                      securityContext:
+                        allowPrivilegeEscalation: false
+                        capabilities:
+                          drop:
+                            - ALL
+                          add: ["NET_BIND_SERVICE"]
+                    - name: kube-rbac-proxy
+                      securityContext:
+                        allowPrivilegeEscalation: false
+                        capabilities:
+                          drop:
+                            - ALL
+                          add: ["NET_BIND_SERVICE"]
+          - kind: Deployment
+            apiVersion: apps/v1
+            metadata:
+              name: keda-add-ons-http-external-scaler
+              namespace: keda
+            spec:
+              template:
+                spec:
+                  securityContext:
+                    runAsNonRoot: true
+                    seccompProfile:
+                      type: RuntimeDefault
+                  containers:
+                    - name: keda-add-ons-http-external-scaler
+                      securityContext:
+                        allowPrivilegeEscalation: false
+                        capabilities:
+                          drop:
+                            - ALL
+                          add: ["NET_BIND_SERVICE"]
+          - kind: Deployment
+            apiVersion: apps/v1
+            metadata:
+              name: keda-add-ons-http-interceptor
+              namespace: keda
+            spec:
+              template:
+                spec:
+                  securityContext:
+                    runAsNonRoot: true
+                    seccompProfile:
+                      type: RuntimeDefault
+                  containers:
+                    - name: keda-add-ons-http-interceptor
+                      securityContext:
+                        allowPrivilegeEscalation: false
+                        capabilities:
+                          drop:
+                            - ALL
+                          add: ["NET_BIND_SERVICE"]

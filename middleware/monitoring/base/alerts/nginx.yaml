@@ -1,0 +1,32 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: nginx
+spec:
+  groups:
+    - name: nginx
+      rules:
+        - alert: PublicNginxHighHttp5xxErrorRate
+          expr: sum by (method, path, ingress, exported_namespace) (rate(nginx_ingress_controller_requests{status=~"^5..",controller_class="k8s.io/public-nginx"}[5m])) / sum by (method, path, ingress, exported_namespace) (rate(nginx_ingress_controller_requests{controller_class="k8s.io/public-nginx"}[5m])) * 100 > 5
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: Public Nginx high HTTP 5xx error rate on {{ $labels.method }} {{ $labels.path }} (ingress {{ $labels.ingress }} , namespace {{ $labels.exported_namespace }}
+            description: "Too many HTTP requests with status 5xx (> 5%), VALUE = {{ $value }}"
+        - alert: PrivateNginxHighHttp5xxErrorRate
+          expr: sum by (method, path, ingress, exported_namespace) (rate(nginx_ingress_controller_requests{status=~"^5..",controller_class="k8s.io/private-nginx"}[5m])) / sum by (method, path, ingress, exported_namespace) (rate(nginx_ingress_controller_requests{controller_class="k8s.io/private-nginx"}[5m])) * 100 > 5
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: Private Nginx high HTTP 5xx error rate on {{ $labels.method }} {{ $labels.path }} (ingress {{ $labels.ingress }} , namespace {{ $labels.exported_namespace }}
+            description: "Too many HTTP requests with status 5xx (> 5%), VALUE = {{ $value }}"
+        - alert: NginxLatencyHigh
+          expr: sum by (method, path, ingress, exported_namespace) (rate(nginx_ingress_controller_ingress_upstream_latency_seconds_sum[2m])) / sum by (method, path, ingress, exported_namespace) (rate(nginx_ingress_controller_ingress_upstream_latency_seconds_count[2m])) * 1000 > 500
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            summary: Nginx latency high on {{ $labels.method }} {{ $labels.path }} (ingress {{ $labels.ingress }} , namespace {{ $labels.exported_namespace }}
+            description: "Nginx latency is higher than 500 milliseconds, VALUE = {{ $value }}"

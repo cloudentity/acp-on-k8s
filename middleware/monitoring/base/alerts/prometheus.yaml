@@ -1,0 +1,16 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prometheus
+spec:
+  groups:
+    - name: prometheus
+      rules:
+        - alert: PrometheusJobMissing
+          expr: absent(up{job=~".*-prometheus|.*-grafana"})
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Prometheus job missing (instance {{ $labels.instance }})
+            description: "A Prometheus job has disappeared\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"

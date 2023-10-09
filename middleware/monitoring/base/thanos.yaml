@@ -1,0 +1,218 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: thanos
+spec:
+  releaseName: thanos
+  chart:
+    spec:
+      chart: thanos
+      sourceRef:
+        kind: HelmRepository
+        name: thanos
+        namespace: monitoring
+      version: 12.4.3 # helm:autoupdate:thanos-prod
+  interval: 1m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    preserveValues: false
+  # Default values
+  # https://github.com/bitnami/charts/blob/main/bitnami/thanos/values.yaml
+  values:
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: true
+        default:
+          absent_rules: true
+          store_gateway: true
+          compaction: true
+          query: true
+          disabled:
+            ThanosReceiveIsDown: true
+            ThanosRuleIsDown: true
+            ThanosSidecarIsDown: true
+    query:
+      logLevel: warn
+      replicaCount: 2
+      replicaLabel: [prometheus_replica]
+      containerSecurityContext:
+        enabled: true
+        runAsUser: 1001
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+          add: ["NET_BIND_SERVICE"]
+      podSecurityContext:
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      dnsDiscovery:
+        sidecarsService: prometheus-thanos-discovery
+        sidecarsNamespace: monitoring
+      ingress:
+        grpc:
+          enabled: true
+          hostname: "query-grpc.tools.${cluster_region}.${cluster_domain}"
+          ingressClassName: private-nginx
+          tls: true
+          annotations:
+            nginx.ingress.kubernetes.io/backend-protocol: "GRPC"
+            nginx.ingress.kubernetes.io/service-upstream: "true"
+            cert-manager.io/cluster-issuer: "ca-issuer"
+      pdb:
+        create: true
+      podAntiAffinityPreset: hard
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: query
+              app.kubernetes.io/instance: thanos
+              app.kubernetes.io/name: thanos
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          memory: 1Gi
+    queryFrontend:
+      logLevel: warn
+      ingress:
+        enabled: true
+        hostname: "query.tools.${cluster_region}.${cluster_domain}"
+        ingressClassName: private-nginx
+        tls: true
+        annotations:
+          nginx.ingress.kubernetes.io/service-upstream: "true"
+          cert-manager.io/cluster-issuer: "ca-issuer"
+      containerSecurityContext:
+        enabled: true
+        runAsUser: 1001
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+          add: ["NET_BIND_SERVICE"]
+      podSecurityContext:
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      resources:
+        requests:
+          cpu: 15m
+          memory: 128Mi
+        limits:
+          memory: 1Gi
+    compactor:
+      enabled: true
+      logLevel: warn
+      retentionResolutionRaw: 10d
+      retentionResolution5m: 30d
+      retentionResolution1h: 90d
+      podSecurityContext:
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      containerSecurityContext:
+        enabled: true
+        runAsUser: 1001
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+          add: ["NET_BIND_SERVICE"]
+      persistence:
+        size: 100Gi
+      ingress:
+        enabled: true
+        hostname: "compactor.tools.${cluster_region}.${cluster_domain}"
+        ingressClassName: private-nginx
+        tls: true
+        annotations:
+          nginx.ingress.kubernetes.io/service-upstream: "true"
+          cert-manager.io/cluster-issuer: "ca-issuer"
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 768Mi
+    storegateway:
+      enabled: true
+      logLevel: warn
+      persistence:
+        size: 20Gi
+      replicaCount: 2
+      ingress:
+        enabled: true
+        hostname: "store.tools.${cluster_region}.${cluster_domain}"
+        ingressClassName: private-nginx
+        tls: true
+        annotations:
+          nginx.ingress.kubernetes.io/service-upstream: "true"
+          cert-manager.io/cluster-issuer: "ca-issuer"
+      pdb:
+        create: true
+      podAntiAffinityPreset: hard
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: storegateway
+              app.kubernetes.io/instance: thanos
+              app.kubernetes.io/name: thanos
+      containerSecurityContext:
+        enabled: true
+        runAsUser: 1001
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+          add: ["NET_BIND_SERVICE"]
+      podSecurityContext:
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      resources:
+        requests:
+          cpu: 10m
+          memory: 128Mi
+        limits:
+          memory: 1Gi
+    existingObjstoreSecret: thanos-objstore
+    minio:
+      enabled: true
+      auth:
+        rootUser: admin
+        rootPassword: p@ssw0rd!
+      containerSecurityContext:
+        enabled: true
+        runAsUser: 1001
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop:
+            - ALL
+          add: ["NET_BIND_SERVICE"]
+      podSecurityContext:
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault

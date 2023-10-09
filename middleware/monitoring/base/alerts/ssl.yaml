@@ -1,0 +1,65 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ssl
+spec:
+  groups:
+    - name: ssl
+      rules:
+        # Alert for instance that cert expire soon
+        - alert: TimescaledbCertExpirySoon
+          expr: ssl_kubernetes_cert_not_after{namespace=~"timescaledb.*"} - time() <= 86400 * 29 and ssl_kubernetes_cert_not_after{namespace=~"timescaledb.*"} >= 86400 * 7
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: SSL certificate for {{ $labels.namespace }}, {{ $labels.secret }} is expiring in {{ $value | humanizeDuration }}
+        - alert: TimescaledbCertExpirySoon
+          expr: ssl_kubernetes_cert_not_after{namespace=~"timescaledb.*"} - time() <= 86400 * 7
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: SSL certificate for {{ $labels.namespace }}, {{ $labels.secret }} is expiring in {{ $value | humanizeDuration }}
+        - alert: SpicedbCertExpirySoon
+          expr: ssl_kubernetes_cert_not_after{namespace="spicedb.*"} - time() <= 86400 * 29 and ssl_kubernetes_cert_not_after{namespace="spicedb"} >= 86400 * 7
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: SSL certificate for {{ $labels.exported_namespace }}, {{ $labels.env }} is expiring in {{ $value | humanizeDuration }}
+        - alert: SpicedbCertExpirySoon
+          expr: ssl_kubernetes_cert_not_after{namespace="spicedb.*"} - time() <= 86400 * 7
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: SSL certificate for {{ $labels.namespace }}, {{ $labels.secret }} is expiring in {{ $value | humanizeDuration }}
+        - alert: RedisCertExpirySoon
+          expr: ssl_kubernetes_cert_not_after{namespace="redis"} - time() <= 86400 * 29 and ssl_kubernetes_cert_not_after{namespace="redis"} >= 86400 * 7
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: SSL certificate for {{ $labels.namespace }}, {{ $labels.secret }} is expiring in {{ $value | humanizeDuration }}
+        - alert: RedisCertExpirySoon
+          expr: ssl_kubernetes_cert_not_after{namespace=~"redis"} - time() <= 86400 * 7
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: SSL certificate for {{ $labels.namespace }}, {{ $labels.secret }} is expiring in {{ $value | humanizeDuration }}
+        - alert: CockroachdbCertExpirySoon
+          expr: ssl_kubernetes_cert_not_after{namespace=~"cockroachdb.*"} - time() <= 86400 * 29 and ssl_kubernetes_cert_not_after{namespace=~"cockroachdb.*"} >= 86400 * 7
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: SSL certificate for {{ $labels.namespace }}, {{ $labels.secret }} is expiring in {{ $value | humanizeDuration }}
+        - alert: CockroachdbCertExpirySoon
+          expr: ssl_kubernetes_cert_not_after{namespace=~"cockroachdb.*"} - time() <= 86400 * 7
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: SSL certificate for {{ $labels.namespace }}, {{ $labels.secret }} is expiring in {{ $value | humanizeDuration }}

@@ -1,0 +1,54 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  - role: control-plane
+    image: kindest/node:v1.27.3@sha256:3966ac761ae0136263ffdb6cfd4db23ef8a83cba8a463690e98317add2c9ba72
+    extraPortMappings:
+      # private ingress
+      ## https
+      - containerPort: 30444
+        hostPort: 9443
+        protocol: TCP
+      ## http
+      - containerPort: 30091
+        hostPort: 9080
+        protocol: TCP
+      # public ingress
+      ## https
+      - containerPort: 30443
+        hostPort: 8443
+        protocol: TCP
+      ## http
+      - containerPort: 30090
+        hostPort: 8080
+        protocol: TCP
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "topology.kubernetes.io/zone=local"
+  - role: worker
+    image: kindest/node:v1.27.3@sha256:3966ac761ae0136263ffdb6cfd4db23ef8a83cba8a463690e98317add2c9ba72
+    kubeadmConfigPatches:
+      - |
+        kind: JoinConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "fission=true,redis=true,cockroachdb=true,timescaledb=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=locala"
+  - role: worker
+    image: kindest/node:v1.27.3@sha256:3966ac761ae0136263ffdb6cfd4db23ef8a83cba8a463690e98317add2c9ba72
+    kubeadmConfigPatches:
+      - |
+        kind: JoinConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "fission=true,redis=true,cockroachdb=true,timescaledb=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=localb"
+  - role: worker
+    image: kindest/node:v1.27.3@sha256:3966ac761ae0136263ffdb6cfd4db23ef8a83cba8a463690e98317add2c9ba72
+    kubeadmConfigPatches:
+      - |
+        kind: JoinConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "fission=true,redis=true,cockroachdb=true,timescaledb=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=localc"

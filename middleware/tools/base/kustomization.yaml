@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: tools
+resources:
+  - namespace.yaml
+  - certificate.yaml
+  - cockroach-configmap.yaml
+  - cockroach.yaml
+  - redis-configmap.yaml
+  - redis.yaml
+  - timescale-configmap.yaml
+  - timescale.yaml
+images:
+  - name: cockroachdb/cockroach
+    newTag: v23.1.8 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-image-policy-prod:tag"}
+  - name: bitnami/redis-cluster
+    newTag: 6.2.13 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
+  - name: timescale/timescaledb-ha
+    newTag: pg14.9-ts2.11.2 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}

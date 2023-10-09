@@ -1,0 +1,31 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: acp-workers
+spec:
+  scaleTargetRef:
+    name: acp-workers
+  minReplicaCount: 1
+  maxReplicaCount: 1
+  triggers:
+    - type: prometheus
+      metadata:
+        name: prom-trigger
+        serverAddress: http://prometheus-prometheus.monitoring:9090
+        threshold: "10"
+        query: 'round(max(avg(histogram_quantile(0.9, rate(acp_redis_lag_seconds_bucket{job="acp-workers", namespace="acp${namespace_suffix}"}[1m])) > 0) by (group, stream)))'
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policies:
+            - type: Pods
+              value: 2
+              periodSeconds: 100
+        scaleUp:
+          stabilizationWindowSeconds: 60
+          policies:
+            - type: Pods
+              value: 4
+              periodSeconds: 30

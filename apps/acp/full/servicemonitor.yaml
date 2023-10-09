@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: acp-canary
+spec:
+  endpoints:
+    - port: metrics
+      interval: 10s
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: acp-canary
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: acp-primary
+spec:
+  endpoints:
+    - port: metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: acp-primary
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: acp-workers-canary
+spec:
+  endpoints:
+    - port: metrics
+      interval: 10s
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: acp-workers-canary
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: acp-workers-primary
+spec:
+  endpoints:
+    - port: metrics
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: acp-workers-primary

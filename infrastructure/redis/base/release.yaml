@@ -1,0 +1,219 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: redis
+spec:
+  releaseName: redis-local
+  chart:
+    spec:
+      chart: redis-cluster
+      sourceRef:
+        kind: HelmRepository
+        name: redis
+        namespace: redis
+      version: 7.6.4 # helm:autoupdate:redis-cluster-prod
+  interval: 15m
+  timeout: 45m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/bitnami/charts/blob/master/bitnami/redis-cluster/values.yaml
+  values:
+    image:
+      tag: 6.2.13 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
+    cluster:
+      nodes: 6
+      replicas: 1
+    serviceAccount:
+      create: true
+    podDisruptionBudget:
+      maxUnavailable: 1
+    password: "p@ssw0rd!"
+    tls:
+      enabled: true
+      existingSecret: redis-tls
+      certFilename: tls.crt
+      certKeyFilename: tls.key
+      certCAFilename: ca.crt
+    redis:
+      startupProbe:
+        enabled: true
+        initialDelaySeconds: 30
+      useAOFPersistence: "no"
+      configmap: |
+        maxmemory 2gb
+        maxmemory-policy allkeys-lru
+        loadmodule /redismodules/redisearch.so OSS_GLOBAL_PASSWORD p@ssw0rd!
+      initContainers:
+        - name: redismodules
+          image: alpine
+          command:
+            - sh
+            - -c
+            - /scripts/redisearch.sh
+          volumeMounts:
+            - mountPath: /redismodules
+              name: redismodules
+            - mountPath: /scripts/redisearch.sh
+              name: scripts
+              subPath: redisearch.sh
+          securityContext:
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+              add: ["NET_BIND_SERVICE"]
+      extraVolumes:
+        - name: redismodules
+          emptyDir: {}
+      extraVolumeMounts:
+        - mountPath: /redismodules
+          name: redismodules
+      resources:
+        limits:
+          memory: 2Gi
+        requests:
+          cpu: 100m
+          memory: 100Mi
+      tolerations:
+        - key: redis
+          value: "true"
+          effect: NoSchedule
+      nodeSelector:
+        redis: "true"
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/instance: redis-local
+              app.kubernetes.io/name: redis-cluster
+          maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+    podSecurityContext:
+      enabled: true
+      fsGroup: 1001
+      runAsUser: 1001
+      seccompProfile:
+        type: RuntimeDefault
+    containerSecurityContext:
+      enabled: true
+      runAsUser: 1001
+      runAsNonRoot: true
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+        add: ["NET_BIND_SERVICE"]
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              group: apps
+              version: v1
+              kind: StatefulSet
+              name: redis-local-redis-cluster
+            patch:
+              - op: add
+                path: /spec/template/spec/containers/0/lifecycle
+                value:
+                  preStop:
+                    exec:
+                      command:
+                        - sh
+                        - -c
+                        - /scripts/failover.sh master
+    - kustomize:
+        patchesJson6902:
+          - target:
+              version: v1
+              kind: ConfigMap
+              name: redis-local-redis-cluster-scripts
+            patch:
+              - op: add
+                path: /data/redisearch.sh
+                value: |-
+                  #!/bin/sh
+                  set -e
+
+                  ARCH=$(apk --print-arch)
+                  if [[ "$ARCH" == "aarch64" ]]; then
+                    ARCH="arm64"
+                  else
+                    ARCH="amd64"
+                  fi
+
+                  wget https://cloudentity-redisearch.s3.amazonaws.com/redisearch-oss-coord-v2.6.13-$ARCH.so -O /redismodules/redisearch.so &&
+                  chmod +x /redismodules/redisearch.so
+              - op: add
+                path: /data/failover.sh
+                value: |-
+                  #!/bin/sh
+                  set -e
+
+                  mode=$1
+
+                  if [ ! -z "$REDIS_PASSWORD" ]; then
+                    export REDISCLI_AUTH="$REDIS_PASSWORD"
+                  fi
+
+                  node_role=$(
+                    redis-cli \
+                      --tls \
+                      --cert /opt/bitnami/redis/certs/tls.crt \
+                      --key /opt/bitnami/redis/certs/tls.key \
+                      --cacert /opt/bitnami/redis/certs/ca.crt \
+                      role | awk 'NR==1'
+                  )
+
+                  if [ "$mode" = "master" ] && [ "$node_role" = "master" ]; then
+                    myid=$(
+                      redis-cli \
+                        --tls \
+                        --cert /opt/bitnami/redis/certs/tls.crt \
+                        --key /opt/bitnami/redis/certs/tls.key \
+                        --cacert /opt/bitnami/redis/certs/ca.crt \
+                        cluster myid
+                    )
+                    replicas_ips=$(
+                      redis-cli \
+                        --tls \
+                        --cert /opt/bitnami/redis/certs/tls.crt \
+                        --key /opt/bitnami/redis/certs/tls.key \
+                        --cacert /opt/bitnami/redis/certs/ca.crt \
+                        cluster replicas "$myid" | \
+                        grep --extended-regexp --only-matching '[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+'
+                    )
+                    if [ -z "$replicas_ips" ]; then
+                      echo "No replica IPs found"
+                      exit 0
+                    fi
+                  elif [ "$mode" = "replica" ] && [ "$node_role" = "slave" ]; then
+                    replicas_ips="localhost"
+                  else
+                    echo "Node is not a $mode"
+                    exit 0
+                  fi
+
+                  for ip in $replicas_ips; do
+                    echo "Sending failover to $ip"
+                    response=$(
+                      redis-cli \
+                        --tls \
+                        --cert /opt/bitnami/redis/certs/tls.crt \
+                        --key /opt/bitnami/redis/certs/tls.key \
+                        --cacert /opt/bitnami/redis/certs/ca.crt \
+                        -h "$ip" \
+                        cluster failover
+                    )
+                    sleep 10
+                    if [ "$response" = "OK" ]; then
+                      echo "Failover successful"
+                      exit 0
+                    else
+                      echo "$response"
+                    fi
+                  done
+                  echo "Cluster failed to failover"
+                  exit 1

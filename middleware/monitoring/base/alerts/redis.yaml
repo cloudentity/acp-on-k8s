@@ -1,0 +1,68 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: redis
+spec:
+  groups:
+    - name: redis
+      rules:
+        - alert: RedisMissingMaster
+          expr: count(redis_up{role="master"}) < 1
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: Redis missing master
+            description: Redis cluster has no node marked as master
+        - alert: RedisReplicationBroken
+          expr: delta(redis_connected_slaves[1m]) < 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: Redis replication broken
+            description: Redis instance lost a slave
+        - alert: RedisMemoryUsage
+          expr: redis_used_memory / redis_maxmemory * 100 > 60
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Redis cluster high memory usage
+            description: Redis cluster {{ $labels.cluster }} has high system memory (> 60%) usage, VALUE = {{ $value }}
+        - alert: RedisMemoryUsage
+          expr: redis_used_memory / redis_maxmemory * 100 > 80
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: Redis cluster critical memory usage
+            description: Redis cluster {{ $labels.cluster }} has critical system memory (> 80%) usage, VALUE = {{ $value }}
+        - alert: RedisEntepriseHighKeysEvictionRatio
+          expr: increase(redis_evicted_keys[5m]) > 0
+          for: 1s
+          labels:
+            severity: critical
+          annotations:
+            summary: Redis instance has evicted keys
+            description: Redis cluster {{ $labels.cluster }} has evicted {{ $value }} keys in the last 5 minutes
+        - alert: RedisOOSHighKeysEvictionRatio
+          expr: increase(redis_evicted_keys_total[5m]) > 0
+          for: 1s
+          labels:
+            severity: critical
+          annotations:
+            summary: Redis instance has evicted keys
+            description: Redis cluster {{ $labels.cluster }} has evicted {{ $value }} keys in the last 5 minutes
+        - alert: RedisTooManyMastersSingleAZ
+          expr: |-
+            count by(job, topology_kubernetes_io_zone) (redis_instance_info{role="master",topology_kubernetes_io_zone!=""})
+              /
+            ignoring (topology_kubernetes_io_zone) group_left count by(job) (redis_instance_info{role="master"})
+              * 3 > 1
+          for: 2h
+          labels:
+            severity: warning
+          annotations:
+            summary: Too many redis masters on a single availability zone
+            description: "There are {{ $value }} redis master pods running on the same AZ: {{ $labels.topology_kubernetes_io_zone }} on job {{ $labels.job }}"

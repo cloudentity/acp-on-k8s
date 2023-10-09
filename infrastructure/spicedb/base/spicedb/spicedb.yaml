@@ -1,0 +1,56 @@
+apiVersion: authzed.com/v1alpha1
+kind: SpiceDBCluster
+metadata:
+  name: spicedb
+spec:
+  config:
+    image: authzed/spicedb
+    replicas: 3
+    datastoreEngine: cockroachdb
+    tlsSecretName: spicedb-tls
+    datastoreTLSSecretName: spicedb-client-tls
+    dispatchUpstreamCASecretName: spicedb-tls
+    extraPodLabels:
+      app.kubernetes.io/name: spicedb
+  secretName: spicedb-config
+  patches:
+    - kind: Deployment
+      patch:
+        spec:
+          name: spicedb
+          template:
+            spec:
+              containers:
+                - name: spicedb-spicedb
+                  securityContext:
+                    allowPrivilegeEscalation: false
+                    seccompProfile:
+                      type: RuntimeDefault
+                    capabilities:
+                      drop:
+                        - ALL
+                      add: ["NET_BIND_SERVICE"]
+              securityContext:
+                runAsNonRoot: true
+                seccompProfile:
+                  type: RuntimeDefault
+    - kind: Job
+      patch:
+        spec:
+          name: spicedb-migrate
+          template:
+            spec:
+              containers:
+                - name: migrate
+                  securityContext:
+                    allowPrivilegeEscalation: false
+                    seccompProfile:
+                      type: RuntimeDefault
+                    capabilities:
+                      drop:
+                        - ALL
+                      add: ["NET_BIND_SERVICE"]
+              securityContext:
+                runAsNonRoot: true
+                seccompProfile:
+                  type: RuntimeDefault

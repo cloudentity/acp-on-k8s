@@ -1,0 +1,78 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kyverno
+spec:
+  values:
+    features:
+      backgroundScan:
+        backgroundScanInterval: 8h
+    metricsConfig:
+      metricsRefreshInterval:
+        metricsRefreshInterval: 24h
+    admissionController:
+      replicas: 3
+      serviceMonitor:
+        enabled: true
+      resources:
+        requests:
+          cpu: 300m
+          memory: 200Mi
+        limits:
+          memory: 768Mi
+    backgroundController:
+      enabled: true
+      replicas: 2
+      serviceMonitor:
+        enabled: true
+      priorityClassName: system-cluster-critical
+      resources:
+        limits:
+          memory: 128Mi
+      nodeSelector:
+        clusterCritical: "true"
+      tolerations:
+        - key: CriticalAddonsOnly
+          value: "true"
+          effect: NoSchedule
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: background-controller
+            topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: background-controller
+          maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+    reportsController:
+      enabled: true
+      replicas: 1
+      serviceMonitor:
+        enabled: true
+      priorityClassName: system-cluster-critical
+      resources:
+        limits:
+          memory: 512Mi
+      nodeSelector:
+        clusterCritical: "true"
+      tolerations:
+        - key: CriticalAddonsOnly
+          value: "true"
+          effect: NoSchedule
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/component: reports-controller
+            topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/component: reports-controller
+          maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway

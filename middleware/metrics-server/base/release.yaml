@@ -1,0 +1,39 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: metrics-server
+spec:
+  releaseName: metrics-server
+  chart:
+    spec:
+      chart: metrics-server
+      sourceRef:
+        kind: HelmRepository
+        name: metrics-server
+        namespace: kube-system
+      version: "3.10.0" # helm:autoupdate:metrcs-server-prod
+  interval: 5m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/kubernetes-sigs/metrics-server/blob/master/charts/metrics-server/values.yaml
+  values:
+    nodeSelector:
+      system: "true"
+    tolerations:
+      - key: system
+        value: "true"
+        effect: NoSchedule
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              group: apps
+              version: v1
+              kind: Deployment
+              name: metrics-server
+            patch:
+              - op: add
+                path: /spec/template/spec/containers/0/args/-
+                value: --kubelet-insecure-tls

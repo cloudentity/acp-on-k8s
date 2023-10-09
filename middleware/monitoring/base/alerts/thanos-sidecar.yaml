@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: thanos-sidecar
+spec:
+  groups:
+    - name: thanos-sidecar
+      rules:
+        - alert: ThanosSidecarBucketOperationsFailed
+          expr: sum by (job, instance) (rate(thanos_objstore_bucket_operation_failures_total{job=~".*thanos-discovery.*"}[5m])) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Thanos Sidecar Bucket Operations Failed (pod {{ $labels.pod }})
+            description: Thanos Sidecar {{ $labels.pod }} bucket operations are failing
+        - alert: ThanosSidecarNoConnectionToStartedPrometheus
+          expr: thanos_sidecar_prometheus_up{job=~".*thanos-discovery.*"} == 0 and on (namespace, pod) prometheus_tsdb_data_replay_duration_seconds != 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Thanos Sidecar No Connection To Started Prometheus (pod {{ $labels.pod }})
+            description: Thanos Sidecar {{ $labels.pod }} is unhealthy.

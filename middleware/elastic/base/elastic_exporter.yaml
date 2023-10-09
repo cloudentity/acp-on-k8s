@@ -1,0 +1,32 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: elastic-exporter
+spec:
+  releaseName: elastic-exporter
+  chart:
+    spec:
+      chart: prometheus-elasticsearch-exporter
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus
+        namespace: monitoring
+      version: 5.2.0 # helm:autoupdate:elastic-exporter-prod
+  interval: 60m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-elasticsearch-exporter/values.yaml
+  values:
+    image:
+      tag: v1.6.0
+    serviceMonitor:
+      enabled: true
+    es:
+      uri: http://elasticsearch:9200
+      sslSkipVerify: true
+      all: false
+      indices_settings: false
+      indices_mappings: false
+      shards: false

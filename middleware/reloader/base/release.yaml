@@ -1,0 +1,37 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: reloader
+spec:
+  releaseName: reloader
+  chart:
+    spec:
+      chart: reloader
+      sourceRef:
+        kind: HelmRepository
+        name: reloader
+        namespace: reloader
+      version: 1.0.41 # helm:autoupdate:reloader-prod
+  interval: 1m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/stakater/Reloader/blob/master/deployments/kubernetes/chart/reloader/values.yaml
+  values:
+    reloader:
+      deployment:
+        nodeSelector:
+          system: "true"
+        tolerations:
+          - key: system
+            value: "true"
+            effect: NoSchedule
+        containerSecurityContext:
+          capabilities:
+            drop:
+              - ALL
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault

@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: cockroachdb-${cluster_region}
+resources:
+  - namespace.yaml
+  - operator.yaml
+  - crdbcluster.yaml
+  - tls.yaml
+  - job.yaml
+images:
+  - name: cockroachdb/cockroach-operator
+    newTag: v2.11.0 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-operator-image-policy-prod:tag"}
+  - name: cockroachdb/cockroach
+    newTag: v23.1.8 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-image-policy-prod:tag"}
+configurations:
+  - kustomizeconfig.yaml

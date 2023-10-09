@@ -1,0 +1,3 @@
+images:
+  - kind: SpiceDBCluster
+    path: /spec/config/image

@@ -1,0 +1,213 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: elastic
+spec:
+  interval: 24h
+  timeout: 15m
+  prune: true
+  path: ./middleware/elastic/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: eck-operator
+      namespace: elastic
+    - apiVersion: elasticsearch.k8s.elastic.co/v1
+      kind: Elasticsearch
+      name: elastic
+      namespace: elastic
+    - apiVersion: kibana.k8s.elastic.co/v1
+      kind: Kibana
+      name: kibana
+      namespace: elastic
+    - apiVersion: beat.k8s.elastic.co/v1beta1
+      kind: Beat
+      name: filebeat
+      namespace: elastic
+    - apiVersion: beat.k8s.elastic.co/v1beta1
+      kind: Beat
+      name: metricbeat
+      namespace: elastic
+    - apiVersion: agent.k8s.elastic.co/v1alpha1
+      kind: Agent
+      name: apm-agent
+      namespace: elastic
+    - apiVersion: agent.k8s.elastic.co/v1alpha1
+      kind: Agent
+      name: apm-fleet-server
+      namespace: elastic
+  dependsOn:
+    - name: nginx
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: monitoring
+spec:
+  interval: 60m
+  timeout: 15m
+  prune: true
+  path: ./middleware/monitoring/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: prometheus
+      namespace: monitoring
+  dependsOn:
+    - name: nginx
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: opentelemetry
+spec:
+  interval: 60m
+  timeout: 15m
+  prune: true
+  path: ./middleware/opentelemetry/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: opentelemetry-collector
+      namespace: observability
+  dependsOn:
+    - name: elastic
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: keda
+spec:
+  interval: 24h
+  timeout: 15m
+  prune: true
+  path: ./middleware/keda/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: keda
+      namespace: keda
+  dependsOn:
+    - name: kyverno
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: reloader
+spec:
+  interval: 24h
+  timeout: 15m
+  prune: true
+  path: ./middleware/reloader/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: reloader
+      namespace: reloader
+  dependsOn:
+    - name: kyverno
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: metrics-server
+spec:
+  interval: 24h
+  timeout: 15m
+  prune: true
+  path: ./middleware/metrics-server/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: metrics-server
+      namespace: kube-system
+  dependsOn:
+    - name: kyverno
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: flagger
+spec:
+  interval: 24h
+  timeout: 15m
+  prune: true
+  path: ./middleware/flagger/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: flagger
+      namespace: flagger
+  dependsOn:
+    - name: nginx
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: node-local-dns
+spec:
+  interval: 24h
+  timeout: 15m
+  prune: true
+  path: ./middleware/node-local-dns/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: kyverno
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: node-problem-detector
+spec:
+  interval: 24h
+  timeout: 15m
+  prune: true
+  path: ./middleware/node-problem-detector/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  healthChecks:
+    - apiVersion: helm.toolkit.fluxcd.io/v2beta1
+      kind: HelmRelease
+      name: node-problem-detector
+      namespace: kube-system
+  dependsOn:
+    - name: kyverno
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: redisinsight
+spec:
+  interval: 24h
+  timeout: 15m
+  prune: true
+  path: ./middleware/redisinsight/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: redis

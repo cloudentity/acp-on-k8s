@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+resources:
+  - acp.yaml
+  - cert-menager.yaml
+  - cockroachdb.yaml
+  - elastic.yaml
+  - fission.yaml
+  - flagger.yaml
+  - flux.yaml
+  - nginx.yaml
+  - opentelemetry.yaml
+  - prometheus.yaml
+  - redis.yaml
+  - ssl.yaml
+  - state-metrics.yaml
+  - thanos-sidecar.yaml
+  - timescaledb.yaml

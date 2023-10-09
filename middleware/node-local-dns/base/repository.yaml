@@ -1,0 +1,7 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: node-local-dns
+spec:
+  interval: 24h
+  url: https://charts.deliveryhero.io/

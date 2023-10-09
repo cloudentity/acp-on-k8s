@@ -1,0 +1,254 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: prometheus
+spec:
+  releaseName: kube-prometheus-stack
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus
+        namespace: monitoring
+      version: 49.0.0 # helm:autoupdate:prometheus-prod
+  interval: 1m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    preserveValues: false
+  # Default values
+  # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+  values:
+    kubeApiServer:
+      enabled: false
+    kubeControllerManager:
+      enabled: false
+    kubeEtcd:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    alertmanager:
+      enabled: true
+      ingress:
+        enabled: true
+        ingressClassName: private-nginx
+        annotations:
+          nginx.ingress.kubernetes.io/service-upstream: "true"
+          cert-manager.io/cluster-issuer: "ca-issuer"
+        hosts:
+          - "alertmanager.tools.${cluster_region}.${cluster_domain}"
+        tls:
+          - secretName: alertmanager-ingress-tls
+            hosts:
+              - "alertmanager.tools.${cluster_region}.${cluster_domain}"
+    grafana:
+      admin:
+        existingSecret: "grafana-user"
+        userKey: user
+        passwordKey: password
+      ingress:
+        enabled: true
+        ingressClassName: private-nginx
+        annotations:
+          nginx.ingress.kubernetes.io/service-upstream: "true"
+          cert-manager.io/cluster-issuer: "ca-issuer"
+        hosts:
+          - "grafana.tools.${cluster_region}.${cluster_domain}"
+        tls:
+          - secretName: grafana-ingress-tls
+            hosts:
+              - "grafana.tools.${cluster_region}.${cluster_domain}"
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          memory: 512Mi
+      sidecar:
+        datasources:
+          url: http://thanos-query-frontend:9090/
+        resources:
+          requests:
+            cpu: 10m
+            memory: 64Mi
+          limits:
+            memory: 128Mi
+      dashboards:
+        default:
+          redis-dashboard:
+            # Ref: https://grafana.com/grafana/dashboards/11835-redis-dashboard-for-prometheus-redis-exporter-helm-stable-redis-ha/
+            gnetId: 11835
+          node-problem-detector:
+            # Ref: https://grafana.com/grafana/dashboards/15549-node-problem-detector/
+            gnetId: 15549
+            datasource:
+              - name: DS_PROMETHEUS
+                value: Prometheus
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: "default"
+              orgId: 1
+              folder: ""
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/default
+    fullnameOverride: prometheus
+    prometheus:
+      podDisruptionBudget:
+        enabled: true
+      thanosService:
+        enabled: true
+      thanosServiceMonitor:
+        enabled: true
+      ingress:
+        enabled: true
+        ingressClassName: private-nginx
+        annotations:
+          nginx.ingress.kubernetes.io/service-upstream: "true"
+          cert-manager.io/cluster-issuer: "ca-issuer"
+        hosts:
+          - "prometheus.tools.${cluster_region}.${cluster_domain}"
+        tls:
+          - secretName: prometheus-ingress-tls
+            hosts:
+              - "prometheus.tools.${cluster_region}.${cluster_domain}"
+      prometheusSpec:
+        replicas: 2
+        thanos:
+          objectStorageConfig:
+            key: objstore.yml
+            name: thanos-objstore
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        ruleSelectorNilUsesHelmValues: false
+        prometheusExternalLabelNameClear: true
+        externalLabels:
+          region: ${cluster_region}
+          env: ${cluster_env}
+          system: acp-saas
+        additionalAlertRelabelConfigs:
+          - action: replace
+            replacement: thanos-${cluster_env}-${cluster_region}
+            source_labels: [alertname]
+            target_label: ruler_cluster
+        scrapeInterval: "30s"
+        retentionSize: "12GB"
+        disableCompaction: true
+        resources:
+          requests:
+            cpu: 10m
+            memory: 10Mi
+          limits:
+            memory: 2Gi
+        podAntiAffinity: "hard"
+        topologySpreadConstraints:
+          - maxSkew: 1
+            topologyKey: topology.kubernetes.io/zone
+            whenUnsatisfiable: DoNotSchedule
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: prometheus-prometheus
+                app.kubernetes.io/name: prometheus
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              resources:
+                requests:
+                  storage: 2Gi
+        additionalScrapeConfigs: |
+          - job_name: prom-sql-exporter
+            scrape_interval: 1m
+            scrape_timeout: 10s
+            metrics_path: /metrics
+            scheme: http
+            dns_sd_configs:
+            - names:
+              - prom-sql-exporter.monitoring.svc.cluster.local
+              type: 'A'
+              port: 9237
+          - job_name: opencost
+            honor_labels: true
+            scrape_interval: 1m
+            scrape_timeout: 10s
+            metrics_path: /metrics
+            scheme: http
+            dns_sd_configs:
+            - names:
+              - opencost.opencost.svc.cluster.local
+              type: 'A'
+              port: 9003
+          - job_name: "ssl-kubernetes"
+            metrics_path: /probe
+            params:
+              module: ["kubernetes"]
+            static_configs:
+              - targets:
+                  - "timescaledb-${cluster_region}/*"
+                  - "redis/*"
+                  - "spicedb/*"
+                  - "spicedb-internal/*"
+                  - "cockroachdb-${cluster_region}/*"
+            relabel_configs:
+              - source_labels: [ __address__ ]
+                target_label: __param_target
+              - source_labels: [ __param_target ]
+                target_label: instance
+              - target_label: __address__
+                replacement: ssl-exporter.monitoring.svc.cluster.local:9219
+      additionalPodMonitors:
+        - name: flux
+          selector:
+            matchExpressions:
+              - key: app
+                operator: Exists
+          namespaceSelector:
+            matchNames:
+              - flux-system
+          podMetricsEndpoints:
+            - port: http-prom
+    prometheusOperator:
+      resources:
+        requests:
+          cpu: 50m
+          memory: 192Mi
+        limits:
+          memory: 384Mi
+    kube-state-metrics:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 64Mi
+        limits:
+          memory: 256Mi
+    prometheus-node-exporter:
+      # Default values
+      # https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-node-exporter/values.yaml
+      containerSecurityContext:
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        capabilities:
+          drop:
+            - ALL
+          add: ["NET_BIND_SERVICE"]
+      priorityClassName: system-cluster-critical
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          memory: 128Mi
+      securityContext:
+        fsGroup: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      service:
+        hostPort: 0

@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cockroachdb-client-secure
+  annotations:
+    reloader.stakater.com/auto: "true"
+  labels:
+    app.kubernetes.io/name: cockroachdb-client
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cockroachdb-client
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cockroachdb-client
+    spec:
+      containers:
+        - name: cockroachdb-client
+          image: cockroachdb/cockroach
+          volumeMounts:
+            - name: client-certs
+              mountPath: /client-certs
+            - name: client-certs-root
+              mountPath: /client-certs-root
+            - name: motd
+              mountPath: /etc/motd
+              subPath: motd
+            - name: bashrc
+              mountPath: /etc/bashrc
+              subPath: bashrc
+          command:
+            - sleep
+            - "2147483648"
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 65535
+            runAsNonRoot: false
+            privileged: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: client-certs
+          projected:
+            defaultMode: 0400
+            sources:
+              - secret:
+                  name: tools-tls
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+                      mode: 0400
+                    - key: tls.crt
+                      path: client.acp.crt
+                      mode: 0400
+                    - key: tls.key
+                      path: client.acp.key
+                      mode: 0400
+        - name: client-certs-root
+          projected:
+            defaultMode: 0400
+            sources:
+              - secret:
+                  name: tools-tls
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+                      mode: 0400
+                    - key: tls.crt
+                      path: client.root.crt
+                      mode: 0400
+                    - key: tls.key
+                      path: client.root.key
+                      mode: 0400
+        - name: motd
+          projected:
+            sources:
+              - configMap:
+                  name: cockroach-tools
+                  items:
+                    - key: motd
+                      path: motd
+                      mode: 0644
+        - name: bashrc
+          projected:
+            sources:
+              - configMap:
+                  name: cockroach-tools
+                  items:
+                    - key: bashrc
+                      path: bashrc
+                      mode: 0644
+      securityContext:
+        fsGroup: 65535
+        runAsNonRoot: true

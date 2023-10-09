@@ -1,0 +1,22 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: redisinsight-cert
+spec:
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - redisinsight
+    - redisinsight.redisinsight
+    - redisinsight.redisinsight.svc.cluster.local
+  secretName: redisinsight-tls
+  duration: 8760h
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer

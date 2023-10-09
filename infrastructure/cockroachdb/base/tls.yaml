@@ -1,0 +1,45 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cockroachdb-node-cert
+spec:
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - node
+    - localhost
+    - cockroachdb-local-public
+    - cockroachdb-local-public.cockroachdb-${cluster_region}
+    - cockroachdb-local-public.cockroachdb-${cluster_region}.svc.cluster.local
+    - "*.cockroachdb-local"
+    - "*.cockroachdb-local.cockroachdb-${cluster_region}"
+    - "*.cockroachdb-local.cockroachdb-${cluster_region}.svc.cluster.local"
+  secretName: cockroachdb-node-tls
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cockroachdb-client-cert
+spec:
+  usages:
+    - digital signature
+    - key encipherment
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - root
+  secretName: cockroachdb-client-tls
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer

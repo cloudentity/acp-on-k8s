@@ -1,0 +1,21 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: lightweight-tests
+spec:
+  timeout: 20m
+  interval: 2m
+  retryInterval: 2m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  prune: true
+  path: ./tests/base/lightweight-tests
+  healthChecks:
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: lightweight-tests
+      namespace: lightweight-tests
+  dependsOn:
+    - name: kyverno
+    - name: nginx

@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lightweight-tests
+  labels:
+    app: lightweight-tests
+    app.kubernetes.io/component: lightweight-tests
+    app.kubernetes.io/instance: lightweight-tests
+    app.kubernetes.io/name: lightweight-tests
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: lightweight-tests
+      app.kubernetes.io/component: lightweight-tests
+      app.kubernetes.io/instance: lightweight-tests
+      app.kubernetes.io/name: lightweight-tests
+  template:
+    metadata:
+      labels:
+        app: lightweight-tests
+        app.kubernetes.io/component: lightweight-tests
+        app.kubernetes.io/instance: lightweight-tests
+        app.kubernetes.io/name: lightweight-tests
+    spec:
+      volumes:
+        - name: stepci-certs
+          projected:
+            defaultMode: 0400
+            sources:
+              - secret:
+                  name: stepci-tls
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+                      mode: 0400
+                    - key: tls.crt
+                      path: tls.crt
+                      mode: 0400
+                    - key: tls.key
+                      path: tls.key
+                      mode: 0400
+        - name: step-ci-scenarios
+          configMap:
+            name: step-ci-scenarios
+        - name: config-node-js
+          emptyDir: {}
+      securityContext:
+        fsGroup: 65535
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      imagePullSecrets:
+        - name: artifactory
+      containers:
+        - name: step-ci
+          image: ghcr.io/stepci/stepci
+          command: ["/bin/sh", "-c"]
+          args:
+            - echo Container started. Will be set in sleep mode. In order to run tests please use stepci command;
+              sleep 2147483648;
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+            privileged: false
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              memory: 512Mi
+          env:
+            - name: STEPCI_DISABLE_ANALYTICS
+              value: "true"
+            - name: LIGHTWEIGHT_IDP_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: lightweight-secret
+                  key: lightweightIdpClientSecret
+          volumeMounts:
+            - name: stepci-certs
+              mountPath: /stepci-certs
+            - name: step-ci-scenarios
+              mountPath: /scenarios
+              readOnly: true
+            - name: config-node-js
+              mountPath: /.config

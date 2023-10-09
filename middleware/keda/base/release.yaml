@@ -1,0 +1,68 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: keda
+spec:
+  releaseName: keda
+  chart:
+    spec:
+      chart: keda
+      sourceRef:
+        kind: HelmRepository
+        name: keda
+        namespace: keda
+      version: 2.11.2 # helm:autoupdate:keda-prod
+  interval: 1m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/kedacore/charts/blob/main/keda/values.yaml
+  values:
+    operator:
+      replicaCount: 2
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - keda-operator
+              topologyKey: "kubernetes.io/hostname"
+    metricsServer:
+      replicaCount: 2
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - keda-operator-metrics-apiserver
+              topologyKey: "kubernetes.io/hostname"
+    crds:
+      install: false
+    nodeSelector:
+      system: "true"
+    tolerations:
+      - key: system
+        value: "true"
+        effect: NoSchedule
+    topologySpreadConstraints:
+      operator:
+        - labelSelector:
+            matchLabels:
+              app: keda-operator
+          maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+      metricsServer:
+        - labelSelector:
+            matchLabels:
+              app: keda-operator-metrics-apiserver
+          maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway

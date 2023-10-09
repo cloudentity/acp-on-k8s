@@ -1,0 +1,94 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: cockroachdb-provision
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cockroachdb-provision
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: artifactory
+      serviceAccountName: cockroachdb-provision
+      restartPolicy: Never
+      containers:
+        - name: cockroachdb-client
+          image: cockroachdb/cockroach
+          command:
+            - /bin/bash
+          args:
+            - -c
+            - /scripts/cockroachdb-provision.sh
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+              readOnly: true
+            - name: client-certs-root
+              mountPath: /client-certs-root
+      volumes:
+        - name: scripts
+          configMap:
+            name: cockroachdb-provision
+            defaultMode: 0755
+        - name: client-certs-root
+          projected:
+            defaultMode: 0400
+            sources:
+              - secret:
+                  name: cockroachdb-client-tls
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+                      mode: 0400
+                    - key: tls.crt
+                      path: client.root.crt
+                      mode: 0400
+                    - key: tls.key
+                      path: client.root.key
+                      mode: 0400
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cockroachdb-provision
+data:
+  cockroachdb-provision.sh: |
+    #!/bin/bash
+
+    provisionCluster() {
+      while true; do
+        /cockroach/cockroach sql \
+          --certs-dir=/client-certs-root/ \
+          --host cockroachdb-local-public.cockroachdb-local \
+          --execute="
+              SET CLUSTER SETTING kv.rangefeed.enabled = 'true';
+              SET CLUSTER SETTING server.shutdown.connection_wait = '240';
+              SET CLUSTER SETTING server.shutdown.drain_wait = '30';
+              SET CLUSTER SETTING server.shutdown.query_wait = '10';
+              SET CLUSTER SETTING server.shutdown.lease_transfer_wait = '5';
+
+              CREATE USER IF NOT EXISTS acp WITH PASSWORD null;
+              CREATE USER IF NOT EXISTS dev WITH PASSWORD 'p@ssw0rd!' NOSQLLOGIN;
+
+              CREATE DATABASE IF NOT EXISTS acp;
+              CREATE DATABASE IF NOT EXISTS spicedb;
+
+              GRANT admin TO acp;
+              GRANT admin TO dev;
+          "
+        local exitCode="$?"
+
+        if [[ "$exitCode" == "0" ]]
+          then break
+        fi
+
+        sleep 5
+      done
+
+      echo "Provisioning completed successfully"
+    }
+
+    provisionCluster;

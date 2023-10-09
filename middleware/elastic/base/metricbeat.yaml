@@ -1,0 +1,198 @@
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: metricbeat
+spec:
+  type: metricbeat
+  version: 8.7.0
+  elasticsearchRef:
+    name: elastic
+  kibanaRef:
+    name: kibana
+  config:
+    metricbeat:
+      modules:
+        - module: kubernetes
+          enabled: true
+          metricsets:
+            - state_node
+            - state_daemonset
+            - state_deployment
+            - state_replicaset
+            - state_statefulset
+            - state_pod
+            - state_container
+            - state_job
+            - state_cronjob
+            - state_resourcequota
+            - state_service
+            - state_persistentvolume
+            - state_persistentvolumeclaim
+            - state_storageclass
+          hosts: ["kube-prometheus-stack-kube-state-metrics.monitoring:8080"]
+        - module: kubernetes
+          enabled: true
+          metricsets:
+            - event
+          period: 10s
+          hosts: ["kube-prometheus-stack-kube-state-metrics.monitoring:8080"]
+    processors:
+      - add_kubernetes_metadata: {}
+    setup:
+      ilm:
+        enabled: true
+        overwrite: true
+        policy_file: /usr/share/metricbeat/ilm/policy.json
+  deployment:
+    podTemplate:
+      spec:
+        serviceAccountName: metricbeat
+        automountServiceAccountToken: true
+        containers:
+          - name: metricbeat
+            image: docker.elastic.co/beats/metricbeat:8.7.0
+            securityContext:
+              privileged: false
+              runAsUser: 0
+              allowPrivilegeEscalation: false
+              seccompProfile:
+                type: RuntimeDefault
+              capabilities:
+                drop:
+                  - ALL
+                add: ["NET_BIND_SERVICE"]
+            resources:
+              requests:
+                cpu: 1
+                memory: 512Mi
+              limits:
+                cpu: 2
+                memory: 1Gi
+            volumeMounts:
+              - name: metricbeat-ilm
+                mountPath: /usr/share/metricbeat/ilm
+                readOnly: true
+              - name: beat-data
+                mountPath: /usr/share/metricbeat/data
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              - labelSelector:
+                  matchLabels:
+                    app: ebs-csi-controller
+                topologyKey: kubernetes.io/hostname
+        volumes:
+          - name: metricbeat-ilm
+            configMap:
+              defaultMode: 0600
+              name: metricbeat-ilm
+          - name: beat-data
+            emptyDir: {}
+        nodeSelector:
+          system: "true"
+        tolerations:
+          - key: system
+            value: "true"
+            effect: NoSchedule
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: metricbeat
+rules:
+  - apiGroups: [""]
+    resources:
+      - nodes
+      - namespaces
+      - events
+      - pods
+      - services
+      - persistentvolumes
+      - persistentvolumeclaims
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources:
+      - jobs
+      - cronjobs
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["extensions"]
+    resources:
+      - replicasets
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources:
+      - statefulsets
+      - deployments
+      - replicasets
+      - daemonsets
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["storage.k8s.io"]
+    resources:
+      - storageclasses
+    verbs: ["get", "list", "watch"]
+  - apiGroups:
+      - ""
+    resources:
+      - nodes/stats
+    verbs:
+      - get
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: metricbeat
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: metricbeat
+subjects:
+  - kind: ServiceAccount
+    name: metricbeat
+    namespace: elastic
+roleRef:
+  kind: ClusterRole
+  name: metricbeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: metricbeat-ilm
+data:
+  policy.json: |
+    {
+      "policy": {
+        "phases": {
+          "hot": {
+            "min_age": "0ms",
+            "actions": {
+              "rollover": {
+                "max_primary_shard_size": "50gb",
+                "max_age": "1d"
+              }
+            }
+          },
+          "warm": {
+            "min_age": "1d",
+            "actions": {
+              "set_priority": {
+                "priority": 50
+              }
+            }
+          },
+          "delete": {
+            "min_age": "7d",
+            "actions": {
+              "delete": {
+                "delete_searchable_snapshot": true
+              }
+            }
+          }
+        }
+      }
+    }

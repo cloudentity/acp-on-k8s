@@ -1,0 +1,287 @@
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: filebeat
+spec:
+  type: filebeat
+  version: 8.7.0
+  elasticsearchRef:
+    name: elastic
+  kibanaRef:
+    name: kibana
+  config:
+    filebeat.inputs:
+      - type: container
+        paths:
+          - /var/log/containers/*.log
+        exclude_files: [".*ingress-nginx.*"]
+        processors:
+          - decode_json_fields:
+              fields: ["message"]
+              target: json
+              max_depth: 1
+              add_error_key: true
+      - type: container
+        paths:
+          - /var/log/containers/*ingress-nginx*.log
+        processors:
+          - dissect:
+              tokenizer: '%{client.ip} - %{client.user.name} [%{json.time_local}] "%{url.domain}" "%{http.request.method} %{url.path} HTTP/%{http.version}" %{http.response.status_code} %{http.response.body.bytes} "%{http.request.referrer}" "%{user_agent.original}" %{http.request.bytes} %{event.duration} [%{http.proxy.upstream.name}] [%{http.proxy.upstream.alternative_name}] [%{json.upstream_addr}] [%{http.proxy.upstream.bytes}] [%{http.proxy.upstream.duration}] [%{http.proxy.upstream.status_code}] %{http.request.id} %{http.headers.true_client_ip} %{http.headers.x_forwarded_for}'
+              target_prefix: ""
+              trim_values: all
+              ignore_failure: true
+          - replace:
+              fields:
+                - field: "json.upstream_addr"
+                  pattern: ","
+                  replacement: " "
+                - field: "http.proxy.upstream.bytes"
+                  pattern: ","
+                  replacement: " "
+                - field: "http.proxy.upstream.duration"
+                  pattern: ","
+                  replacement: " "
+                - field: "http.proxy.upstream.status_code"
+                  pattern: ","
+                  replacement: " "
+              ignore_missing: true
+              fail_on_error: false
+    processors:
+      - add_kubernetes_metadata:
+          host: ${NODE_NAME}
+          matchers:
+            - logs_path:
+                logs_path: "/var/log/containers/"
+      - copy_fields:
+          fields:
+            - from: kubernetes.container.name
+              to: event.dataset
+            - from: kubernetes.container.name
+              to: app
+          fail_on_error: false
+          ignore_missing: true
+      - drop_event.when:
+          and:
+            - equals:
+                kubernetes.namespace: "nginx"
+            - regexp:
+                http.proxy.upstream.name: "^elastic-kibana.*"
+      - rename:
+          fields:
+            - from: input.type
+              to: host.type
+            - from: json.cause
+              to: error.type
+            - from: json.code
+              to: event.code
+            - from: json.description
+              to: event.type:info
+            - from: json.details
+              to: event.reason
+            - from: json.duration
+              to: event.duration
+            - from: json.error
+              to: error.message
+            - from: json.hint
+              to: event.kind:enrichment
+            - from: json.host
+              to: host.container.ip
+            - from: json.ip
+              to: client.ip
+            - from: json.level
+              to: log.level
+            - from: json.log.level
+              to: log.level
+            - from: json.method
+              to: http.request.method
+            - from: json.msg
+              to: event.action
+            - from: json.name
+              to: service.name
+            - from: json.path
+              to: url.path
+            - from: json.size
+              to: http.response.bytes
+            - from: json.stack
+              to: error.stack_trace
+            - from: json.status
+              to: http.response.status_code
+            - from: json.sub
+              to: user.id
+            - from: json.tenantID
+              to: tenant.id
+            - from: json.traceID
+              to: trace.id
+            - from: json.userAgent
+              to: user_agent.original
+          ignore_missing: true
+          fail_on_error: false
+      - convert:
+          fields:
+            - from: event.duration
+              type: long
+            - from: http.request.bytes
+              type: long
+            - from: http.response.body.bytes
+              type: long
+            - from: http.response.status_code
+              type: long
+            - from: error.code
+              type: long
+          ignore_missing: true
+          fail_on_error: false
+    queue.mem:
+      events: 1024
+      flush.min_events: 512
+    logging.level: warning
+    setup:
+      ilm:
+        enabled: true
+        overwrite: true
+        policy_file: /usr/share/filebeat/ilm/policy.json
+  daemonSet:
+    podTemplate:
+      spec:
+        serviceAccountName: filebeat
+        automountServiceAccountToken: true
+        containers:
+          - name: filebeat
+            image: docker.elastic.co/beats/filebeat:8.7.0
+            env:
+              - name: NODE_NAME
+                valueFrom:
+                  fieldRef:
+                    apiVersion: v1
+                    fieldPath: spec.nodeName
+            securityContext:
+              privileged: false
+              runAsUser: 0
+              allowPrivilegeEscalation: false
+              seccompProfile:
+                type: RuntimeDefault
+              capabilities:
+                drop:
+                  - ALL
+                add: ["NET_BIND_SERVICE"]
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                cpu: 1
+                memory: 256Mi
+            volumeMounts:
+              - name: beat-data
+                mountPath: /usr/share/metricbeat/data
+              - name: filebeat-ilm
+                mountPath: /usr/share/filebeat/ilm
+                readOnly: true
+              - name: varlogcontainers
+                mountPath: /var/log/containers
+              - name: varlogpods
+                mountPath: /var/log/pods
+              - name: varlibdockercontainers
+                mountPath: /var/lib/docker/containers
+        volumes:
+          - name: beat-data
+            emptyDir: {}
+          - name: filebeat-ilm
+            configMap:
+              defaultMode: 0600
+              name: filebeat-ilm
+          - name: varlogcontainers
+            hostPath:
+              path: /var/log/containers
+          - name: varlogpods
+            hostPath:
+              path: /var/log/pods
+          - name: varlibdockercontainers
+            hostPath:
+              path: /var/lib/docker/containers
+        tolerations:
+          - effect: NoSchedule
+            operator: Exists
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: filebeat
+rules:
+  - apiGroups: [""]
+    resources:
+      - namespaces
+      - pods
+      - nodes
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources:
+      - replicasets
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["batch"]
+    resources:
+      - jobs
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: filebeat
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: filebeat
+subjects:
+  - kind: ServiceAccount
+    name: filebeat
+    namespace: elastic
+roleRef:
+  kind: ClusterRole
+  name: filebeat
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-ilm
+data:
+  policy.json: |
+    {
+      "policy": {
+        "phases": {
+          "hot": {
+            "min_age": "0ms",
+            "actions": {
+              "rollover": {
+                "max_primary_shard_size": "50gb",
+                "max_age": "1d"
+              }
+            }
+          },
+          "warm": {
+            "min_age": "4d",
+            "actions": {
+              "set_priority": {
+                "priority": 50
+              }
+            }
+          },
+          "cold": {
+            "min_age": "10d",
+            "actions": {
+              "set_priority": {
+                "priority": 0
+              }
+            }
+          },
+          "delete": {
+            "min_age": "21d",
+            "actions": {
+              "delete": {
+                "delete_searchable_snapshot": true
+              }
+            }
+          }
+        }
+      }
+    }

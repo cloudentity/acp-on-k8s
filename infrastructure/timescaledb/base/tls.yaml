@@ -1,0 +1,71 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: timescaledb-certificate
+spec:
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - localhost
+    - timescaledb
+    - timescaledb.timescaledb-${cluster_region}
+    - timescaledb.timescaledb-${cluster_region}.svc.cluster.local
+    - timescaledb-replica.timescaledb-${cluster_region}.svc.cluster.local
+  secretName: timescaledb-certificate
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: timescaledb-node-cert
+spec:
+  usages:
+    - digital signature
+    - key encipherment
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - localhost
+    - timescaledb
+    - timescaledb.timescaledb-${cluster_region}
+    - timescaledb.timescaledb-${cluster_region}.svc.cluster.local
+    - timescaledb-replica.timescaledb-${cluster_region}.svc.cluster.local
+  commonName: standby
+  secretName: timescaledb-node-cert
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: timescaledb-superuser-cert
+spec:
+  usages:
+    - digital signature
+    - key encipherment
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - localhost
+    - timescaledb
+    - timescaledb.timescaledb-${cluster_region}
+    - timescaledb.timescaledb-${cluster_region}.svc.cluster.local
+    - timescaledb-replica.timescaledb-${cluster_region}.svc.cluster.local
+  commonName: postgres
+  secretName: timescaledb-superuser-cert
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer

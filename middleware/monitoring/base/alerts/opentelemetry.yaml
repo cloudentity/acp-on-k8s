@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: opentelemetry
+spec:
+  groups:
+    - name: opentelemetry
+      rules:
+        - alert: OpentelemetryCollectorQueueSize
+          expr: otelcol_exporter_queue_size/otelcol_exporter_queue_capacity >= 0.85
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: Opentelemetry collector queue size is critical (pod {{ $labels.pod }} , region {{ $labels.region }} , instance {{ $labels.instance }})
+            description: "The queue size has reached 85%, VALUE = {{ $value }}."
+        - alert: OpentelemetryCollectorQueueSize
+          expr: otelcol_exporter_queue_size/otelcol_exporter_queue_capacity >= 0.5
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: Opentelemetry collector queue size is high (pod {{ $labels.pod }} , region {{ $labels.region }} , instance {{ $labels.instance }})
+            description: "The queue size has reached 50%, VALUE = {{ $value }}."

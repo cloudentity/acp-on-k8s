@@ -1,0 +1,39 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: eck-operator
+spec:
+  releaseName: elastic-operator
+  chart:
+    spec:
+      chart: eck-operator
+      sourceRef:
+        kind: HelmRepository
+        name: elastic
+        namespace: elastic
+      version: 2.6.1 # helm:autoupdate:eck-operator-prod
+  interval: 15m
+  timeout: 14m30s
+  # https://github.com/elastic/cloud-on-k8s/blob/main/deploy/eck-operator/values.yaml
+  values:
+    installCRDs: false
+    nodeSelector:
+      elastic: "true"
+    tolerations:
+      - key: elastic
+        value: "true"
+        effect: NoSchedule
+    createClusterScopedResources: true
+    podSecurityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+          - ALL
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault

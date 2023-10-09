@@ -1,0 +1,116 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: acp
+spec:
+  groups:
+    - name: acp
+      rules:
+        - alert: ACPLatencyHigh
+          expr: avg(histogram_quantile(0.9, rate(acp_http_duration_seconds_bucket[1m])) > 5) by (path, method, namespace)
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: ACP p90 latency on {{ $labels.method }} {{ $labels.path }} in namespace {{ $labels.namespace }} is higher than 5 seconds, VALUE = {{ $value }}
+            summary: ACP latency high
+        - alert: ACPLatencyHighPostgres
+          expr: avg(histogram_quantile(0.9, rate(acp_postgres_duration_seconds_bucket[1m])) > 3) by (operation, namespace)
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: ACP sql p90 latency on {{ $labels.operation }} in namespace {{ $labels.namespace }} is higher than 3 seconds, VALUE = {{ $value }}
+            summary: ACP sql latency high
+        - alert: ACPLatencyHighRedis
+          expr: avg(histogram_quantile(0.9, rate(acp_redis_duration_seconds_bucket[1m])) > 3) by (operation, namespace)
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: ACP redis p90 latency on {{ $labels.operation }} in namespace {{ $labels.namespace }} is higher than 3 seconds, VALUE = {{ $value }}
+            summary: ACP redis latency high
+        - alert: ACPRedisLagHigh
+          expr: avg(histogram_quantile(0.9, rate(acp_redis_lag_seconds_bucket[1m])) > 120) by (group, stream, pod, namespace)
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: ACP Redis Lag on pod {{ $labels.namespace }}/{{ $labels.pod }} is higher than 120 seconds for {{ $labels.group }}/{{ $labels.stream }}, VALUE = {{ $value }}
+            summary: ACP Redis lag high
+        - alert: ACPHighHttp4xxErrorRateInternal
+          expr: sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count{external=~"false", status_code=~"^4.."}[10m])) / sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count[10m])) > 5
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Multiple occurrences of HTTP requests to ACP with error code 4xx (> 5%) on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from internal source
+            summary: ACP high internal HTTP 4xx error rate
+        - alert: ACPHighHttp5xxErrorRateInternal
+          expr: sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count{external=~"false", status_code=~"^5.."}[10m])) / sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count[10m])) > 0
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Multiple occurrences of HTTP requests to ACP with error code 5xx on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from internal source
+            summary: ACP high internal HTTP 5xx error rate
+        - alert: ACPHttp5xxErrorInternal
+          expr: sum by (namespace, external, method, path) (max_over_time(acp_http_duration_seconds_count{status_code=~"^5..", external="false"}[10m]) - min_over_time(acp_http_duration_seconds_count{status_code=~"^5..", external="false"}[10m])) > 0
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Single HTTP request to ACP with error code 5xx on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from internal source
+            summary: ACP HTTP 5xx error
+        - alert: ACPHighHttp4xxErrorRateExternal
+          expr: sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count{external=~"true", status_code=~"^4.."}[10m])) / sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count[10m])) > 5
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Multiple occurrences of HTTP requests to ACP with error code 4xx (>5%) on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from external source
+            summary: ACP high HTTP 4xx error rate from external source
+        - alert: ACPHighHttp5xxErrorRateExternal
+          expr: sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count{external=~"true", status_code=~"^5.."}[1m])) / sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count[1m])) > 5
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Multiple occurrences of HTTP requests to ACP with error code 5xx (>5%) on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from external source
+            summary: ACP high HTTP 5xx error rate from external source
+        - alert: ACPAbnormalhHttpRequestsCount
+          expr: sum by (namespace) (rate(acp_http_duration_seconds_count[1m]) > 50)
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Abnormal HTTP requests (r/s) on env {{ $labels.namespace }} in region {{ $labels.region }},  VALUE = {{ $value }}
+            summary: ACP Abnormal HTTP requests
+        - alert: ImportJobFailed
+          annotations:
+            description:
+              Import job {{ $labels.namespace }}/{{ $labels.job_name }} failed to complete.
+              Removing failed job after investigation should clear this alert.
+            summary: Import job failed to complete.
+          expr: kube_job_failed{job="kube-state-metrics", job_name="acp-import"}  > 0
+          for: 5m
+          labels:
+            severity: warning
+        - alert: MigrationJobFailed
+          annotations:
+            description:
+              Migration job {{ $labels.namespace }}/{{ $labels.job_name }} failed to complete.
+              Removing failed job after investigation should clear this alert.
+            summary: Migration job failed to complete.
+          expr: kube_job_failed{job="kube-state-metrics", job_name="acp-migrate"}  > 0
+          for: 5m
+          labels:
+            severity: warning
+        - alert: RedisPendingMessages
+          expr: acp_redis_pending_count > 500
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Pending Messages on Redis
+            description: There are {{ $value }} pending messages for redis. Alert fires when there are more than 10 pending messages for 5 minutes.

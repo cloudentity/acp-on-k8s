@@ -1,0 +1,68 @@
+apiVersion: crdb.cockroachlabs.com/v1alpha1
+kind: CrdbCluster
+metadata:
+  name: cockroachdb-local
+spec:
+  image:
+    name: cockroachdb/cockroach
+  nodes: 3
+  additionalArgs:
+    - --locality=region=${cluster_region}
+  cache: 35%
+  maxSQLMemory: 35%
+  dataStore:
+    pvc:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: "2Gi"
+        volumeMode: Filesystem
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      memory: 2Gi
+  podEnvVariables:
+    - name: GOMEMLIMIT
+      value: "1500MiB"
+  nodeSelector:
+    cockroachdb: "true"
+  tolerations:
+    - key: cockroachdb
+      value: "true"
+      effect: NoSchedule
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: cockroachdb
+          app.kubernetes.io/instance: cockroachdb-local
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: cockroachdb
+              app.kubernetes.io/instance: cockroachdb-local
+          topologyKey: kubernetes.io/hostname
+  tlsEnabled: true
+  clientTLSSecret: cockroachdb-client-tls
+  nodeTLSSecret: cockroachdb-node-tls
+  ingress:
+    ui:
+      ingressClassName: private-nginx
+      annotations:
+        nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+        nginx.ingress.kubernetes.io/service-upstream: "true"
+        nginx.ingress.kubernetes.io/ssl-passthrough: "false"
+        cert-manager.io/cluster-issuer: "ca-issuer"
+      host: "cockroachdb.tools.${cluster_region}.${cluster_domain}"
+      tls:
+        - hosts:
+            - "cockroachdb.tools.${cluster_region}.${cluster_domain}"
+          secretName: cockroachdb-tls

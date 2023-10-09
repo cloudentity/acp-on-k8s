@@ -1,0 +1,84 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: acp
+spec:
+  values:
+    args:
+      - server
+      - start
+      - --demo
+      - --metrics
+      - --create-default-tenant
+      - --create-default-workspaces
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 2
+      targetCPUUtilizationPercentage: 70
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policies:
+            - type: Pods
+              value: 2
+              periodSeconds: 180
+        scaleUp:
+          stabilizationWindowSeconds: 60
+          policies:
+            - type: Pods
+              value: 4
+              periodSeconds: 30
+    config:
+      data:
+        otel:
+          propagators:
+            - jaeger
+            - tracecontext
+          jaeger:
+            header: "x-trace-id"
+    fission:
+      enabled: true
+      idleTimeout: 5m0s
+      poolsize: 5
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: fission
+                    operator: In
+                    values:
+                      - "true"
+      tolerations:
+        - key: fission
+          value: "true"
+          effect: NoSchedule
+      resources:
+        requests:
+          cpu: 10m
+          memory: 48Mi
+        limits:
+          cpu: 100m
+          memory: 96Mi
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              kind: PodDisruptionBudget
+              name: acp
+              version: v1
+            patch:
+              - op: add
+                path: /spec/selector/matchLabels
+                value:
+                  app.kubernetes.io/name: acp-primary
+          - target:
+              kind: PodDisruptionBudget
+              name: acp-workers
+              version: v1
+            patch:
+              - op: add
+                path: /spec/selector/matchLabels
+                value:
+                  app.kubernetes.io/name: acp-workers-primary

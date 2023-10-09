@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cockroachdb-local
+  labels:
+    app.kubernetes.io/component: database
+    app.kubernetes.io/instance: cockroachdb-local
+    app.kubernetes.io/name: cockroachdb
+spec:
+  endpoints:
+    - path: /_status/vars
+      port: http
+      tlsConfig:
+        insecureSkipVerify: true
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: database
+      app.kubernetes.io/instance: cockroachdb-local
+      app.kubernetes.io/name: cockroachdb
+      monitoring: "true"

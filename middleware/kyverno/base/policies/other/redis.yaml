@@ -1,0 +1,123 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: redis-add-nodeselector
+  annotations:
+    policies.kyverno.io/title: Add Karpenter nodeSelector
+    policies.kyverno.io/category: Karpenter
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/subject: Pod
+    policies.kyverno.io/minversion: 1.6.0
+    policies.kyverno.io/description: >-
+      Selecting the correct Node(s) provisioned by Karpenter is a way to specify
+      the appropriate resource landing zone or node for a workload. This policy injects a
+      nodeSelector map into the Pod based on the Namespace type where it is deployed.
+spec:
+  failurePolicy: Fail
+  rules:
+    - name: zoneA
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - redis
+                - redis-*
+              names:
+                - redis*cluster-0
+                - redis*cluster-3
+                - redis*cluster-6
+                - redis*cluster-9
+                - redis*cluster-12
+                - redis*cluster-15
+                - redis*cluster-18
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              topology.kubernetes.io/zone: ${cluster_region}a
+          spec:
+            nodeSelector:
+              topology.kubernetes.io/zone: ${cluster_region}a
+    - name: zoneB
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - redis
+                - redis-*
+              names:
+                - redis*cluster-1
+                - redis*cluster-4
+                - redis*cluster-7
+                - redis*cluster-10
+                - redis*cluster-13
+                - redis*cluster-16
+                - redis*cluster-19
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              topology.kubernetes.io/zone: ${cluster_region}b
+          spec:
+            nodeSelector:
+              topology.kubernetes.io/zone: ${cluster_region}b
+    - name: zoneC
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+              namespaces:
+                - redis
+                - redis-*
+              names:
+                - redis*cluster-2
+                - redis*cluster-5
+                - redis*cluster-8
+                - redis*cluster-11
+                - redis*cluster-14
+                - redis*cluster-17
+                - redis*cluster-20
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            labels:
+              topology.kubernetes.io/zone: ${cluster_region}c
+          spec:
+            nodeSelector:
+              topology.kubernetes.io/zone: ${cluster_region}c
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: redis-add-reloader-annotation
+  annotations:
+    policies.kyverno.io/category: Other
+    policies.kyverno.io/subject: StatefulSet,Annotation
+    policies.kyverno.io/minversion: 1.4.3
+    policies.kyverno.io/description: >-
+      Add reloader annotation on statefulset created by redis helm.
+spec:
+  failurePolicy: Fail
+  rules:
+    - name: add-reloader-annotation
+      match:
+        any:
+          - resources:
+              kinds:
+                - StatefulSet
+              namespaces:
+                - redis
+                - "redis-${cluster_region}"
+              names:
+                - redis-cluster
+                - redis-local-redis-cluster
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            annotations:
+              secret.reloader.stakater.com/reload: "redis-tls,redis-cluster-tls"

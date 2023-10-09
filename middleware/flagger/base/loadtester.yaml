@@ -1,0 +1,72 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: loadtester
+spec:
+  releaseName: loadtester
+  chart:
+    spec:
+      chart: loadtester
+      sourceRef:
+        kind: HelmRepository
+        name: flagger
+        namespace: flagger
+      version: 0.29.0 # helm:autoupdate:loadtester-prod
+  interval: 5m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/fluxcd/flagger/blob/main/charts/loadtester/values.yaml
+  values:
+    replicaCount: 2
+    podDisruptionBudget:
+      enabled: true
+    rbac:
+      create: true
+    securityContext:
+      enabled: true
+      context:
+        readOnlyRootFilesystem: true
+        runAsUser: 100
+        runAsGroup: 101
+        runAsNonRoot: true
+        allowPrivilegeEscalation: false
+        seccompProfile:
+          type: RuntimeDefault
+        capabilities:
+          drop:
+            - ALL
+          add: ["NET_BIND_SERVICE"]
+    nodeSelector:
+      system: "true"
+    tolerations:
+      - key: system
+        value: "true"
+        effect: NoSchedule
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app: loadtester
+                app.kubernetes.io/name: loadtester
+            topologyKey: kubernetes.io/hostname
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              kind: Deployment
+              name: loadtester
+              version: v1
+            patch:
+              - op: add
+                path: /spec/template/spec/topologySpreadConstraints
+                value:
+                  - labelSelector:
+                      matchLabels:
+                        app: loadtester
+                        app.kubernetes.io/name: loadtester
+                    maxSkew: 1
+                    topologyKey: topology.kubernetes.io/zone
+                    whenUnsatisfiable: ScheduleAnyway

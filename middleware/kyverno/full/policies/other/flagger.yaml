@@ -1,0 +1,51 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: flagger-remove-cert-issuer-annotation
+  annotations:
+    policies.kyverno.io/category: Other
+    policies.kyverno.io/subject: Ingress,Annotation
+    policies.kyverno.io/minversion: 1.4.3
+    policies.kyverno.io/description: >-
+      Disable cert-issuer annotation on canary ingress created by flagger.
+spec:
+  failurePolicy: Fail
+  rules:
+    - name: remove-cert-issuer-annotation
+      match:
+        any:
+          - resources:
+              kinds:
+                - Ingress
+              names:
+                - "*-canary"
+      mutate:
+        patchesJson6902: |-
+          - path: /metadata/annotations/cert-manager.io~1cluster-issuer
+            op: remove
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: flagger-remove-reloader-annotation
+  annotations:
+    policies.kyverno.io/category: Other
+    policies.kyverno.io/subject: Deployment,Annotation
+    policies.kyverno.io/minversion: 1.4.3
+    policies.kyverno.io/description: >-
+      Disable reloader annotation on primary deployments created by flagger.
+spec:
+  failurePolicy: Fail
+  rules:
+    - name: remove-reloader-annotation
+      match:
+        any:
+          - resources:
+              kinds:
+                - Deployment
+              names:
+                - "*-primary"
+      mutate:
+        patchesJson6902: |-
+          - path: /metadata/annotations/reloader.stakater.com~1auto
+            op: remove

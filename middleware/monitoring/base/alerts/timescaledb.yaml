@@ -1,0 +1,62 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: timescaledb
+spec:
+  groups:
+    - name: timescaledb
+      rules:
+        # Alert if replication is not streaming
+        - alert: TimescaledbReplicationNotActive
+          expr: count(pg_stat_replication_pg_current_wal_lsn_bytes{job="timescaledb-prometheus"} offset 1h) by (namespace) unless count(pg_stat_replication_pg_current_wal_lsn_bytes{job="timescaledb-prometheus"}) by (namespace)
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            description: Replication is not active {{ $labels.env }}/{{ $labels.region}} for more than 15 minutes.
+            summary: Replication not active
+        # Alert if postgres exporter is not ready
+        - alert: PostgresExporterErrors
+          expr: pg_exporter_last_scrape_error{job="timescaledb-prometheus"} == 1
+          for: 15m
+          annotations:
+            description: timescaledb postgres-exporter {{ $labels.namespace }}/{{ $labels.pod }} is not running or it is showing errors for more than 15 minutes.
+            summary: Instance {{ $labels.pod }} is down or is showing errors
+        # Too many open connections to database
+        - alert: TooManyOpenConnections
+          expr: sum by (pod,namespace) (pg_stat_activity_count{datname="acpdb"}) > 50
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            description: Timescaledb too many connections {{ $labels.namespace }}/{{ $labels.pod }}  for more than 5 minutes.
+            summary: Too many connections to {{ $labels.pod }}
+        # Timescaledb incremental and full backup job failed
+        - alert: TimescaledbIncrementalBackupJobFailed
+          annotations:
+            description:
+              Timescaledb incremental backup job {{ $labels.namespace }}/{{ $labels.job_name }} failed to complete.
+              Removing failed job after investigation should clear this alert.
+            summary: Incremental backup job failed to complete.
+          expr: sum(kube_job_failed{job="kube-state-metrics", job_name=~"timescaledb-incr-hourly.*"})  > 1
+          for: 15m
+          labels:
+            severity: warning
+        - alert: TimescaledbFullBackupJobFailed
+          annotations:
+            description:
+              Timescaledb full backup job {{ $labels.namespace }}/{{ $labels.job_name }} failed to complete.
+              Removing failed job after investigation should clear this alert.
+            summary: Full backup job failed to complete.
+          expr: kube_job_failed{job="kube-state-metrics", job_name=~"timescaledb-full-daily.*"}  > 0
+          for: 15m
+          labels:
+            severity: warning
+        - alert: TimescaledbAggregationJobFailed
+          annotations:
+            description: Timescaledb aggregation job for table {{ $labels.hypertable_name }} with job_id {{ $labels.job_id }}  failed to complete.
+            summary: Aggregation job failed to complete.
+          expr: sql_timescaledb_agreggation_job_status < 1
+          for: 15m
+          labels:
+            severity: warning

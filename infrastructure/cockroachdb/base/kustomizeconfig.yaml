@@ -1,0 +1,3 @@
+images:
+  - kind: CrdbCluster
+    path: /spec/image/name

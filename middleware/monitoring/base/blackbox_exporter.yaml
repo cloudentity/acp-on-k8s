@@ -1,0 +1,56 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: blackbox-exporter
+spec:
+  releaseName: blackbox-exporter
+  chart:
+    spec:
+      chart: prometheus-blackbox-exporter
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus
+        namespace: monitoring
+      version: 8.2.0 # helm:autoupdate:blackbox-exporter-prod
+  interval: 60m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-blackbox-exporter/values.yaml
+  values:
+    config:
+      modules:
+        tcp_connect_tls:
+          prober: tcp
+          tcp:
+            tls: true
+            preferred_ip_protocol: "ip4"
+            tls_config:
+              insecure_skip_verify: true
+    serviceMonitor:
+      selfMonitor:
+        enabled: true
+      enabled: true
+      defaults:
+        additionalMetricsRelabels: {}
+        additionalRelabeling: []
+        labels: {}
+        interval: 3600s
+        scrapeTimeout: 30s
+        module: tcp_connect_tls
+      targets:
+        - name: redis
+          url: redis-local-redis-cluster-headless.redis:6379
+        - name: spicedb
+          url: spicedb.spicedb:50051
+        - name: grafana
+          url: http://kube-prometheus-stack-grafana.monitoring/api/health
+          module: http_2xx
+        - name: prometheus
+          url: http://prometheus-prometheus.monitoring:9090/-/ready
+          module: http_2xx
+    pspEnabled: false # removed in Kubernetes 1.25+
+    podSecurityContext:
+      seccompProfile:
+        type: RuntimeDefault

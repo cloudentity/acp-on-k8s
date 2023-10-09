@@ -1,0 +1,47 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: elastic-admin-role
+stringData:
+  roles.yml: |-
+    kibana_admin_user:
+      cluster: ['manage_security', 'manage_service_account', 'manage']
+      indices: [
+        {
+          "names": [ "*" ],
+          "privileges": [ "manage" ]
+        }
+      ]
+      applications: []
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: elastic-prometheus-role
+stringData:
+  roles.yml: |-
+    prometheus:
+      cluster: ['monitor', 'monitor_snapshot', 'read_ilm', 'read_ccr', 'read_pipeline', "cluster:admin/snapshot/status", "cluster:admin/repository/get"]
+      indices: [
+        {
+          "names": [ "*" ],
+          "privileges": [ "read", "monitor", "view_index_metadata" ]
+        }
+      ]
+      applications: []
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: elastic-setup-role
+stringData:
+  roles.yml: |-
+    elastic_setup:
+      cluster: ['manage', 'manage_slm', 'manage_ilm']
+      indices: [
+        {
+          "names": [ "*" ],
+          "privileges": [ "read", "monitor", "manage" ]
+        }
+      ]
+      applications: []

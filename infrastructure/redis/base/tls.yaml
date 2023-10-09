@@ -1,0 +1,32 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: redis-cert
+spec:
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - localhost
+    - "127.0.0.1"
+    - redis-local-redis-cluster
+    - redis-local-redis-cluster.redis
+    - redis-local-redis-cluster.redis.svc.cluster.local
+    - "*.redis-local-redis-cluster"
+    - "*.redis-local-redis-cluster.redis"
+    - "*.redis-local-redis-cluster.redis.svc.cluster.local"
+    - redis-local-redis-cluster-headless
+    - redis-local-redis-cluster-headless.redis
+    - redis-local-redis-cluster-headless.redis.svc.cluster.local
+    - "*.redis-local-redis-cluster-headless"
+    - "*.redis-local-redis-cluster-headless.redis"
+    - "*.redis-local-redis-cluster-headless.redis.svc.cluster.local"
+  secretName: redis-tls
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer

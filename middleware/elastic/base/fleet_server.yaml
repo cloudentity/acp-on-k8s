@@ -1,0 +1,67 @@
+apiVersion: agent.k8s.elastic.co/v1alpha1
+kind: Agent
+metadata:
+  name: apm-fleet-server
+spec:
+  version: 8.7.0
+  kibanaRef:
+    name: kibana
+  elasticsearchRefs:
+    - name: elastic
+  mode: fleet
+  fleetServerEnabled: true
+  secureSettings:
+    - secretName: apm-token
+  deployment:
+    replicas: 1
+    podTemplate:
+      spec:
+        affinity:
+          podAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchLabels:
+                      elasticsearch.k8s.elastic.co/statefulset-name: elastic-es-hot-nodes
+                  topologyKey: kubernetes.io/hostname
+        serviceAccountName: fleet-server
+        automountServiceAccountToken: true
+        containers:
+          - name: agent
+            securityContext:
+              runAsUser: 0
+              capabilities:
+                drop:
+                  - ALL
+                add: ["NET_BIND_SERVICE"]
+              allowPrivilegeEscalation: false
+              seccompProfile:
+                type: "RuntimeDefault"
+            image: docker.elastic.co/beats/elastic-agent:8.7.0
+            resources:
+              requests:
+                memory: 200Mi
+              limits:
+                memory: 400Mi
+        nodeSelector:
+          elastic: "true"
+        tolerations:
+          - key: elastic
+            value: "true"
+            effect: NoSchedule
+        volumes:
+          - name: agent-data
+            emptyDir: {}
+        securityContext:
+          capabilities:
+            drop:
+              - ALL
+            add: ["NET_BIND_SERVICE"]
+          fsGroup: 1000
+          seccompProfile:
+            type: "RuntimeDefault"
+  http:
+    tls:
+      certificate:
+        secretName: apm-tls

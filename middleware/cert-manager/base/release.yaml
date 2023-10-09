@@ -1,0 +1,69 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: cert-manager
+spec:
+  releaseName: cert-manager
+  chart:
+    spec:
+      chart: cert-manager
+      sourceRef:
+        kind: HelmRepository
+        name: jetstack
+        namespace: cert-manager
+      version: v1.12.3 # helm:autoupdate:cert-manager-prod
+  interval: 5m
+  install:
+    remediation:
+      retries: 3
+  # Default values
+  # https://github.com/jetstack/cert-manager/blob/master/deploy/charts/cert-manager/values.yaml
+  values:
+    extraArgs:
+      - "--dns01-recursive-nameservers-only"
+      - "--dns01-recursive-nameservers=8.8.8.8:53,1.1.1.1:53"
+    resources:
+      requests:
+        cpu: 10m
+        memory: 128Mi
+      limits:
+        memory: 512Mi
+    nodeSelector:
+      system: "true"
+    tolerations:
+      - key: system
+        value: "true"
+        effect: NoSchedule
+    webhook:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          memory: 64Mi
+      nodeSelector:
+        system: "true"
+      tolerations:
+        - key: system
+          value: "true"
+          effect: NoSchedule
+    cainjector:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 128Mi
+        limits:
+          memory: 512Mi
+      nodeSelector:
+        system: "true"
+      tolerations:
+        - key: system
+          value: "true"
+          effect: NoSchedule
+    startupapicheck:
+      nodeSelector:
+        system: "true"
+      tolerations:
+        - key: system
+          value: "true"
+          effect: NoSchedule

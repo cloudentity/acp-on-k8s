@@ -1,0 +1,40 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cockroachdb
+spec:
+  groups:
+    - name: cockroachdb
+      rules:
+        - alert: InstanceFlapping
+          expr: resets(sys_uptime[10m]) > 1
+          annotations:
+            description: Pod {{ $labels.namespace }}/{{ $labels.pod }} restarted {{ $value }} time(s) in 10m
+            summary: Instance {{ $labels.pod }} flapping
+        - alert: UnavailableRanges
+          expr: sum by(pod, namespace) (ranges_unavailable) > 0
+          for: 10m
+          annotations:
+            summary: Pod {{ $labels.namespace }}/{{ $labels.pod }} has {{ $value }} unavailable ranges
+        - alert: ClockOffsetNearMax
+          expr: clock_offset_meannanos > 300 * 1000 * 1000
+          for: 5m
+          annotations:
+            summary: Clock on pod {{ $labels.namespace }}/{{ $labels.pod }} as measured by cockroach is offset by {{ $value }} nanoseconds from the cluster mean
+        - alert: CACertificateExpiresSoon
+          expr: security_certificate_expiration_ca - time() < 86400 * 14
+          labels:
+            frequency: daily
+          annotations:
+            summary: CA certificate for {{ $labels.namespace }}/{{ $labels.pod }} expires in less than a month
+        - alert: NodeCertificateExpiresSoon
+          expr: security_certificate_expiration_node - time() < 86400 * 14
+          labels:
+            frequency: daily
+          annotations:
+            summary: Node certificate for {{ $labels.namespace }}/{{ $labels.pod }} expires in less than a month
+        - alert: CockroachBackupFailed
+          expr: increase(schedules_BACKUP_failed[1h]) > 0
+          annotations:
+            description: Backup from pod {{ $labels.pod }} has failed.
+            summary: CockroachDB backup has failed
