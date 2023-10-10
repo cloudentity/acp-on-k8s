@@ -59,6 +59,7 @@ endif
 ifeq ($(filter $(MODE),dev base),)
 	$(RUN) time kubectl wait kustomization/monitoring        --for=condition=ready --timeout=15m --namespace flux-system
 endif
+	$(RUN) time kubectl wait kustomization/acp-faas          --for=condition=ready --timeout=5m  --namespace flux-system
 	$(RUN) time kubectl wait kustomization/lightweight-tests --for=condition=ready --timeout=5m  --namespace flux-system
 	$(RUN) time kubectl wait kustomization/acp               --for=condition=ready --timeout=15m --namespace flux-system
 

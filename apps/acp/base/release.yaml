@@ -239,3 +239,27 @@ spec:
           maxSkew: 1
           topologyKey: topology.kubernetes.io/zone
           whenUnsatisfiable: ScheduleAnyway
+    fission:
+      enabled: true
+      idleTimeout: 5m0s
+      poolsize: 2
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: fission
+                    operator: In
+                    values:
+                      - "true"
+      tolerations:
+        - key: fission
+          value: "true"
+          effect: NoSchedule
+      resources:
+        requests:
+          cpu: 10m
+          memory: 48Mi
+        limits:
+          cpu: 100m
+          memory: 96Mi

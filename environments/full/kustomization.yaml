@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - ../base
-  - apps.yaml
   - middleware.yaml
 patches:
   - target:
