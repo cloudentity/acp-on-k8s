@@ -15,7 +15,7 @@ spec:
   ingressRef:
     apiVersion: networking.k8s.io/v1
     kind: Ingress
-    name: public-ingress-acp-nlb
+    name: acp
   progressDeadlineSeconds: 300
   service:
     port: 8443

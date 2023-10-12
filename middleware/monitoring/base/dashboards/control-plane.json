@@ -8,22 +8,45 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
+      },
+      {
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
+        "enable": true,
+        "iconColor": "red",
+        "name": "flux events",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": ["flux"],
+          "type": "tags"
+        }
       }
     ]
   },
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1596541513301,
+  "id": 29,
+  "iteration": 1639041352219,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "datasource": "${DS_PROMETHEUS}",
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "decimals": 0,
           "mappings": [],
           "thresholds": {
@@ -60,12 +83,13 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "value"
       },
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
-          "expr": "sum(go_info{kubernetes_namespace=\"$namespace\",kubernetes_pod_name=~\".*-controller-.*\"})",
+          "expr": "sum(go_info{namespace=\"$namespace\",pod=~\".*-controller-.*\"})",
           "interval": "",
           "legendFormat": "pods",
           "refId": "A"
@@ -81,7 +105,6 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -121,12 +144,13 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
-          "expr": "max(workqueue_longest_running_processor_seconds{kubernetes_namespace=\"$namespace\",kubernetes_pod_name=~\".*-controller-.*\"})",
+          "expr": "max(workqueue_longest_running_processor_seconds{namespace=\"$namespace\",pod=~\".*-controller-.*\"})",
           "hide": false,
           "interval": "",
           "legendFormat": "seconds",
@@ -143,7 +167,6 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {},
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -181,12 +204,13 @@
           "values": false
         },
         "showThresholdLabels": false,
-        "showThresholdMarkers": true
+        "showThresholdMarkers": true,
+        "text": {}
       },
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
-          "expr": "sum(go_memstats_alloc_bytes{kubernetes_namespace=\"$namespace\",kubernetes_pod_name=~\".*-controller-.*\"})",
+          "expr": "sum(go_memstats_alloc_bytes{namespace=\"$namespace\",pod=~\".*-controller-.*\"})",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -202,9 +226,6 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "align": null
-          },
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -243,12 +264,13 @@
           "fields": "",
           "values": false
         },
+        "text": {},
         "textMode": "auto"
       },
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "targets": [
         {
-          "expr": "sum(rate(rest_client_requests_total{kubernetes_namespace=\"$namespace\",kubernetes_pod_name=~\".*-controller-.*\"}[1m]))",
+          "expr": "sum(rate(rest_client_requests_total{namespace=\"$namespace\",pod=~\".*-controller-.*\"}[1m]))",
           "interval": "",
           "legendFormat": "requests",
           "refId": "A"
@@ -260,131 +282,6 @@
       "type": "stat"
     },
     {
-      "collapsed": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 5
-      },
-      "id": 15,
-      "panels": [],
-      "title": "Resource Usage",
-      "type": "row"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "${DS_PROMETHEUS}",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 6
-      },
-      "hiddenSeries": false,
-      "id": 8,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": true,
-        "max": false,
-        "min": false,
-        "rightSide": false,
-        "show": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "percentage": false,
-      "pluginVersion": "7.1.1",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.50, sum(rate(rest_client_request_latency_seconds_bucket{kubernetes_namespace=\"$namespace\"}[5m])) by (le))",
-          "interval": "",
-          "legendFormat": "P50",
-          "refId": "A"
-        },
-        {
-          "expr": "histogram_quantile(0.90, sum(rate(rest_client_request_latency_seconds_bucket{kubernetes_namespace=\"$namespace\"}[5m])) by (le))",
-          "hide": true,
-          "interval": "",
-          "legendFormat": "P90",
-          "refId": "B"
-        },
-        {
-          "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_latency_seconds_bucket{kubernetes_namespace=\"$namespace\"}[5m])) by (le))",
-          "hide": false,
-          "interval": "",
-          "legendFormat": "P99",
-          "refId": "C"
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Kubernetes API Requests Duration",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "$$hashKey": "object:912",
-          "format": "s",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "$$hashKey": "object:913",
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -392,19 +289,13 @@
       "datasource": "${DS_PROMETHEUS}",
       "decimals": null,
       "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 6
+        "w": 24,
+        "x": 0,
+        "y": 5
       },
       "hiddenSeries": false,
       "id": 21,
@@ -422,8 +313,11 @@
       "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -433,14 +327,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(rest_client_requests_total{kubernetes_namespace=\"$namespace\"}[1m]))",
+          "expr": "sum(rate(rest_client_requests_total{namespace=\"$namespace\"}[1m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "total",
           "refId": "A"
         },
         {
-          "expr": "sum(rate(rest_client_requests_total{kubernetes_namespace=\"$namespace\",code!~\"2..\"}[1m]))",
+          "expr": "sum(rate(rest_client_requests_total{namespace=\"$namespace\",code!~\"2..\"}[1m]))",
           "hide": false,
           "interval": "",
           "legendFormat": "errors",
@@ -492,17 +386,29 @@
       }
     },
     {
+      "collapsed": false,
+      "datasource": "${DS_PROMETHEUS}",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 15,
+      "panels": [],
+      "title": "Resource Usage",
+      "type": "row"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_PROMETHEUS}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -526,8 +432,11 @@
       "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -537,9 +446,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(process_cpu_seconds_total{kubernetes_namespace=\"$namespace\",kubernetes_pod_name=~\".*-controller-.*\"}[1m])",
+          "expr": "rate(process_cpu_seconds_total{namespace=\"$namespace\",pod=~\".*-controller-.*\"}[1m])",
           "interval": "",
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{pod}}",
           "refId": "A"
         }
       ],
@@ -592,12 +501,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_PROMETHEUS}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -621,8 +524,11 @@
       "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -632,10 +538,10 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(go_memstats_alloc_bytes_total{kubernetes_namespace=\"$namespace\",kubernetes_pod_name=~\".*-controller-.*\"}[1m])",
+          "expr": "sum(container_memory_working_set_bytes{namespace=\"$namespace\",container!=\"POD\",container!=\"\",pod=~\".*-controller-.*\"}) by (pod)",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{pod}}",
           "refId": "A"
         }
       ],
@@ -686,6 +592,10 @@
     {
       "collapsed": false,
       "datasource": "${DS_PROMETHEUS}",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -703,12 +613,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_PROMETHEUS}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -733,8 +637,11 @@
       "lines": true,
       "linewidth": 1,
       "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -802,17 +709,11 @@
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 2,
       "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 9,
-        "w": 12,
+        "h": 8,
+        "w": 24,
         "x": 0,
         "y": 34
       },
@@ -833,7 +734,7 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -901,6 +802,24 @@
       }
     },
     {
+      "collapsed": false,
+      "datasource": "${DS_PROMETHEUS}",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      },
+      "id": 29,
+      "panels": [],
+      "title": "Sources Stats",
+      "type": "row"
+    },
+    {
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -908,19 +827,13 @@
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 2,
       "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 12,
-        "x": 12,
-        "y": 34
+        "x": 0,
+        "y": 43
       },
       "hiddenSeries": false,
       "id": 4,
@@ -939,7 +852,7 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -967,7 +880,307 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Git Sources ops/min",
+      "title": "Git Repos ops/min",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:285",
+          "format": "opm",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:286",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_PROMETHEUS}",
+      "decimals": 2,
+      "description": "",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 43
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "8.2.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": true,
+      "targets": [
+        {
+          "expr": "sum(increase(controller_runtime_reconcile_total{controller=\"ocirepository\",result!=\"error\"}[1m]))",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "successful oci pulls",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(increase(controller_runtime_reconcile_total{controller=\"ocirepository\",result=\"error\"}[1m]))",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "failed oci pulls",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "OCI Repos ops/min",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:285",
+          "format": "opm",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:286",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_PROMETHEUS}",
+      "decimals": 2,
+      "description": "",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 52
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "8.2.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": true,
+      "targets": [
+        {
+          "expr": "sum(increase(controller_runtime_reconcile_total{controller=\"helmrepository\",result!=\"error\"}[1m]))",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "successful helm pulls",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(increase(controller_runtime_reconcile_total{controller=\"helmrepository\",result=\"error\"}[1m]))",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "failed helm pulls",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Helm Repos ops/min",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:285",
+          "format": "opm",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:286",
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "${DS_PROMETHEUS}",
+      "decimals": 2,
+      "description": "",
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 52
+      },
+      "hiddenSeries": false,
+      "id": 4,
+      "legend": {
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": true,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "percentage": false,
+      "pluginVersion": "8.2.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": true,
+      "targets": [
+        {
+          "expr": "sum(increase(controller_runtime_reconcile_total{controller=\"bucket\",result!=\"error\"}[1m]))",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "successful bucket pulls",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(increase(controller_runtime_reconcile_total{controller=\"bucket\",result=\"error\"}[1m]))",
+          "format": "time_series",
+          "interval": "",
+          "legendFormat": "failed bucket pulls",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Buckets ops/min",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1009,11 +1222,15 @@
     {
       "collapsed": false,
       "datasource": "${DS_PROMETHEUS}",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 43
+        "y": 61
       },
       "id": 19,
       "panels": [],
@@ -1026,19 +1243,13 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "${DS_PROMETHEUS}",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 62
       },
       "hiddenSeries": false,
       "id": 9,
@@ -1057,7 +1268,7 @@
       "linewidth": 1,
       "nullPointMode": "null as zero",
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1139,19 +1350,13 @@
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 2,
       "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 52
+        "y": 70
       },
       "hiddenSeries": false,
       "id": 5,
@@ -1170,7 +1375,7 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1245,19 +1450,13 @@
       "datasource": "${DS_PROMETHEUS}",
       "decimals": 2,
       "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 52
+        "y": 70
       },
       "hiddenSeries": false,
       "id": 6,
@@ -1276,7 +1475,7 @@
       "linewidth": 1,
       "nullPointMode": "null",
       "percentage": false,
-      "pluginVersion": "7.1.1",
+      "pluginVersion": "8.2.3",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -1345,9 +1544,9 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 26,
+  "schemaVersion": 31,
   "style": "light",
-  "tags": ["gitops-toolkit"],
+  "tags": ["flux"],
   "templating": {
     "list": [
       {
@@ -1356,6 +1555,8 @@
           "text": "Prometheus",
           "value": "Prometheus"
         },
+        "description": null,
+        "error": null,
         "hide": 2,
         "includeAll": false,
         "label": null,
@@ -1377,19 +1578,23 @@
         },
         "datasource": "${DS_PROMETHEUS}",
         "definition": "workqueue_work_duration_seconds_count",
+        "description": null,
+        "error": null,
         "hide": 0,
         "includeAll": false,
         "label": null,
         "multi": false,
         "name": "namespace",
         "options": [],
-        "query": "workqueue_work_duration_seconds_count",
+        "query": {
+          "query": "workqueue_work_duration_seconds_count",
+          "refId": "Prometheus-namespace-Variable-Query"
+        },
         "refresh": 2,
         "regex": "/.*namespace=\"([^\"]*).*/",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -1414,7 +1619,7 @@
     ]
   },
   "timezone": "",
-  "title": "GitOps Toolkit Control Plane",
-  "uid": "gitops-toolkit-control-plane",
-  "version": 1
+  "title": "Flux Control Plane",
+  "uid": "flux-control-plane",
+  "version": 2
 }

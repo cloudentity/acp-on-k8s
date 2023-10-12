@@ -19,10 +19,16 @@ spec:
   # Default values
   # https://github.com/kyverno/policy-reporter/blob/main/charts/policy-reporter/values.yaml
   values:
+    nodeSelector:
+      clusterCritical: "true"
+    tolerations:
+      - key: CriticalAddonsOnly
+        value: "true"
+        effect: NoSchedule
     monitoring:
       enabled: true
       grafana:
-        dashboard:
+        dashboards:
           enabled: false
     resources:
       requests:

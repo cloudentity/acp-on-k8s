@@ -50,10 +50,6 @@ spec:
       resource:
         mem:
           limits: 32Mi
-      securityContext:
-        enabled: true
-        seccompProfile:
-          type: RuntimeDefault
     router:
       resources:
         requests:

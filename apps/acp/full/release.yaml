@@ -37,6 +37,14 @@ spec:
             - tracecontext
           jaeger:
             header: "x-trace-id"
+    certManager:
+      extraNames:
+        - acp-primary
+        - acp-primary.acp
+        - acp-primary.acp.svc.cluster.local
+        - acp-canary
+        - acp-canary.acp
+        - acp-canary.acp.svc.cluster.local
   postRenderers:
     - kustomize:
         patchesJson6902:

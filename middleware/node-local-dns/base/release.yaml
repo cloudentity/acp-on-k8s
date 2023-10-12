@@ -25,3 +25,9 @@ spec:
       skipTeardown: false
     serviceMonitor:
       enabled: true
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
+      capabilities:
+        add:
+          - NET_ADMIN

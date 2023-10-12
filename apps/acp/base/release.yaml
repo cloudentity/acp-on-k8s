@@ -80,10 +80,6 @@ spec:
     certManager:
       enabled: true
       commonName: postgres
-      extraNames:
-        - acp-primary
-        - acp-primary.acp
-        - acp-primary.acp.svc.cluster.local
     serverURL: "https://{{tenantID}}.${cluster_region_domain}:8443"
     sql:
       url: "postgres://acp@cockroachdb-local-public.cockroachdb-${cluster_region}:26257/${cockroachdb_database}?sslcert=%2Ftls%2Ftls.crt&sslkey=%2Ftls%2Ftls.key&sslmode=verify-full&sslrootcert=%2Ftls%2Fca.crt&pool_max_conn_lifetime=3m"
