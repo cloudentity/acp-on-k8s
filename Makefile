@@ -39,29 +39,30 @@ deploy:
 		--source=flux-system \
 		--wait=true \
 		--path=./clusters/${MODE}
+
 wait:
-	$(RUN) time kubectl wait kustomization/cluster           --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) time kubectl wait kustomization/crds              --for=condition=ready --timeout=5m  --namespace flux-system
+	$(RUN) kubectl wait kustomization/cluster           --for=condition=ready --timeout=5m  --namespace flux-system
+	$(RUN) kubectl wait kustomization/crds              --for=condition=ready --timeout=5m  --namespace flux-system
 ifeq ($(filter $(MODE),dev),)
-	$(RUN) time kubectl wait kustomization/kyverno           --for=condition=ready --timeout=5m  --namespace flux-system
+	$(RUN) kubectl wait kustomization/kyverno           --for=condition=ready --timeout=5m  --namespace flux-system
 endif
-	$(RUN) time kubectl wait kustomization/cert-manager      --for=condition=ready --timeout=5m  --namespace flux-system
+	$(RUN) kubectl wait kustomization/cert-manager      --for=condition=ready --timeout=5m  --namespace flux-system
 ifeq ($(filter $(MODE),dev base),)
-	$(RUN) time kubectl wait kustomization/keda              --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) time kubectl wait kustomization/reloader          --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) time kubectl wait kustomization/metrics-server    --for=condition=ready --timeout=5m  --namespace flux-system
+	$(RUN) kubectl wait kustomization/keda              --for=condition=ready --timeout=5m  --namespace flux-system
+	$(RUN) kubectl wait kustomization/reloader          --for=condition=ready --timeout=5m  --namespace flux-system
+	$(RUN) kubectl wait kustomization/metrics-server    --for=condition=ready --timeout=5m  --namespace flux-system
 endif
-	$(RUN) time kubectl wait kustomization/nginx             --for=condition=ready --timeout=30m --namespace flux-system
-	$(RUN) time kubectl wait kustomization/cockroachdb       --for=condition=ready --timeout=30m --namespace flux-system
-	$(RUN) time kubectl wait kustomization/spicedb           --for=condition=ready --timeout=30m --namespace flux-system
-	$(RUN) time kubectl wait kustomization/redis             --for=condition=ready --timeout=30m --namespace flux-system
-	$(RUN) time kubectl wait kustomization/timescaledb       --for=condition=ready --timeout=30m --namespace flux-system
+	$(RUN) kubectl wait kustomization/nginx             --for=condition=ready --timeout=30m --namespace flux-system
+	$(RUN) kubectl wait kustomization/cockroachdb       --for=condition=ready --timeout=30m --namespace flux-system
+	$(RUN) kubectl wait kustomization/spicedb           --for=condition=ready --timeout=30m --namespace flux-system
+	$(RUN) kubectl wait kustomization/redis             --for=condition=ready --timeout=30m --namespace flux-system
+	$(RUN) kubectl wait kustomization/timescaledb       --for=condition=ready --timeout=30m --namespace flux-system
 ifeq ($(filter $(MODE),dev base),)
-	$(RUN) time kubectl wait kustomization/monitoring        --for=condition=ready --timeout=15m --namespace flux-system
+	$(RUN) kubectl wait kustomization/monitoring        --for=condition=ready --timeout=15m --namespace flux-system
 endif
-	$(RUN) time kubectl wait kustomization/acp-faas          --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) time kubectl wait kustomization/lightweight-tests --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) time kubectl wait kustomization/acp               --for=condition=ready --timeout=15m --namespace flux-system
+	$(RUN) kubectl wait kustomization/acp-faas          --for=condition=ready --timeout=5m  --namespace flux-system
+	$(RUN) kubectl wait kustomization/lightweight-tests --for=condition=ready --timeout=5m  --namespace flux-system
+	$(RUN) kubectl wait kustomization/acp               --for=condition=ready --timeout=15m --namespace flux-system
 
 check-kustomization:
 	$(RUN) flux get kustomizations --no-header --status-selector ready=false

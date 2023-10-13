@@ -14,7 +14,7 @@ spec:
       - type: container
         paths:
           - /var/log/containers/*.log
-        exclude_files: [".*ingress-nginx.*"]
+        exclude_files: [".*ingress-nginx.*", ".*acp-faas.*"]
         processors:
           - decode_json_fields:
               fields: ["message"]
@@ -26,7 +26,7 @@ spec:
           - /var/log/containers/*ingress-nginx*.log
         processors:
           - dissect:
-              tokenizer: '%{client.ip} - %{client.user.name} [%{json.time_local}] "%{url.domain}" "%{http.request.method} %{url.path} HTTP/%{http.version}" %{http.response.status_code} %{http.response.body.bytes} "%{http.request.referrer}" "%{user_agent.original}" %{http.request.bytes} %{event.duration} [%{http.proxy.upstream.name}] [%{http.proxy.upstream.alternative_name}] [%{json.upstream_addr}] [%{http.proxy.upstream.bytes}] [%{http.proxy.upstream.duration}] [%{http.proxy.upstream.status_code}] %{http.request.id} %{http.headers.true_client_ip} %{http.headers.x_forwarded_for}'
+              tokenizer: '%{client.ip} - %{client.user.name} [%{json.time_local}] "%{url.domain}" "%{http.request.method} %{url.path} HTTP/%{http.version}" %{http.response.status_code} %{http.response.body.bytes} "%{http.request.referrer}" "%{user_agent.original}" %{http.request.bytes} %{event.duration} [%{http.proxy.upstream.name}] [%{http.proxy.upstream.alternative_name}] [%{json.upstream_addr}] [%{http.proxy.upstream.bytes}] [%{http.proxy.upstream.duration}] [%{http.proxy.upstream.status_code}] %{http.request.id} %{trace.id} %{http.headers.true_client_ip} %{http.headers.x_forwarded_for}'
               target_prefix: ""
               trim_values: all
               ignore_failure: true
@@ -46,6 +46,14 @@ spec:
                   replacement: " "
               ignore_missing: true
               fail_on_error: false
+      - type: container
+        paths:
+          - /var/log/containers/*acp-faas*.log
+        processors:
+          - drop_event:
+              when:
+                contains:
+                  message: "GET /healthz"
     processors:
       - add_kubernetes_metadata:
           host: ${NODE_NAME}

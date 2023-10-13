@@ -39,10 +39,18 @@ spec:
             summary: Elastic failed to create complete snapshot
             description: There are {{ $value }} failed Elastic shards that was not included into snapshots in {{ $labels.env }} {{ $labels.region_name }}
         - alert: ElasticSnapshotAge
-          expr: time() - elasticsearch_snapshot_stats_latest_snapshot_timestamp_seconds > 3600
+          expr: time() - elasticsearch_snapshot_stats_latest_snapshot_timestamp_seconds > 90000
           for: 1h
           labels:
             severity: warning
           annotations:
-            summary: Elastic latest snapshot is older than 2h
-            description: Last snapshot was taken more than 2h ago in {{ $labels.env }} {{ $labels.region_name }}
+            summary: Elastic latest snapshot is older than 25h
+            description: Last snapshot was taken more than 25h ago in {{ $labels.env }} {{ $labels.region_name }}
+        - alert: ElasticSnapshotMissing
+          expr: (count(elasticsearch_cluster_health_up) by (env, region) * on(env, region) count(elasticsearch_snapshot_stats_latest_snapshot_timestamp_seconds) by (env, region)) < 2
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: Elastic snapshot metric is missing
+            description: Metric connected to Elastic snapshot disappeared for {{ $labels.env }} {{ $labels.region_name }}

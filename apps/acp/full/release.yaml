@@ -45,6 +45,16 @@ spec:
         - acp-canary
         - acp-canary.acp
         - acp-canary.acp.svc.cluster.local
+    env:
+      - name: LIGHTWEIGHT_IDP_CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: lightweight-secret
+            key: lightweightIdpClientSecret
+      - name: OTEL_JAEGER_AGENT_HOST
+        valueFrom:
+          fieldRef:
+            fieldPath: status.hostIP
   postRenderers:
     - kustomize:
         patchesJson6902:
