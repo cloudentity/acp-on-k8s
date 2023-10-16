@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: acp
         namespace: acp
-      version: 2.15.1 # helm:autoupdate:acp-prod
+      version: 2.17.0 # helm:autoupdate:acp-prod
   interval: 5m
   timeout: 20m
   install:

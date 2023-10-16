@@ -36,13 +36,15 @@ spec:
             - name: elastic-internal-init-filesystem
               securityContext:
                 privileged: false
+                # Required for changing ownership of '/usr/share/elasticsearch/data' on fresh volumes
+                runAsUser: 0
                 seccompProfile:
                   type: RuntimeDefault
                 allowPrivilegeEscalation: false
                 capabilities:
                   drop:
                     - ALL
-                  add: ["NET_BIND_SERVICE"]
+                add: ["NET_BIND_SERVICE", "CHOWN", "FOWNER"]
             - name: elastic-internal-suspend
               securityContext:
                 privileged: false

@@ -24,7 +24,7 @@ spec:
       image:
         allowPrivilegeEscalation: false
       nodeSelector:
-        kubernetes.io/hostname: cloudentity-control-plane
+        nginx: "true"
       tolerations:
         - operator: Exists
       service:
