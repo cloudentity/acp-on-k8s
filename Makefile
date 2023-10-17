@@ -4,9 +4,9 @@ MODE   ?= base
 # full (base mode with observability enabled [resources heavy])
 REPO   ?= https://github.com/cloudentity/acp-on-k8s
 BRANCH ?= main
-TAG ?= 2.17.0
+TAG ?= 
 TOOLBOX_DOCKER_IMAGE ?= cloudentity/toolbox
-TOOLBOX_TAG ?= 2.17.0
+TOOLBOX_TAG ?= latest
 STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
 
 RUN = docker run --init --rm \
@@ -23,8 +23,7 @@ setup:
 	kind create cluster --name=cloudentity --config=scripts/kind-config.yaml
 
 deploy:
-	$(RUN) flux install \
-	       --components-extra=image-reflector-controller,image-automation-controller
+	$(RUN) flux install
 	$(RUN) bash -c "kubectl --namespace flux-system create secret generic sops-gpg \
 		--from-file=sops.asc=./secrets/base/private.key \
 		--output=yaml --dry-run=client | kubectl apply --filename -"
@@ -64,14 +63,26 @@ endif
 	$(RUN) kubectl wait kustomization/lightweight-tests --for=condition=ready --timeout=5m  --namespace flux-system
 	$(RUN) kubectl wait kustomization/acp               --for=condition=ready --timeout=15m --namespace flux-system
 
+build-kustomization:
+	$(RUN) kustomize build --load-restrictor=LoadRestrictionsNone ${DIR}
+
 check-kustomization:
 	$(RUN) flux get kustomizations --no-header --status-selector ready=false
 
 watch-kustomization:
-	$(RUN) watch flux get kustomizations --all-namespaces
+	$(RUN) watch flux get kustomizations
+
+check-helm:
+	$(RUN) flux get helmreleases --all-namespaces --no-header --status-selector ready=false
 
 watch-helm:
 	$(RUN) watch flux get helmreleases --all-namespaces
+
+check-sources:
+	$(RUN) flux get sources all --all-namespaces --no-header --status-selector ready=false
+
+watch-sources:
+	$(RUN) watch flux get sources all --all-namespaces
 
 run-lightweight-tests:
 	@$(RUN) kubectl exec deploy/private-ingress-nginx-controller -n nginx -- sh -c 'curl -k -I https://acp.acp:8443/alive' | grep -q "HTTP/1.1 200 OK" || { \
@@ -101,3 +112,6 @@ decrypt:
 
 encrypt:
 	${RUN} sops --encrypt --in-place --pgp="379B2FD0571BABB20DDF66F7C88D9F4D45AC1770" --encrypted-regex '^(data|stringData)$$' ${FILE}
+
+debug:
+	$(RUN) ./scripts/debug.sh

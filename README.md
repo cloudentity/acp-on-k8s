@@ -36,20 +36,25 @@ export DOCKER_PASSWORD=<password>
 
 ## Makefile reference
 
-- `make all` - Create Kubernetes cluster with all ACP components and runs simple tests: `setup`, `deploy`, `wait` and `run-lightweight-tests`
-- `make prepare` - Builds a Docker image with tools used in this repository.
+- `make all` - Creates a Kubernetes cluster with all ACP components and runs simple tests: `setup`, `deploy`, `wait`, and `run-lightweight-tests`.
+- `make prepare` - Builds a Docker image with the tools used in this repository.
 - `make setup` - Creates a Kubernetes cluster using Kind.
 - `make deploy` - Deploys the stack using flux to the Kubernetes cluster.
 - `make wait` - Waits until all the Kubernetes resources are ready.
-- `make check-kustomization` - Checks if the deployment was successful.
 - `make run-lightweight-tests` - Runs lightweight tests on the deployed resources.
 - `make destroy` - Deletes the Kubernetes cluster.
-- `make watch-kustomization` - Monitors the flux kustomizations in real-time.
-- `make watch-helm` - Monitors the flux helmreleases in real-time.
-- `make lint` - Executes various linting checks: `lint-prettier`, `lint-shellcheck`, `lint-kustomization`
-- `make lint-prettier` - Prettier style checks
-- `make lint-shellcheck` - Shellcheck validation on shell scripts
-- `make lint-kustomization` - Kustomization validation
+- `make build-kustomization` - Generates raw kustomization files.
+- `make check-kustomization` - Checks for failing kustomizations.
+- `make watch-kustomization` - Watches kustomization status in real time.
+- `make check-helm` - Checks for failing helm releases.
+- `make watch-helm` - Watches helm release status in real time.
+- `make check-sources` - Checks for failing sources.
+- `make watch-sources` - Watches source status in real time.
+- `make lint` - Executes various linting checks: `lint-prettier`, `lint-shellcheck`, `lint-kustomization`.
+- `make lint-prettier` - Prettier style checks.
+- `make lint-shellcheck` - Shellcheck validation on shell scripts.
+- `make lint-kustomization` - Kustomization validation.
 - `make format` - Formats code style with Prettier.
-- `make decrypt` - Decrypt SOPS encoded file.
-- `make encrypt` - Encrypt file using SOPS.
+- `make decrypt` - Decrypts a SOPS encoded file.
+- `make encrypt` - Encrypts a file using SOPS.
+- `make debug` - Retrieves resource statuses and fluxCD logs.

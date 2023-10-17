@@ -67,3 +67,4 @@ spec:
         - key: system
           value: "true"
           effect: NoSchedule
+    enableCertificateOwnerRef: true
