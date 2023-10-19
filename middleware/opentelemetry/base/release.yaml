@@ -20,6 +20,8 @@ spec:
   # https://github.com/open-telemetry/opentelemetry-helm-charts/blob/main/charts/opentelemetry-collector/values.yaml
   values:
     mode: "daemonset"
+    service:
+      enabled: true
     config:
       extensions:
         file_storage:

@@ -4,9 +4,9 @@ MODE   ?= base
 # full (base mode with observability enabled [resources heavy])
 REPO   ?= https://github.com/cloudentity/acp-on-k8s
 BRANCH ?= main
-TAG ?= 
+TAG ?= 2.18.0
 TOOLBOX_DOCKER_IMAGE ?= cloudentity/toolbox
-TOOLBOX_TAG ?= latest
+TOOLBOX_TAG ?= 2.18.0
 STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
 
 RUN = docker run --init --rm \
