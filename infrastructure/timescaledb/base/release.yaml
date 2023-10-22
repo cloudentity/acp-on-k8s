@@ -20,7 +20,7 @@ spec:
     readinessProbe:
       initialDelaySeconds: 30
     image:
-      tag: pg14.9-ts2.12.0 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}
+      tag: pg14.9-ts2.12.1 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}
     secrets:
       # https://github.com/timescale/timescaledb-kubernetes/issues/346
       credentialsSecretName: timescaledb-credentials
