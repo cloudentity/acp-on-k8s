@@ -1,0 +1,7 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: acp-cd
+spec:
+  interval: 60m
+  url: https://charts.cloudentity.io

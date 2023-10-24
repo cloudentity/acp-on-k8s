@@ -5,14 +5,14 @@ tests:
     steps:
       - name: acquire access token
         http:
-          url: ${{env.acp_base_url}}/${{env.tid}}/${{env.aid}}/oauth2/token
+          url: $${{env.acp_base_url}}/$${{env.tid}}/$${{env.aid}}/oauth2/token
           method: POST
           headers:
             Content-Type: application/x-www-form-urlencoded
           form:
             grant_type: client_credentials
-            client_id: ${{env.client_id}}
-            client_secret: ${{secrets.client_secret}}
+            client_id: $${{env.client_id}}
+            client_secret: $${{secrets.client_secret}}
           auth:
             certificate:
               ca:
@@ -23,16 +23,16 @@ tests:
                 file: /../stepci-certs/tls.key
           captures:
             token:
-              jsonpath: $.access_token
+              jsonpath: $$.access_token
           check:
             status: /^20/
       - name: Get userinfo
         http:
-          url: ${{env.acp_base_url}}/${{env.tid}}/${{env.aid}}/userinfo
+          url: $${{env.acp_base_url}}/$${{env.tid}}/$${{env.aid}}/userinfo
           method: GET
           headers:
             Content-Type: application/json
-            Authorization: Bearer ${{captures.token}}
+            Authorization: Bearer $${{captures.token}}
           auth:
             certificate:
               ca:
@@ -44,6 +44,6 @@ tests:
           check:
             status: /^20/
             jsonpath:
-              $.aid: ${{env.aid}}
+              $$.aid: $${{env.aid}}
             headers:
               Content-Type: application/json; charset=utf-8

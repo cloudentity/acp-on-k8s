@@ -7,5 +7,4 @@ resources:
   - release.yaml
   - client.yaml
   - secret.yaml
-  - lightweight_secret.yaml
   - ../../../secrets/base/registry.yaml

@@ -2,8 +2,8 @@ version: "1.1"
 name: Test Suite
 env:
   acp_base_url: https://acp.acp.svc.cluster.local:8443
-  tid: lightweight-tests
-  aid: default
+  tid: ${tid}
+  aid: ${aid}
   client_id: lightweight-tests-client-id
 include:
   - auth_with_userinfo.yml

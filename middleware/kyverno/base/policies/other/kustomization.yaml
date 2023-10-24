@@ -3,5 +3,4 @@ kind: Kustomization
 resources:
   - cockroachdb.yaml
   - redis.yaml
-  - spicedb.yaml
   - timescaledb.yaml

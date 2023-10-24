@@ -46,11 +46,11 @@ spec:
         - acp-canary.acp
         - acp-canary.acp.svc.cluster.local
     env:
-      - name: LIGHTWEIGHT_IDP_CLIENT_SECRET
+      - name: DEFAULT_IMPORT_CLIENT_SECRET
         valueFrom:
           secretKeyRef:
-            name: lightweight-secret
-            key: lightweightIdpClientSecret
+            name: client-secret
+            key: default-import-client-secret
       - name: OTEL_JAEGER_AGENT_HOST
         valueFrom:
           fieldRef:

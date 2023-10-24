@@ -28,7 +28,7 @@ deploy:
 		--from-file=sops.asc=./secrets/base/private.key \
 		--output=yaml --dry-run=client | kubectl apply --filename -"
 	$(RUN) bash -c "kubectl --namespace flux-system create secret generic docker-cloudentity \
-		--from-literal=docker_auth=$$(echo -n "${DOCKER_USERNAME}:${DOCKER_PASSWORD}" | base64 -w0) \
+		--from-literal=docker_auth=$$(printf "${DOCKER_USERNAME}:${DOCKER_PASSWORD}" | base64 | tr -d '\n') \
 		--output=yaml --dry-run=client | kubectl apply --filename -"
 	$(RUN) flux create source git flux-system \
 		--url=$(REPO) \

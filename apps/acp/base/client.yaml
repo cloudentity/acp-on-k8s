@@ -2,17 +2,17 @@ apiVersion: v1
 kind: Secret
 type: Opaque
 metadata:
-  name: system-client-secret
+  name: client-secret
 stringData:
-  secret: ENC[AES256_GCM,data:5rKW9nChOp0BhBCpbq8XE2bG79tA74YpLl8IwGMIICU=,iv:trUwXm9WEOMkeNDK4RXA6W8qlP7AaoXKRrtPOn2Cvu0=,tag:6Ybq/R42PRx5hWe5+CpkOw==,type:str]
+  default-import-client-secret: ENC[AES256_GCM,data:SNjraJxHqv1zTwUo6HbqWqVtrQrtqlKj6zxuXV4/iMs=,iv:q/BPzfHcd7nEpRZikF0XDHjzAl8y/YXBptZiMMLPssg=,tag:cVDMqeT7KJyg9IPTFmHmcw==,type:str]
 sops:
   kms: []
   gcp_kms: []
   azure_kv: []
   hc_vault: []
   age: []
-  lastmodified: "2023-10-06T11:28:59Z"
-  mac: ENC[AES256_GCM,data:Ak0NzYdxOS5lKLVGsOOlDxfa9NikjKgJoNHCxHWoTwaYwFNGmBvden1u7CDhlBs7kBWZPbeMXokLOlfvoW7QihD4zVnhg99C5jDTzUeZefSINQrzElXMX2JmH80iX+p2490XgJC9tLp13rWtfLqkBs3pZZWMIF4RRq9/k0sn80k=,iv:BMHJWaQzJNIWn5jAGJ+0cJP8DqTt4kdp51kRkH27bNY=,tag:lDZ2ojOwsMTjuSZfUaQxfw==,type:str]
+  lastmodified: "2023-10-20T11:06:34Z"
+  mac: ENC[AES256_GCM,data:6OSF429FAcCVIjMmI2O9RujnIStRkX5qqYGTieVsDBWBZMjUY3ge8zrp+pwFXqS9RZFIIi4tSMPhBnjhHhFkHpgaV5Qid+kwZj11V+bZJ1jt38xeScsQWNxq27ty3e+nDnyYgKoeq2aKLKtYacWdgJus5J4HfaSogEDwl38s3Z0=,iv:RJ2p//KJXCzT0DlNEyeh1O3vpPyOzBqeoZVR30HM/uY=,tag:V8VUvtf3yhmN4hcngCqHaw==,type:str]
   pgp:
     - created_at: "2023-10-06T11:28:59Z"
       enc: |-

@@ -16,6 +16,11 @@ spec:
   patches:
     - kind: Deployment
       patch:
+        metadata:
+          annotations:
+            secret.reloader.stakater.com/reload: "spicedb-tls,spicedb-client-tls"
+    - kind: Deployment
+      patch:
         spec:
           name: spicedb
           template:
@@ -30,10 +35,33 @@ spec:
                       drop:
                         - ALL
                       add: ["NET_BIND_SERVICE"]
+              nodeSelector:
+                spicedb: "true"
+              tolerations:
+                - key: "spicedb"
+                  value: "true"
+                  effect: NoSchedule
+              affinity:
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchLabels:
+                          app.kubernetes.io/instance: spicedb-spicedb
+                          app.kubernetes.io/name: spicedb
+                      topologyKey: kubernetes.io/hostname
+              topologySpreadConstraints:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/instance: spicedb-spicedb
+                      app.kubernetes.io/name: spicedb
+                  maxSkew: 1
+                  topologyKey: topology.kubernetes.io/zone
+                  whenUnsatisfiable: ScheduleAnyway
               securityContext:
                 runAsNonRoot: true
                 seccompProfile:
                   type: RuntimeDefault
+
     - kind: Job
       patch:
         spec:

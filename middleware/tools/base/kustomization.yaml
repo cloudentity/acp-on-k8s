@@ -14,6 +14,6 @@ images:
   - name: cockroachdb/cockroach
     newTag: v23.1.11 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-image-policy-prod:tag"}
   - name: bitnami/redis-cluster
-    newTag: 6.2.13 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
+    newTag: 6.2.14 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
   - name: timescale/timescaledb-ha
     newTag: pg14.9-ts2.12.1 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}

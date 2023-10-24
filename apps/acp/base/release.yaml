@@ -174,33 +174,26 @@ spec:
         timescale:
           enabled: true
     env:
-      - name: LIGHTWEIGHT_IDP_CLIENT_SECRET
+      - name: DEFAULT_IMPORT_CLIENT_SECRET
         valueFrom:
           secretKeyRef:
-            name: lightweight-secret
-            key: lightweightIdpClientSecret
+            name: client-secret
+            key: default-import-client-secret
     importJob:
       enabled: true
       configPath: /data/config.yaml,/data/extraconfig.yaml,/secret/secret.yaml
       data:
-        tenants:
-          - id: lightweight-tests
-            name: lightweight-tests
-        servers:
-          - id: default
-            tenant_id: lightweight-tests
-            grant_types:
-              - client_credentials
         clients:
-          - application_type: web
-            authorization_server_id: default
-            client_id: lightweight-tests-client-id
-            client_secret: '{{ env "LIGHTWEIGHT_IDP_CLIENT_SECRET" }}'
-            client_name: Test Step CI client
+          - tenant_id: default
+            authorization_server_id: system
+            client_id: default_import
+            client_secret: '{{ env "DEFAULT_IMPORT_CLIENT_SECRET" }}'
+            client_name: Import Job Client
+            token_endpoint_auth_method: client_secret_post
             grant_types:
               - client_credentials
-            tenant_id: lightweight-tests
-            token_endpoint_auth_method: client_secret_post
+            scopes:
+              - manage_configuration
     workers:
       enabled: true
       service:

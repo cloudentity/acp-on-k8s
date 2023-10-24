@@ -10,7 +10,11 @@ spec:
     kind: GitRepository
     name: flux-system
   prune: true
-  path: ./tests/base/lightweight-tests
+  path: ./tests/lightweight-tests/base
+  postBuild:
+    substitute:
+      tid: default
+      aid: lightweight-tests
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment
