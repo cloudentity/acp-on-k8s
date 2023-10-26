@@ -23,95 +23,84 @@ setup:
 	kind create cluster --name=cloudentity --config=scripts/kind-config.yaml
 
 deploy:
-	$(RUN) flux install
-	$(RUN) bash -c "kubectl --namespace flux-system create secret generic sops-gpg \
+	@echo -e "\nInstalling Flux..."
+	@$(RUN) flux install
+	@echo -e "\nSetting up SOPS secret..."
+	@$(RUN) bash -c "kubectl --namespace flux-system create secret generic sops-gpg \
 		--from-file=sops.asc=./secrets/base/private.key \
 		--output=yaml --dry-run=client | kubectl apply --filename -"
-	$(RUN) bash -c "kubectl --namespace flux-system create secret generic docker-cloudentity \
+	@echo -e "\nSetting up Cloudentity docker registry secret..."
+	@$(RUN) bash -c "kubectl --namespace flux-system create secret generic docker-cloudentity \
 		--from-literal=docker_auth=$$(printf "${DOCKER_USERNAME}:${DOCKER_PASSWORD}" | base64 | tr -d '\n') \
 		--output=yaml --dry-run=client | kubectl apply --filename -"
-	$(RUN) flux create source git flux-system \
+	@echo -e "\nConfiguring Git source..."
+	@$(RUN) flux create source git flux-system \
 		--url=$(REPO) \
 		--tag=${TAG} \
 		--branch=$(BRANCH)
-	$(RUN) flux create kustomization flux-system \
+	@echo -e "\nConfiguring Git path..."
+	@$(RUN) flux create kustomization flux-system \
 		--source=flux-system \
 		--wait=true \
 		--path=./clusters/${MODE}
 
 wait:
-	$(RUN) kubectl wait kustomization/cluster           --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) kubectl wait kustomization/crds              --for=condition=ready --timeout=5m  --namespace flux-system
-ifeq ($(filter $(MODE),dev),)
-	$(RUN) kubectl wait kustomization/kyverno           --for=condition=ready --timeout=5m  --namespace flux-system
-endif
-	$(RUN) kubectl wait kustomization/cert-manager      --for=condition=ready --timeout=5m  --namespace flux-system
-ifeq ($(filter $(MODE),dev base),)
-	$(RUN) kubectl wait kustomization/keda              --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) kubectl wait kustomization/reloader          --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) kubectl wait kustomization/metrics-server    --for=condition=ready --timeout=5m  --namespace flux-system
-endif
-	$(RUN) kubectl wait kustomization/nginx             --for=condition=ready --timeout=30m --namespace flux-system
-	$(RUN) kubectl wait kustomization/cockroachdb       --for=condition=ready --timeout=30m --namespace flux-system
-	$(RUN) kubectl wait kustomization/spicedb           --for=condition=ready --timeout=30m --namespace flux-system
-	$(RUN) kubectl wait kustomization/redis             --for=condition=ready --timeout=30m --namespace flux-system
-	$(RUN) kubectl wait kustomization/timescaledb       --for=condition=ready --timeout=30m --namespace flux-system
-ifeq ($(filter $(MODE),dev base),)
-	$(RUN) kubectl wait kustomization/monitoring        --for=condition=ready --timeout=15m --namespace flux-system
-endif
-	$(RUN) kubectl wait kustomization/acp-faas          --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) kubectl wait kustomization/lightweight-tests --for=condition=ready --timeout=5m  --namespace flux-system
-	$(RUN) kubectl wait kustomization/acp               --for=condition=ready --timeout=15m --namespace flux-system
+	@$(RUN) ./scripts/wait.sh ${MODE}
 
-build-kustomization:
-	$(RUN) kustomize build --load-restrictor=LoadRestrictionsNone ${DIR}
+deploy-check: sources-check-failing kustomization-check-failing helm-check-failing
 
-check-kustomization:
-	$(RUN) flux get kustomizations --no-header --status-selector ready=false
+kustomization-build:
+	@$(RUN) kustomize build --load-restrictor=LoadRestrictionsNone ${DIR}
 
-watch-kustomization:
-	$(RUN) watch flux get kustomizations
+kustomization-check-failing:
+	@echo "Checking for not ready Kustomizations:"
+	@$(RUN) flux get kustomizations --no-header --status-selector ready=false
 
-check-helm:
-	$(RUN) flux get helmreleases --all-namespaces --no-header --status-selector ready=false
+kustomization-status:
+	@$(RUN) watch flux get kustomizations
 
-watch-helm:
-	$(RUN) watch flux get helmreleases --all-namespaces
+helm-check-failing:
+	@echo "Checking for not ready HelmReleases"
+	@$(RUN) flux get helmreleases --all-namespaces --no-header --status-selector ready=false
 
-check-sources:
-	$(RUN) flux get sources all --all-namespaces --no-header --status-selector ready=false
+helm-status:
+	@$(RUN) watch flux get helmreleases --all-namespaces
 
-watch-sources:
-	$(RUN) watch flux get sources all --all-namespaces
+sources-check-failing:
+	@echo "Checking for not ready Sources:"
+	@$(RUN) flux get sources all --all-namespaces --no-header --status-selector ready=false
+
+sources-status:
+	@$(RUN) watch flux get sources all --all-namespaces
 
 run-lightweight-tests:
-	@$(RUN) kubectl exec deploy/private-ingress-nginx-controller -n nginx -- sh -c 'curl -k -I https://acp.acp:8443/alive' | grep -q "HTTP/1.1 200 OK" || { \
+	@$(RUN) kubectl exec deploy/private-ingress-nginx-controller -n nginx -- sh -c 'curl -k -I -s https://acp.acp:8443/alive' | grep -q "HTTP/1.1 200 OK" || { \
 		echo "Tests have not been executed. Simple http request check on /alive endpoint of acp service ends with failure. Check status of acp pods before the test run." && exit 1; \
 	}
-	$(RUN) kubectl exec deploy/lightweight-tests -n lightweight-tests -- sh -c 'stepci run $(STEP_CI_TEST_SUITE_PATH) -s client_secret=$${LIGHTWEIGHT_IDP_CLIENT_SECRET}'
+	@$(RUN) kubectl exec deploy/lightweight-tests -n lightweight-tests -- sh -c 'stepci run $(STEP_CI_TEST_SUITE_PATH) -s client_secret=$${LIGHTWEIGHT_IDP_CLIENT_SECRET}'
 
 destroy:
 	kind delete cluster --name=cloudentity
 
-lint: lint-prettier lint-shellcheck lint-kustomization
+lint: shellcheck-lint kustomization-lint prettier-lint 
 
-lint-prettier:
-	$(RUN) prettier --check .
+shellcheck-lint:
+	@$(RUN) shellcheck ./scripts/*.sh
 
-lint-shellcheck:
-	$(RUN) shellcheck ./scripts/*.sh
+kustomization-lint:
+	@$(RUN) ./scripts/validate.sh
 
-lint-kustomization:
-	$(RUN) ./scripts/validate.sh
+prettier-lint:
+	@$(RUN) prettier --check .
 
-format:
-	$(RUN) prettier --write .
+prettier-format:
+	@$(RUN) prettier --write .
 
 decrypt:
-	$(RUN) sops -decrypt --in-place ${FILE}
+	@$(RUN) sops -decrypt --in-place ${FILE}
 
 encrypt:
-	${RUN} sops --encrypt --in-place --pgp="379B2FD0571BABB20DDF66F7C88D9F4D45AC1770" --encrypted-regex '^(data|stringData)$$' ${FILE}
+	@${RUN} sops --encrypt --in-place --pgp="379B2FD0571BABB20DDF66F7C88D9F4D45AC1770" --encrypted-regex '^(data|stringData)$$' ${FILE}
 
 debug:
-	$(RUN) ./scripts/debug.sh
+	@$(RUN) ./scripts/debug.sh

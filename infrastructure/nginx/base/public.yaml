@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: nginx
-      version: 4.7.1 # helm:autoupdate:nginx-prod
+      version: 4.8.2 # helm:autoupdate:nginx-prod
   interval: 20m
   timeout: 19m30s
   install:
@@ -106,3 +106,4 @@ spec:
           memory: 10Mi
         limits:
           memory: 512Mi
+      allowSnippetAnnotations: true

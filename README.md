@@ -40,21 +40,22 @@ export DOCKER_PASSWORD=<password>
 - `make prepare` - Builds a Docker image with the tools used in this repository.
 - `make setup` - Creates a Kubernetes cluster using Kind.
 - `make deploy` - Deploys the stack using flux to the Kubernetes cluster.
+- `make deploy-check` - Lists components that are not ready yet.
 - `make wait` - Waits until all the Kubernetes resources are ready.
 - `make run-lightweight-tests` - Runs lightweight tests on the deployed resources.
 - `make destroy` - Deletes the Kubernetes cluster.
-- `make build-kustomization` - Generates raw kustomization files.
-- `make check-kustomization` - Checks for failing kustomizations.
-- `make watch-kustomization` - Watches kustomization status in real time.
-- `make check-helm` - Checks for failing helm releases.
-- `make watch-helm` - Watches helm release status in real time.
-- `make check-sources` - Checks for failing sources.
-- `make watch-sources` - Watches source status in real time.
+- `make kustomization-build` - Generates raw kustomization files.
+- `make kustomization-check-failing` - Checks for failing kustomizations.
+- `make kustomization-status` - Watches kustomization status in real time.
+- `make helm-check-failing` - Checks for failing helm releases.
+- `make helm-status` - Watches helm release status in real time.
+- `make sources-check-failing` - Checks for failing sources.
+- `make sources-status` - Watches source status in real time.
 - `make lint` - Executes various linting checks: `lint-prettier`, `lint-shellcheck`, `lint-kustomization`.
-- `make lint-prettier` - Prettier style checks.
-- `make lint-shellcheck` - Shellcheck validation on shell scripts.
-- `make lint-kustomization` - Kustomization validation.
-- `make format` - Formats code style with Prettier.
+- `make shellcheck-lint` - Shellcheck validation on shell scripts.
+- `make kustomization-lint` - Kustomization validation.
+- `make prettier-lint` - Prettier style checks.
+- `make prettier-format` - Formats code style with Prettier.
 - `make decrypt` - Decrypts a SOPS encoded file.
 - `make encrypt` - Encrypts a file using SOPS.
 - `make debug` - Retrieves resource statuses and fluxCD logs.
