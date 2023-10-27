@@ -9,7 +9,13 @@ TOOLBOX_DOCKER_IMAGE ?= cloudentity/toolbox
 TOOLBOX_TAG ?= latest
 STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
 
-RUN = docker run --init --rm \
+ifeq ($(CI),true)
+    DOCKER_FLAGS = --init
+else
+    DOCKER_FLAGS = --init --interactive --tty
+endif
+
+RUN = docker run $(DOCKER_FLAGS) --rm \
 		--network host \
 		-v $(shell pwd):/build \
 		-v $$HOME/.kube/config:/root/.kube/config ${TOOLBOX_DOCKER_IMAGE}:${TOOLBOX_TAG}
@@ -23,26 +29,7 @@ setup:
 	kind create cluster --name=cloudentity --config=scripts/kind-config.yaml
 
 deploy:
-	@echo -e "\nInstalling Flux..."
-	@$(RUN) flux install
-	@echo -e "\nSetting up SOPS secret..."
-	@$(RUN) bash -c "kubectl --namespace flux-system create secret generic sops-gpg \
-		--from-file=sops.asc=./secrets/base/private.key \
-		--output=yaml --dry-run=client | kubectl apply --filename -"
-	@echo -e "\nSetting up Cloudentity docker registry secret..."
-	@$(RUN) bash -c "kubectl --namespace flux-system create secret generic docker-cloudentity \
-		--from-literal=docker_auth=$$(printf "${DOCKER_USERNAME}:${DOCKER_PASSWORD}" | base64 | tr -d '\n') \
-		--output=yaml --dry-run=client | kubectl apply --filename -"
-	@echo -e "\nConfiguring Git source..."
-	@$(RUN) flux create source git flux-system \
-		--url=$(REPO) \
-		--tag=${TAG} \
-		--branch=$(BRANCH)
-	@echo -e "\nConfiguring Git path..."
-	@$(RUN) flux create kustomization flux-system \
-		--source=flux-system \
-		--wait=true \
-		--path=./clusters/${MODE}
+	@RUN="$(RUN)" ./scripts/deploy.sh $(MODE) $(REPO) $(BRANCH) $(TAG)
 
 wait:
 	@$(RUN) ./scripts/wait.sh ${MODE}
