@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: snapshot-repositories
+data:
+  default-repository.json: |-
+    {
+        "name": "default",
+        "type": "s3",
+        "settings": {
+            "bucket": "elasticsearch",
+            "endpoint": "minio.minio:9000",
+            "path_style_access": "true"
+        }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: snapshot-policies
+data:
+  default-policy.json: |-
+    {
+        "name": "default-daily-snap",
+        "snapshotName": "<daily-snap-{now/d}>",
+        "schedule": "0 0 3 * * ?",
+        "repository": "default",
+        "config": {
+            "featureStates": [],
+            "includeGlobalState": true,
+            "partial": true
+        },
+        "retention": {
+            "expireAfterValue": 3,
+            "expireAfterUnit": "d",
+            "maxCount": 100,
+            "minCount": 10
+        },
+        "isManagedPolicy": false
+    }

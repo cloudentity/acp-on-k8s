@@ -20,3 +20,5 @@ resources:
   - elastic_exporter.yaml
   - filerealm.yaml
   - secret.yaml
+  - init_configs.yaml
+  - init_job.yaml

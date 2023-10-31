@@ -52,3 +52,18 @@ spec:
     name: flux-system
   dependsOn:
     - name: cert-manager
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: minio
+spec:
+  interval: 24h
+  timeout: 15m
+  prune: true
+  path: ./middleware/minio/base
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: cert-manager

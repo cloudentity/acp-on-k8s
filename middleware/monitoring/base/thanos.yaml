@@ -198,21 +198,3 @@ spec:
         limits:
           memory: 1Gi
     existingObjstoreSecret: thanos-objstore
-    minio:
-      enabled: true
-      auth:
-        rootUser: admin
-        rootPassword: p@ssw0rd!
-      containerSecurityContext:
-        enabled: true
-        runAsUser: 1001
-        runAsNonRoot: true
-        allowPrivilegeEscalation: false
-        capabilities:
-          drop:
-            - ALL
-          add: ["NET_BIND_SERVICE"]
-      podSecurityContext:
-        fsGroup: 1001
-        seccompProfile:
-          type: RuntimeDefault

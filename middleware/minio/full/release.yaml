@@ -1,0 +1,7 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: minio
+spec:
+  values:
+    defaultBuckets: "cockroachdb, timescaledb, elasticsearch, thanos"

@@ -1,0 +1,22 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: minio-cert
+spec:
+  usages:
+    - digital signature
+    - key encipherment
+    - server auth
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - localhost
+    - minio
+    - minio.minio
+    - minio.minio.svc.cluster.local
+  secretName: minio-tls
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer

@@ -26,6 +26,7 @@ spec:
       # https://github.com/timescale/timescaledb-kubernetes/issues/346
       credentialsSecretName: timescaledb-credentials
       certificateSecretName: timescaledb-certificate
+      pgbackrestSecretName: timescaledb-pgbackrest
     patroni:
       bootstrap:
         dcs:
@@ -49,6 +50,23 @@ spec:
         size: 2Gi
       wal:
         size: 2Gi
+    backup:
+      enabled: true
+      pgBackRest:
+        repo1-path: /
+        repo1-type: s3
+        repo1-s3-bucket: timescaledb
+        repo1-s3-uri-style: path
+        repo1-storage-ca-file: /etc/certificate/ca.crt
+        repo1-retention-full-type: time
+        repo1-retention-full: 30
+      jobs:
+        - name: full-daily-repo1
+          type: full
+          schedule: "10 3 * * *"
+        - name: incr-hourly-repo1
+          type: incr
+          schedule: "10 0-2,6-23 * * *"
     resources:
       requests:
         cpu: 100m
@@ -80,3 +98,94 @@ spec:
                   app: "timescaledb"
                   release: "timescaledb"
                   cluster-name: "timescaledb"
+  postRenderers:
+    - kustomize:
+        patchesJson6902:
+          - target:
+              group: "batch"
+              kind: CronJob
+              name: timescaledb-incr.*repo1
+              version: v1
+            patch:
+              - op: add
+                path: /spec/jobTemplate/spec/activeDeadlineSeconds
+                value: 600
+              - op: add
+                path: /spec/jobTemplate/spec/template/spec/tolerations
+                value:
+                  - key: timescaledb
+                    value: "true"
+                    effect: NoSchedule
+              - op: add
+                path: /spec/jobTemplate/spec/template/spec/nodeSelector
+                value:
+                  timescaledb: "true"
+              - op: replace
+                path: /spec/jobTemplate/spec/template/spec/containers/0/args/9
+                value: '{"type": "incr", "repo": "1"}'
+              - op: add
+                path: /spec/jobTemplate/spec/template/spec/securityContext
+                value:
+                  fsGroup: 1000
+              - op: add
+                path: /spec/jobTemplate/spec/template/spec/containers/0/securityContext
+                value:
+                  runAsUser: 1000
+                  runAsGroup: 1000
+                  runAsNonRoot: true
+                  allowPrivilegeEscalation: false
+                  seccompProfile:
+                    type: RuntimeDefault
+                  capabilities:
+                    drop:
+                      - ALL
+          - target:
+              group: "batch"
+              kind: CronJob
+              name: timescaledb-full.*repo1
+              version: v1
+            patch:
+              - op: add
+                path: /spec/jobTemplate/spec/activeDeadlineSeconds
+                value: 600
+              - op: add
+                path: /spec/jobTemplate/spec/template/spec/tolerations
+                value:
+                  - key: timescaledb
+                    value: "true"
+                    effect: NoSchedule
+              - op: add
+                path: /spec/jobTemplate/spec/template/spec/nodeSelector
+                value:
+                  timescaledb: "true"
+              - op: replace
+                path: /spec/jobTemplate/spec/template/spec/containers/0/args/9
+                value: '{"type": "full", "repo": "1"}'
+              - op: add
+                path: /spec/jobTemplate/spec/template/spec/securityContext
+                value:
+                  fsGroup: 1000
+              - op: add
+                path: /spec/jobTemplate/spec/template/spec/containers/0/securityContext
+                value:
+                  runAsUser: 1000
+                  runAsGroup: 1000
+                  runAsNonRoot: true
+                  allowPrivilegeEscalation: false
+                  seccompProfile:
+                    type: RuntimeDefault
+                  capabilities:
+                    drop:
+                      - ALL
+          - target:
+              group: "apps"
+              kind: StatefulSet
+              name: timescaledb
+              version: v1
+            patch:
+              - op: add
+                path: /spec/template/spec/containers/1/volumeMounts/-
+                value:
+                  mountPath: /etc/certificate
+                  name: certificate
+                  readOnly: true

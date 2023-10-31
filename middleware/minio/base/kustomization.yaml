@@ -1,12 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: timescaledb-${cluster_region}
+namespace: minio
 resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
-  - pdb.yaml
+  - secret.yaml
   - tls.yaml
-  - secret-pgbackrest.yaml
-  - secret-patroni.yaml
-  - configmap-post-init.yaml

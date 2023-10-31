@@ -4,3 +4,4 @@ resources:
   - cockroachdb.yaml
   - flagger.yaml
   - timescaledb.yaml
+  - elastic.yaml

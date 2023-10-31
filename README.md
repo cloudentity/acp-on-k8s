@@ -1,5 +1,10 @@
 # acp-on-k8s
 
+> [!IMPORTANT]  
+> We've transitioned to a GitOps-based approach, bringing a more modern and efficient solution to this repository.
+>
+> For those who would like to access the previous version of the stack, please switch to the `legacy` branch.
+
 ## Overview
 
 This repository is designed to facilitate a swift setup of Cloudentity's Authorization Control Plane in both local development environments and production settings. By leveraging tools like Kind - which enables running local Kubernetes clusters using Docker container nodes - and fluxcd for provisioning resources, it offers a streamlined deployment process. Among the resources provisioned is the ACP helm chart. Additionally, the repository provides guidelines and best practices for production deployment.
@@ -32,7 +37,7 @@ export DOCKER_PASSWORD=<password>
 
 ## What is next?
 
-- Check out ACP [documentation](http://docs.authorization.cloudentity.com)
+- Check out Cloudentity deployment [documentation](https://cloudentity.com/developers/deployment-and-operations/deployment/deployment-overview/)
 
 ## Makefile reference
 

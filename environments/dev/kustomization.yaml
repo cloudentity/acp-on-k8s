@@ -69,3 +69,9 @@ patches:
       kind: Kustomization
       metadata:
         name: kyverno
+  - patch: |-
+      $patch: delete
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: minio

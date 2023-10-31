@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: elastic-add-volumemounts
+  annotations:
+    policies.kyverno.io/category: Other
+    policies.kyverno.io/subject: StatefulSet
+    policies.kyverno.io/minversion: 1.4.3
+    policies.kyverno.io/description: "Add elastic volume with custom certs"
+spec:
+  failurePolicy: Fail
+  rules:
+    - name: add-volumemounts-elastic
+      match:
+        any:
+          - resources:
+              kinds:
+                - StatefulSet
+              namespaces:
+                - elastic
+              names:
+                - "elastic*node*"
+      mutate:
+        patchesJson6902: |-
+          - op: add
+            path: "/spec/template/spec/containers/0/volumeMounts/-"
+            value:
+              mountPath: /usr/share/elasticsearch/jdk/lib/security/cacerts
+              subPath: cacerts
+              name: elasticsearch-cacerts
+              readOnly: true

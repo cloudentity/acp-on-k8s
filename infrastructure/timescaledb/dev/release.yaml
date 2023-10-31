@@ -5,3 +5,6 @@ metadata:
 spec:
   values:
     replicaCount: 1
+    backup:
+      enabled: false
+  postRenderers: []
