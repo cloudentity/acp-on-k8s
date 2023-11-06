@@ -42,6 +42,7 @@ spec:
         initialDelaySeconds: 30
       useAOFPersistence: "no"
       configmap: |
+        # Production Readiness - Adjust Pod Resources
         maxmemory 2gb
         maxmemory-policy allkeys-lru
         loadmodule /redismodules/redisearch.so OSS_GLOBAL_PASSWORD p@ssw0rd!
@@ -72,6 +73,7 @@ spec:
         - mountPath: /redismodules
           name: redismodules
       resources:
+        # Production Readiness - Adjust Pod Resources
         limits:
           memory: 2Gi
         requests:

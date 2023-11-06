@@ -11,24 +11,6 @@ spec:
       - --metrics
       - --create-default-tenant
       - --create-default-workspaces
-    autoscaling:
-      enabled: true
-      minReplicas: 1
-      maxReplicas: 2
-      targetCPUUtilizationPercentage: 70
-      behavior:
-        scaleDown:
-          stabilizationWindowSeconds: 300
-          policies:
-            - type: Pods
-              value: 2
-              periodSeconds: 180
-        scaleUp:
-          stabilizationWindowSeconds: 60
-          policies:
-            - type: Pods
-              value: 4
-              periodSeconds: 30
     config:
       data:
         otel:

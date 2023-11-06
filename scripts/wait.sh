@@ -7,18 +7,21 @@ declare -a components=(
     "crds:kustomization:flux-system:5m"
 )
 
-if [ "$MODE" != "dev" ]; then
+if [ "$MODE" == "base" ] || [ "$MODE" == "full" ]; then
     components+=("kyverno:kustomization:flux-system:5m")
 fi
 
 components+=("cert-manager:kustomization:flux-system:5m")
 
-if [ "$MODE" != "dev" ] && [ "$MODE" != "base" ]; then
+if [ "$MODE" == "base" ] || [ "$MODE" == "full" ]; then
     components+=(
-        "keda:kustomization:flux-system:5m"
         "reloader:kustomization:flux-system:5m"
         "metrics-server:kustomization:flux-system:5m"
     )
+fi
+
+if [ "$MODE" == "full" ]; then
+    components+=("keda:kustomization:flux-system:5m")
 fi
 
 components+=(
@@ -29,8 +32,12 @@ components+=(
     "timescaledb:kustomization:flux-system:30m"
 )
 
-if [ "$MODE" != "dev" ] && [ "$MODE" != "base" ]; then
-    components+=("monitoring:kustomization:flux-system:15m")
+if [ "$MODE" == "full" ]; then
+    components+=(
+        "flagger:kustomization:flux-system:15m"
+        "monitoring:kustomization:flux-system:15m"
+        "elastic:kustomization:flux-system:15m"
+    )
 fi
 
 components+=(

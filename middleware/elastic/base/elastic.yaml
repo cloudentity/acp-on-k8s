@@ -92,6 +92,7 @@ spec:
             - name: elasticsearch
               image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
               resources:
+                # Production Readiness - Adjust Pod Resources
                 requests:
                   cpu: 10m
                   memory: 100Mi
@@ -156,8 +157,11 @@ spec:
             accessModes:
               - ReadWriteOnce
             resources:
+              # Production Readiness - Adjust Pod Resources
               requests:
                 storage: 2Gi
+            # Production Readiness - Use Proper StorageClass
+            storageClassName: standard
   http:
     tls:
       certificate:

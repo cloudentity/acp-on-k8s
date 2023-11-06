@@ -15,6 +15,9 @@ spec:
     substitute:
       tid: default
       aid: lightweight-tests
+    substituteFrom:
+      - kind: Secret
+        name: docker-cloudentity
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment

@@ -5,11 +5,3 @@ metadata:
 spec:
   interval: 24h
   url: https://kedacore.github.io/charts
----
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: http-add-on
-spec:
-  interval: 24h
-  url: https://kedacore.github.io/charts

@@ -20,8 +20,9 @@ spec:
     readinessProbe:
       initialDelaySeconds: 30
     image:
+      # Production Readiness - TimescaleDB Image
       repository: timescaledev/timescaledb-ha
-      tag: pg14.9-ts2.12.1 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}
+      tag: pg14.9-ts2.12.1
     secrets:
       # https://github.com/timescale/timescaledb-kubernetes/issues/346
       credentialsSecretName: timescaledb-credentials
@@ -47,9 +48,15 @@ spec:
           name: timescale-post-init
     persistentVolumes:
       data:
+        # Production Readiness - Adjust Pod Resources
         size: 2Gi
+        # Production Readiness - Use Proper StorageClass
+        storageClass: standard
       wal:
+        # Production Readiness - Adjust Pod Resources
         size: 2Gi
+        # Production Readiness - Use Proper StorageClass
+        storageClass: standard
     backup:
       enabled: true
       pgBackRest:
@@ -68,6 +75,7 @@ spec:
           type: incr
           schedule: "10 0-2,6-23 * * *"
     resources:
+      # Production Readiness - Adjust Pod Resources
       requests:
         cpu: 100m
         memory: 100Mi

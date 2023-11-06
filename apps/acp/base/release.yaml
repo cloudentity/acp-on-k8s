@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: acp
         namespace: acp
-      version: 2.18.0 # helm:autoupdate:acp-prod
+      version: 2.19.0 # helm:autoupdate:acp-prod
   interval: 5m
   timeout: 20m
   install:
@@ -37,7 +37,24 @@ spec:
           hosts:
             - "*.${cluster_region_domain}"
     autoscaling:
-      enabled: false
+      enabled: true
+      # Production Readiness - Adjust Pod Count
+      minReplicas: 1
+      maxReplicas: 2
+      targetCPUUtilizationPercentage: 70
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 300
+          policies:
+            - type: Pods
+              value: 2
+              periodSeconds: 180
+        scaleUp:
+          stabilizationWindowSeconds: 60
+          policies:
+            - type: Pods
+              value: 4
+              periodSeconds: 30
     affinity:
       podAntiAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
@@ -68,6 +85,7 @@ spec:
       - key: compute
         value: "true"
         effect: NoSchedule
+    # Production Readiness - Adjust Pod Resources
     resources:
       requests:
         cpu: 100m
@@ -200,8 +218,9 @@ spec:
         enabled: true
       podDisruptionBudget:
         minAvailable: 30%
-      autoscaling:
-        enabled: false
+      # Production Readiness - Adjust Pod Count
+      replicaCount: 1
+      # Production Readiness - Adjust Pod Resources
       resources:
         requests:
           cpu: 100m
@@ -231,6 +250,7 @@ spec:
     fission:
       enabled: true
       idleTimeout: 5m0s
+      # Production Readiness - Adjust Pod Count
       poolsize: 2
       affinity:
         nodeAffinity:

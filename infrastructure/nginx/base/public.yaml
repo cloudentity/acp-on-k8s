@@ -101,6 +101,7 @@ spec:
             - ALL
           add: ["NET_BIND_SERVICE"]
       resources:
+        # Production Readiness - Adjust Pod Resources
         requests:
           cpu: 10m
           memory: 10Mi

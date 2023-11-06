@@ -9,9 +9,9 @@ spec:
       chart: keda-add-ons-http
       sourceRef:
         kind: HelmRepository
-        name: http-add-on
+        name: keda
         namespace: keda
-      version: 0.5.3 # helm:autoupdate:http-add-on-prod
+      version: 0.6.0 # helm:autoupdate:keda-add-ons-http-prod
   interval: 1m
   install:
     remediation:

@@ -10,6 +10,7 @@ resources:
   - repository.yaml
   - acp-cd_secret.yaml
   - acp-cd.yaml
+  - ../../../secrets/base/registry.yaml
 configMapGenerator:
   - name: step-ci-scenarios
     files:

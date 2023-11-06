@@ -3,5 +3,6 @@ kind: ClusterIssuer
 metadata:
   name: ca-issuer
 spec:
+  # Production Readiness - Adopt Organization-Specific Issuer
   ca:
     secretName: ca

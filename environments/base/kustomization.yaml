@@ -23,6 +23,7 @@ patches:
             name: sops-gpg
         postBuild:
           substitute:
+            # Production Readiness - Adopt Organization-Specific Domain
             cluster_env: "local"
             cluster_domain: "acp.local"
             cluster_region: "local"

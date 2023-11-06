@@ -15,17 +15,22 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
+        # Production Readiness - Adjust Pod Resources
         resources:
           requests:
             storage: "2Gi"
         volumeMode: Filesystem
+        # Production Readiness - Use Proper StorageClass
+        storageClassName: standard
   resources:
+    # Production Readiness - Adjust Pod Resources
     requests:
       cpu: 100m
       memory: 100Mi
     limits:
       memory: 2Gi
   podEnvVariables:
+    # Production Readiness - Adjust Pod Resources
     - name: GOMEMLIMIT
       value: "1500MiB"
   nodeSelector:

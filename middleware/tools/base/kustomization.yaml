@@ -16,4 +16,4 @@ images:
   - name: bitnami/redis-cluster
     newTag: 6.2.14 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
   - name: timescale/timescaledb-ha
-    newTag: pg14.9-ts2.12.1 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}
+    newTag: pg14.9-ts2.12.2 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}

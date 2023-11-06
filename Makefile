@@ -2,11 +2,13 @@ MODE   ?= base
 # dev (dev deployment)
 # base (base HA deployment)
 # full (base mode with observability enabled [resources heavy])
+
+# Production Readiness - Use Your Own Source
 REPO   ?= https://github.com/cloudentity/acp-on-k8s
 BRANCH ?= main
-TAG ?= 
+TAG ?= 2.19.0
 TOOLBOX_DOCKER_IMAGE ?= cloudentity/toolbox
-TOOLBOX_TAG ?= latest
+TOOLBOX_TAG ?= 2.19.0
 STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
 
 ifeq ($(CI),true)
@@ -23,7 +25,7 @@ RUN = docker run $(DOCKER_FLAGS) --rm \
 all: setup deploy wait run-lightweight-tests
 
 prepare:
-	docker build --platform linux/amd64 --tag ${TOOLBOX_DOCKER_IMAGE}:${TOOLBOX_TAG} .
+	docker build --tag ${TOOLBOX_DOCKER_IMAGE}:${TOOLBOX_TAG} .
 
 setup:
 	kind create cluster --name=cloudentity --config=scripts/kind-config.yaml
@@ -69,7 +71,7 @@ run-lightweight-tests:
 destroy:
 	kind delete cluster --name=cloudentity
 
-lint: shellcheck-lint kustomization-lint prettier-lint 
+lint: shellcheck-lint kustomization-lint prettier-lint
 
 shellcheck-lint:
 	@$(RUN) shellcheck ./scripts/*.sh

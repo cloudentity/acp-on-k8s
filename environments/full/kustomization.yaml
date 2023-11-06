@@ -93,6 +93,7 @@ patches:
         name: cert-manager
       spec:
         path: ./middleware/cert-manager/full
+  # Production Readiness - Remove Unnecessary Components
   - patch: |-
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization

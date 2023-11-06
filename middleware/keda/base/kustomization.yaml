@@ -6,4 +6,3 @@ resources:
   - repository.yaml
   - release.yaml
   - http-add-on.yaml
-  - keda-add-ons-http-interceptor.yaml
