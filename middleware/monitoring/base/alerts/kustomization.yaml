@@ -6,7 +6,7 @@ resources:
   - cert-menager.yaml
   - cockroachdb.yaml
   - elastic.yaml
-  - fission.yaml
+  - faas.yaml
   - flagger.yaml
   - flux.yaml
   - nginx.yaml

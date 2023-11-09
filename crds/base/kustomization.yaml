@@ -3,6 +3,5 @@ kind: Kustomization
 resources:
   - cert-manager.yaml
   - cockroach.yaml
-  - fission.yaml
   - kyverno.yaml
   - spicedb.yaml

@@ -1,7 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1beta1
-kind: HelmRepository
-metadata:
-  name: fission-charts
-spec:
-  interval: 24h
-  url: https://fission.github.io/fission-charts/

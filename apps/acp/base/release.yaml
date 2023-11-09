@@ -122,6 +122,10 @@ spec:
       create: true
       name: acp-data
       data:
+        client:
+          retry_wait_min: 500ms
+          retry_wait_max: 5s
+          retry_max: 3
         server:
           port: 8443
           grpc_port: 9443
@@ -163,12 +167,13 @@ spec:
         cache:
           redis_ttl: 20m
           local_ttl: 2m
-        fission:
-          max_pod_age: 0h
         subject:
           default_format: "hash"
         captcha:
           enabled: true
+        docker:
+          shared_node_url: "http://acp-faas-nodejs.acp-faas:8888"
+          shared_rego_url: "http://acp-faas-rego.acp-faas:8888"
     migrateJob:
       enabled: true
       configPath: /data/config.yaml,/secret/secret.yaml
@@ -247,28 +252,6 @@ spec:
           maxSkew: 1
           topologyKey: topology.kubernetes.io/zone
           whenUnsatisfiable: ScheduleAnyway
-    fission:
+    faas:
       enabled: true
-      idleTimeout: 5m0s
-      # Production Readiness - Adjust Pod Count
-      poolsize: 2
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: fission
-                    operator: In
-                    values:
-                      - "true"
-      tolerations:
-        - key: fission
-          value: "true"
-          effect: NoSchedule
-      resources:
-        requests:
-          cpu: 10m
-          memory: 48Mi
-        limits:
-          cpu: 100m
-          memory: 96Mi
+      provider: docker

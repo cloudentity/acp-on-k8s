@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: faas
+spec:
+  groups:
+    - name: faas
+      rules:
+        - alert: FaasPodsRestart
+          expr: sum by (pod,namespace)(kube_pod_container_status_restarts_total{namespace=~"acp-faas.*"} - kube_pod_container_status_restarts_total{namespace=~"acp-faas.*"} offset 5m) > 0
+          labels:
+            severity: warning
+          annotations:
+            description: "The faas pods are experiencing frequent restarts {{ $labels.namespace }}/{{ $labels.region }}"
+            summary: The faas pods frequent restarts.
