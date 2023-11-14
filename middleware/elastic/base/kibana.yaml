@@ -101,7 +101,6 @@ spec:
               type: RuntimeDefault
       containers:
         - name: kibana
-          image: kibana:8.7.0
           env:
             - name: NODE_OPTIONS
               value: "--max-old-space-size=980"
@@ -121,7 +120,6 @@ spec:
             limits:
               memory: 1Gi
         - name: metricbeat
-          image: docker.elastic.co/beats/metricbeat:8.7.0
           securityContext:
             capabilities:
               drop:

@@ -1,0 +1,99 @@
+# Required for node monitoring purposes
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-host-namespaces-lacework
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-host-namespaces
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - StatefulSet
+          namespaces:
+            - lacework
+          names:
+            - lacework-agent*
+---
+# Required for node monitoring purposes
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-host-namespaces-prometheus-node-exporter
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-host-namespaces
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Pod
+          namespaces:
+            - monitoring
+          names:
+            - kube-prometheus-stack-prometheus-node-exporter*
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-host-namespaces-kube-system
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-host-namespaces
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Pod
+          namespaces:
+            - kube-system
+          names:
+            - aws-node*
+            - kindnet*
+            - kube-proxy*
+            - node-local-dns*
+            - etcd*
+            - kube-apiserver*
+            - kube-controller*
+            - kube-scheduler*
+---
+
+---
+# required to perform chaos experiments
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-host-namespaces-chaos-mesh
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-host-namespaces
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - chaos-mesh
+          names:
+            - chaos-daemon*

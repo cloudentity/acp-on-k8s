@@ -1,0 +1,31 @@
+# Used by local deployment
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: restrict-image-registries-kube-system
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-image-registries
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - kube-system
+          names:
+            - coredns*
+            - kindnet*
+            - kube-proxy*
+            - node-local-dns*
+            - node-problem-detector*
+            - etcd*
+            - kube-apiserver*
+            - kube-controller*
+            - kube-scheduler*

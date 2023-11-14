@@ -1,0 +1,121 @@
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: restrict-volume-types-lacework
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-volume-types
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - StatefulSet
+          namespaces:
+            - lacework
+          names:
+            - lacework-agent*
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: restrict-volume-types-elastic
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-volume-types
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - StatefulSet
+          namespaces:
+            - elastic
+          names:
+            - filebeat*
+---
+# Caused by hostPath being monted in order to monitor node statistics (which results in not allowed empty type)
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: restrict-volume-types-prometheus-node-exporter
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-volume-types
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Pod
+          namespaces:
+            - monitoring
+          names:
+            - kube-prometheus-stack-prometheus-node-exporter*
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: restrict-volume-types-kube-system
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-volume-types
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Pod
+          namespaces:
+            - kube-system
+          names:
+            - aws-node*
+            - ebs-csi-node*
+            - kindnet*
+            - kube-proxy*
+            - node-local-dns*
+            - node-problem-detector*
+            - etcd*
+            - kube-apiserver*
+            - kube-controller*
+            - kube-scheduler*
+---
+# required to perform chaos experiments
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: restrict-volume-types-chaos-mesh
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-volume-types
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - chaos-mesh
+          names:
+            - chaos-daemon*

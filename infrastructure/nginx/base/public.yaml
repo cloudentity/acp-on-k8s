@@ -41,6 +41,22 @@ spec:
         use-forwarded-headers: "true"
       admissionWebhooks:
         timeoutSeconds: 20
+        createSecretJob:
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+        patchWebhookJob:
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
       extraArgs:
         ingress-class: public-nginx
       electionID: ingress-public-leader

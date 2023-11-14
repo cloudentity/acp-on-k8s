@@ -154,7 +154,6 @@ spec:
         automountServiceAccountToken: true
         containers:
           - name: filebeat
-            image: docker.elastic.co/beats/filebeat:8.7.0
             env:
               - name: NODE_NAME
                 valueFrom:

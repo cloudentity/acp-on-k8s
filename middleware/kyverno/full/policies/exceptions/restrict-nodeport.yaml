@@ -1,0 +1,40 @@
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: validate-nodeport-kube-system
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-nodeport
+      ruleNames:
+        - validate-nodeport
+  match:
+    any:
+      - resources:
+          kinds:
+            - Service
+          namespaces:
+            - kube-system
+          names:
+            - kube-dns-external
+---
+# Used only for local deployments
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: validate-local-nodeport-nginx
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-nodeport
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Service
+          namespaces:
+            - nginx
+          names:
+            - "*-ingress-*"

@@ -41,7 +41,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: rego-v2
-          image: docker.cloudentity.io/rego-env:5.1
+          image: docker.cloudentity.io/rego-env:4
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888

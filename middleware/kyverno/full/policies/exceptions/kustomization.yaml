@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - temporary/acp-tests-selenium.yaml
+  - disallow-capabilities-strict.yaml
+  - disallow-capabilities.yaml
+  - disallow-host-namespaces.yaml
+  - disallow-host-path.yaml
+  - disallow-host-ports.yaml
+  - disallow-privilege-escalation.yaml
+  - disallow-privileged-containers.yaml
+  - local-path-storage.yaml
+  - require-run-as-non-root-user.yaml
+  - require-run-as-nonroot.yaml
+  - restrict-image-registries.yaml
+  - restrict-nodeport.yaml
+  - restrict-seccomp-strict.yaml
+  - restrict-volume-types.yaml

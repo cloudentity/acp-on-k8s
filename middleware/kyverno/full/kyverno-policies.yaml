@@ -20,3 +20,4 @@ spec:
   # https://github.com/kyverno/kyverno/blob/main/charts/kyverno-policies/values.yaml
   values:
     podSecurityStandard: restricted
+    validationFailureAction: Enforce

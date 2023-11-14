@@ -1,0 +1,177 @@
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: require-run-as-nonroot-elastic
+spec:
+  background: true
+  exceptions:
+    - policyName: require-run-as-nonroot
+      ruleNames:
+        - autogen-run-as-non-root
+        - run-as-non-root
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - ReplicaSet
+            - Deployment
+            - StatefulSet
+            - DaemonSet
+          namespaces:
+            - elastic
+          names:
+            - apm-agent-agent*
+            - apm-fleet-server*
+            - metricbeat*
+            - filebeat*
+            - elastic-es-*
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: require-run-as-nonroot-lacework
+spec:
+  background: true
+  exceptions:
+    - policyName: require-run-as-nonroot
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - StatefulSet
+          namespaces:
+            - lacework
+          names:
+            - lacework-agent*
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: require-run-as-nonroot-tools
+spec:
+  background: true
+  exceptions:
+    - policyName: require-run-as-nonroot
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - tools
+          names:
+            - cockroachdb*
+---
+# db-init job requires to run as root to change permissions
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: require-run-as-nonroot-cockroachdb
+spec:
+  background: true
+  exceptions:
+    - policyName: require-run-as-nonroot
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Deployment
+            - Job
+            - Pod
+            - StatefulSet
+            - ReplicaSet
+          namespaces:
+            - cockroachdb*
+          names:
+            - cockroachdb*
+---
+# unable to start pipeline otherwise
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: require-run-as-nonroot-observability
+spec:
+  background: true
+  exceptions:
+    - policyName: require-run-as-nonroot
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Pod
+          namespaces:
+            - observability
+          names:
+            - opentelemetry-collector*
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: require-run-as-nonroot-kube-system
+spec:
+  background: true
+  exceptions:
+    - policyName: require-run-as-nonroot
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - kube-system
+          names:
+            - aws-node*
+            - ebs-csi-node*
+            - coredns*
+            - kindnet*
+            - kube-proxy*
+            - node-local-dns*
+            - node-problem-detector*
+            - etcd*
+            - kube-apiserver*
+            - kube-controller*
+            - kube-scheduler*
+---
+# required to perform chaos experiments
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: require-run-as-nonroot-chaos-mesh
+spec:
+  background: true
+  exceptions:
+    - policyName: require-run-as-nonroot
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - chaos-mesh
+          names:
+            - chaos-daemon*

@@ -4,7 +4,7 @@ metadata:
   name: elastic
 spec:
   interval: 24h
-  timeout: 15m
+  timeout: 30m
   prune: true
   path: ./middleware/elastic/base
   sourceRef:

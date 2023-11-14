@@ -1,0 +1,173 @@
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-capabilities-strict-lacework
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-capabilities-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - ReplicaSet
+            - StatefulSet
+          namespaces:
+            - lacework
+          names:
+            - lacework-agent*
+---
+# init-container for cockroach requires additional CHOWN capability
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-capabilities-strict-cockroachdb
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-capabilities-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - StatefulSet
+          namespaces:
+            - cockroachdb*
+          names:
+            - cockroachdb*
+---
+# redisinsight2 requires CAP_IPC_LOCK capability as it uses gnome-keyring-daemon
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-capabilities-strict-redisinsight2
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-capabilities-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Deployment
+            - Pod
+            - StatefulSet
+          namespaces:
+            - redisinsight
+          names:
+            - redisinsight2*
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-capabilities-strict-kube-system
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-capabilities-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - kube-system
+          names:
+            - aws-node*
+            - aws-lbc*
+            - ebs-csi*
+            - coredns*
+            - kindnet*
+            - kube-proxy*
+            - node-local-dns*
+            - node-problem-detector*
+            - etcd*
+            - kube-apiserver*
+            - kube-controller*
+            - kube-scheduler*
+---
+# filesystem init container requires additional permissions
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-capabilities-strict-elastic
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-capabilities-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Deployment
+            - Pod
+            - StatefulSet
+            - ReplicaSet
+          namespaces:
+            - elastic
+          names:
+            - elastic-es-*
+---
+# redisinsight2 requires CAP_IPC_LOCK to work correctly
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-capabilities-strict-redisinsight
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-capabilities-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - redisinsight
+          names:
+            - redisinsight2*
+---
+# required to perform chaos experiments
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-capabilities-strict-chaos-mesh
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-capabilities-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - chaos-mesh
+          names:
+            - chaos-daemon*

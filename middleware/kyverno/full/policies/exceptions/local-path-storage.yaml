@@ -1,0 +1,159 @@
+# Part of local deployment with kind, so there is no point in patching it
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: restrict-seccomp-strict-local-path-storage
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-seccomp-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - ReplicaSet
+          namespaces:
+            - local-path-storage
+          names:
+            - "local-path-provisioner*"
+            - "helper-pod-create-pvc*"
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: require-run-as-nonroot-local-path-storage
+spec:
+  background: true
+  exceptions:
+    - policyName: require-run-as-nonroot
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - ReplicaSet
+          namespaces:
+            - local-path-storage
+          names:
+            - "local-path-provisioner*"
+            - "helper-pod-create-pvc*"
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-privilege-escalation-local-path-storage
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-privilege-escalation
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - ReplicaSet
+          namespaces:
+            - local-path-storage
+          names:
+            - "local-path-provisioner*"
+            - "helper-pod-create-pvc*"
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-capabilities-strict-local-path-storage
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-capabilities-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - ReplicaSet
+          namespaces:
+            - local-path-storage
+          names:
+            - "local-path-provisioner*"
+            - "helper-pod-create-pvc*"
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-privileged-containers-local-path-storage
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-privileged-containers
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - ReplicaSet
+          namespaces:
+            - local-path-storage
+          names:
+            - "helper-pod-create-pvc*"
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-host-path-local-path-storage
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-host-path
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - ReplicaSet
+          namespaces:
+            - local-path-storage
+          names:
+            - "helper-pod-create-pvc*"
+---
+# Used only for local deployments using kind
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: restrict-volume-types-local-path-storage
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-volume-types
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Deployment
+            - ReplicaSet
+          namespaces:
+            - local-path-storage
+          names:
+            - "helper-pod-create-pvc*"

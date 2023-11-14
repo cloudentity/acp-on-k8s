@@ -50,7 +50,6 @@ spec:
         automountServiceAccountToken: true
         containers:
           - name: metricbeat
-            image: docker.elastic.co/beats/metricbeat:8.7.0
             securityContext:
               privileged: false
               runAsUser: 0

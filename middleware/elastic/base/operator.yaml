@@ -11,9 +11,9 @@ spec:
         kind: HelmRepository
         name: elastic
         namespace: elastic
-      version: 2.6.1 # helm:autoupdate:eck-operator-prod
-  interval: 15m
-  timeout: 14m30s
+      version: 2.9.0 # helm:autoupdate:eck-operator-prod
+  interval: 5m
+  timeout: 15m
   # https://github.com/elastic/cloud-on-k8s/blob/main/deploy/eck-operator/values.yaml
   values:
     installCRDs: false

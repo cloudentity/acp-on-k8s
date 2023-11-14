@@ -1,0 +1,35 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: opentelemetry-add-security-context
+  annotations:
+    policies.kyverno.io/category: Other
+    policies.kyverno.io/subject: StatefulSet,Job
+    policies.kyverno.io/minversion: 1.4.3
+    policies.kyverno.io/description: >-
+      Add security context to pods and jobs created by cockroach operator.
+spec:
+  failurePolicy: Fail
+  rules:
+    - name: add-security-context-pods
+      match:
+        any:
+          - resources:
+              kinds:
+                - DaemonSet
+              namespaces:
+                - observability
+              names:
+                - "opentelemetry-collector-agent"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              spec:
+                volumes:
+                  - name: data
+                    hostPath: null
+                    emptyDir: {}
+                  - name: tmp
+                    hostPath: null
+                    emptyDir: {}

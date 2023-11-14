@@ -26,3 +26,115 @@ spec:
           metadata:
             labels:
               monitoring: "true"
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: cockroachdb-add-security-context
+  annotations:
+    policies.kyverno.io/category: Other
+    policies.kyverno.io/subject: StatefulSet,Job
+    policies.kyverno.io/minversion: 1.4.3
+    policies.kyverno.io/description: >-
+      Add security context to pods and jobs created by cockroach operator.
+spec:
+  failurePolicy: Fail
+  rules:
+    - name: add-security-context-pods
+      match:
+        any:
+          - resources:
+              kinds:
+                - StatefulSet
+              namespaces:
+                - cockroachdb-${cluster_region}
+              names:
+                - "cockroachdb-local"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: db
+                    securityContext:
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL
+                        add: ["NET_BIND_SERVICE"]
+                      privileged: false
+                      seccompProfile:
+                        type: RuntimeDefault
+                initContainers:
+                  - name: db-init
+                    securityContext:
+                      runAsUser: 0
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL
+                        add: ["NET_BIND_SERVICE", "CHOWN"]
+                      privileged: false
+                      seccompProfile:
+                        type: RuntimeDefault
+    - name: add-security-context-jobs-provision
+      match:
+        any:
+          - resources:
+              kinds:
+                - Job
+              namespaces:
+                - cockroachdb-${cluster_region}
+              names:
+                - "cockroachdb-provision"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: cockroachdb-client
+                    securityContext:
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL
+                        add: ["NET_BIND_SERVICE"]
+                      privileged: false
+                      seccompProfile:
+                        type: RuntimeDefault
+                securityContext:
+                  fsGroup: 1000581000
+                  runAsUser: 1000581000
+                  runAsNonRoot: true
+    - name: add-security-context-jobs-vcheck
+      match:
+        any:
+          - resources:
+              kinds:
+                - Job
+              namespaces:
+                - cockroachdb-${cluster_region}
+              names:
+                - "cockroachdb-local-vcheck*"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: crdb
+                    securityContext:
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL
+                        add: ["NET_BIND_SERVICE"]
+                      privileged: false
+                      seccompProfile:
+                        type: RuntimeDefault
+                securityContext:
+                  fsGroup: 1000581000
+                  runAsUser: 1000581000
+                  runAsNonRoot: true

@@ -37,6 +37,22 @@ spec:
         large-client-header-buffers: "4 16k"
       admissionWebhooks:
         timeoutSeconds: 20
+        createSecretJob:
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
+        patchWebhookJob:
+          securityContext:
+            allowPrivilegeEscalation: false
+            seccompProfile:
+              type: RuntimeDefault
+            capabilities:
+              drop:
+                - ALL
       electionID: ingress-private-leader
       ingressClassResource:
         name: private-nginx

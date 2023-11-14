@@ -1,0 +1,94 @@
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-privileged-containers-elastic
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-privileged-containers
+      ruleNames:
+        - autogen-privileged-containers
+        - privileged-containers
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - StatefulSet
+          namespaces:
+            - elastic
+          names:
+            - elastic-es-*
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-privileged-containers-lacework
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-privileged-containers
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - StatefulSet
+          namespaces:
+            - lacework
+          names:
+            - lacework-agent*
+---
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-privileged-containers-kube-system
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-privileged-containers
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Pod
+          namespaces:
+            - kube-system
+          names:
+            - aws-node*
+            - ebs-csi-node*
+            - kube-proxy*
+            - node-problem-detector*
+---
+
+---
+# required to perform chaos experiments
+apiVersion: kyverno.io/v2alpha1
+kind: PolicyException
+metadata:
+  name: disallow-privileged-containers-chaos-mesh
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-privileged-containers
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - DaemonSet
+            - Deployment
+            - Pod
+            - ReplicaSet
+          namespaces:
+            - chaos-mesh
+          names:
+            - chaos-daemon*

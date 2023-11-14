@@ -35,3 +35,38 @@ spec:
                         drop:
                           - ALL
                         add: ["NET_BIND_SERVICE"]
+---
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: timescaledb-exporter-add-pgbackrest-security-context
+  annotations:
+    policies.kyverno.io/category: Other
+    policies.kyverno.io/subject: StatefulSet
+    policies.kyverno.io/minversion: 1.4.3
+    policies.kyverno.io/description: "Update timescaledb pgbackrest security context to fix policies violations"
+spec:
+  failurePolicy: Fail
+  rules:
+    - name: timescaledb-exporter-add-pgbackrest-security-context
+      match:
+        any:
+          - resources:
+              kinds:
+                - StatefulSet
+              namespaces:
+                - timescaledb-${cluster_region}
+              names:
+                - "timescaledb"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: pgbackrest
+                    securityContext:
+                      allowPrivilegeEscalation: false
+                      capabilities:
+                        drop:
+                          - ALL

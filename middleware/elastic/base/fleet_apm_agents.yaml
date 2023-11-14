@@ -35,7 +35,6 @@ spec:
               allowPrivilegeEscalation: false
               seccompProfile:
                 type: "RuntimeDefault"
-            image: docker.elastic.co/beats/elastic-agent:8.7.0
             volumeMounts:
               - name: tls
                 mountPath: "/tls"
