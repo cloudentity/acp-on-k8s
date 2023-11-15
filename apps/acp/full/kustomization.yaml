@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: acp
 resources:
   - ../base
+  - service.yaml
   - scaled_object.yaml
   - servicemonitor.yaml
   - metrictemplate.yaml

@@ -38,46 +38,6 @@ spec:
           annotations:
             description: ACP Redis Lag on pod {{ $labels.namespace }}/{{ $labels.pod }} is higher than 120 seconds for {{ $labels.group }}/{{ $labels.stream }}, VALUE = {{ $value }}
             summary: ACP Redis lag high
-        - alert: ACPHighHttp4xxErrorRateInternal
-          expr: sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count{external=~"false", status_code=~"^4.."}[10m])) / sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count[10m])) > 5
-          for: 1m
-          labels:
-            severity: warning
-          annotations:
-            description: Multiple occurrences of HTTP requests to ACP with error code 4xx (> 5%) on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from internal source
-            summary: ACP high internal HTTP 4xx error rate
-        - alert: ACPHighHttp5xxErrorRateInternal
-          expr: sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count{external=~"false", status_code=~"^5.."}[10m])) / sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count[10m])) > 0
-          for: 1m
-          labels:
-            severity: warning
-          annotations:
-            description: Multiple occurrences of HTTP requests to ACP with error code 5xx on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from internal source
-            summary: ACP high internal HTTP 5xx error rate
-        - alert: ACPHttp5xxErrorInternal
-          expr: sum by (namespace, external, method, path) (max_over_time(acp_http_duration_seconds_count{status_code=~"^5..", external="false"}[10m]) - min_over_time(acp_http_duration_seconds_count{status_code=~"^5..", external="false"}[10m])) > 0
-          for: 1m
-          labels:
-            severity: warning
-          annotations:
-            description: Single HTTP request to ACP with error code 5xx on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from internal source
-            summary: ACP HTTP 5xx error
-        - alert: ACPHighHttp4xxErrorRateExternal
-          expr: sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count{external=~"true", status_code=~"^4.."}[10m])) / sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count[10m])) > 5
-          for: 1m
-          labels:
-            severity: warning
-          annotations:
-            description: Multiple occurrences of HTTP requests to ACP with error code 4xx (>5%) on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from external source
-            summary: ACP high HTTP 4xx error rate from external source
-        - alert: ACPHighHttp5xxErrorRateExternal
-          expr: sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count{external=~"true", status_code=~"^5.."}[1m])) / sum by(namespace, external, method, path) (rate(acp_http_duration_seconds_count[1m])) > 5
-          for: 1m
-          labels:
-            severity: warning
-          annotations:
-            description: Multiple occurrences of HTTP requests to ACP with error code 5xx (>5%) on {{ $labels.method }} {{ $labels.path }} namespace {{ $labels.namespace }} / external {{ $labels.external }} from external source
-            summary: ACP high HTTP 5xx error rate from external source
         - alert: ACPAbnormalhHttpRequestsCount
           expr: sum by (namespace) (rate(acp_http_duration_seconds_count[1m]) > 50)
           for: 1m

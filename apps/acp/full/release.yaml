@@ -35,6 +35,8 @@ spec:
         nginx.ingress.kubernetes.io/affinity: "cookie"
         nginx.ingress.kubernetes.io/affinity-mode: "balanced"
         nginx.ingress.kubernetes.io/affinity-canary-behavior: "sticky"
+    service:
+      enabled: false
     env:
       - name: DEFAULT_IMPORT_CLIENT_SECRET
         valueFrom:
