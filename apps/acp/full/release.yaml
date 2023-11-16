@@ -30,11 +30,6 @@ spec:
         - acp-canary
         - acp-canary.acp
         - acp-canary.acp.svc.cluster.local
-    ingress:
-      customAnnotations:
-        nginx.ingress.kubernetes.io/affinity: "cookie"
-        nginx.ingress.kubernetes.io/affinity-mode: "balanced"
-        nginx.ingress.kubernetes.io/affinity-canary-behavior: "sticky"
     service:
       enabled: false
     env:

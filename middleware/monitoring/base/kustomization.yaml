@@ -70,3 +70,8 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         kustomize.toolkit.fluxcd.io/substitute: disabled
+  - name: flux-kube-state-metrics-config
+    files:
+      - kube-state-metrics-config.yaml
+configurations:
+  - kustomizeconfig.yaml

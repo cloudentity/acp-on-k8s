@@ -7,26 +7,26 @@ spec:
     - name: flux
       rules:
         - alert: ReconciliationFailure
-          expr: max(gotk_reconcile_condition{status="False",type="Ready"}) by (exported_namespace, name, kind) + on(exported_namespace, name, kind) (max(gotk_reconcile_condition{status="Deleted"}) by (exported_namespace, name, kind)) * 2 == 1
+          expr: gotk_resource_info{ready="False"} == 1
           for: 1h
           labels:
             severity: warning
           annotations:
-            description: "{{ $labels.kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} reconciliation has been failing for more than ten minutes"
+            description: "{{ $labels.customresource_kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} reconciliation has been failing for more than ten minutes"
             summary: Reconciliation has failed
         - alert: ReconciliationFailure
-          expr: max(gotk_reconcile_condition{status="False",type="Ready",kind=~"HelmRelease|Kustomization"}) by (exported_namespace, name, kind) + on(exported_namespace, name, kind) (max(gotk_reconcile_condition{status="Deleted",kind=~"HelmRelease|Kustomization"}) by (exported_namespace, name, kind)) * 2 == 1
+          expr: gotk_resource_info{ready="False",customresource_kind=~"HelmRelease|Kustomization"} == 1
           for: 4h
           labels:
             severity: critical
           annotations:
-            description: "{{ $labels.kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} reconciliation has been failing for more than one hour"
+            description: "{{ $labels.customresource_kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} reconciliation has been failing for more than one hour"
             summary: Reconciliation has failed
         - alert: ReconciliationSuspended
-          expr: max(gotk_suspend_status) by (exported_namespace, kind, name) == 1
+          expr: gotk_resource_info{suspended="true"} == 1
           for: 30m
           labels:
             severity: warning
           annotations:
-            description: "{{ $labels.kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} reconciliation has been suspended for more than fifteen minutes"
+            description: "{{ $labels.customresource_kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} reconciliation has been suspended for more than thirty minutes"
             summary: Reconciliation Suspended

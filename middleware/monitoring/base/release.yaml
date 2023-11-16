@@ -20,6 +20,10 @@ spec:
     preserveValues: false
   # Default values
   # https://github.com/prometheus-community/helm-charts/blob/main/charts/kube-prometheus-stack/values.yaml
+  valuesFrom:
+    - kind: ConfigMap
+      name: flux-kube-state-metrics-config
+      valuesKey: kube-state-metrics-config.yaml
   values:
     kubeApiServer:
       enabled: false
@@ -202,16 +206,27 @@ spec:
               - target_label: __address__
                 replacement: ssl-exporter.monitoring.svc.cluster.local:9219
       additionalPodMonitors:
-        - name: flux
-          selector:
-            matchExpressions:
-              - key: app
-                operator: Exists
+        - name: flux-system
           namespaceSelector:
             matchNames:
               - flux-system
+          selector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - helm-controller
+                  - source-controller
+                  - kustomize-controller
+                  - notification-controller
+                  - image-automation-controller
+                  - image-reflector-controller
           podMetricsEndpoints:
             - port: http-prom
+              relabelings:
+                - sourceLabels: [__meta_kubernetes_pod_phase]
+                  action: keep
+                  regex: Running
     prometheusOperator:
       resources:
         requests:
