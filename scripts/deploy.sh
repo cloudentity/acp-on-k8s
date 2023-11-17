@@ -1,9 +1,18 @@
 #!/bin/bash
 
-MODE=$1
-REPO=$2
-BRANCH=$3
-TAG=$4
+while [[ "$#" -gt 0 ]]; do
+    case $1 in
+        --mode) MODE="$2"; shift ;;
+        --repo) REPO="$2"; shift ;;
+        --branch) BRANCH="$2"; shift ;;
+        --tag) TAG="$2"; shift ;;
+        --git-username) GIT_USERNAME="$2"; shift ;;
+        --git-password) GIT_PASSWORD="$2"; shift ;;
+        *) echo "Unknown parameter passed: $1"; exit 1 ;;
+    esac
+    shift
+done
+
 DOCKER_REGISTRY=docker.cloudentity.io
 
 if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then
@@ -42,7 +51,9 @@ echo "Configuring Git source..."
 $RUN flux create source git flux-system \
     --url="$REPO" \
     --tag="$TAG" \
-    --branch="$BRANCH"
+    --branch="$BRANCH" \
+    --username="$GIT_USERNAME" \
+    --password="$GIT_PASSWORD"
 
 echo
 echo "Configuring Git path..."

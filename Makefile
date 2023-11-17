@@ -10,6 +10,7 @@ TAG ?=
 TOOLBOX_DOCKER_IMAGE ?= cloudentity/toolbox
 TOOLBOX_TAG ?= latest
 STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
+PRETTIER_PATH ?= .
 
 ifeq ($(CI),true)
     DOCKER_FLAGS = --init
@@ -31,7 +32,7 @@ setup:
 	kind create cluster --name=cloudentity --config=scripts/kind-config.yaml
 
 deploy:
-	@RUN="$(RUN)" ./scripts/deploy.sh $(MODE) $(REPO) $(BRANCH) $(TAG)
+	@RUN="$(RUN)" ./scripts/deploy.sh --mode "$(MODE)" --repo "$(REPO)" --branch "$(BRANCH)" --tag "$(TAG)" --git-username "$(GIT_USERNAME)" --git-password "$(GIT_PASSWORD)"
 
 wait:
 	@$(RUN) ./scripts/wait.sh ${MODE}
@@ -80,10 +81,10 @@ kustomization-lint:
 	@$(RUN) ./scripts/validate.sh
 
 prettier-lint:
-	@$(RUN) prettier --check .
+	@$(RUN) prettier --check $(PRETTIER_PATH)
 
 prettier-format:
-	@$(RUN) prettier --write .
+	@$(RUN) prettier --write $(PRETTIER_PATH)
 
 decrypt:
 	@$(RUN) sops -decrypt --in-place ${FILE}
