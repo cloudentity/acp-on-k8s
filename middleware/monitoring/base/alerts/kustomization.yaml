@@ -9,6 +9,7 @@ resources:
   - faas.yaml
   - flagger.yaml
   - flux.yaml
+  - kyverno.yaml
   - nginx.yaml
   - opentelemetry.yaml
   - prometheus.yaml

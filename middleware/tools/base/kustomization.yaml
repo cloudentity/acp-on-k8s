@@ -12,7 +12,7 @@ resources:
   - timescale.yaml
 images:
   - name: cockroachdb/cockroach
-    newTag: v23.1.11 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-image-policy-prod:tag"}
+    newTag: v23.1.12 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-image-policy-prod:tag"}
   - name: bitnami/redis-cluster
     newTag: 6.2.14 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
   - name: timescale/timescaledb-ha

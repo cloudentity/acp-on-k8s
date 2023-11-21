@@ -20,7 +20,7 @@ metadata:
       and is not recommended on large clusters. This policy requires Kyverno v1.7.4+ to
       function properly.
 spec:
-  validationFailureAction: Audit
+  validationFailureAction: Enforce
   failurePolicy: Fail
   background: true
   rules:

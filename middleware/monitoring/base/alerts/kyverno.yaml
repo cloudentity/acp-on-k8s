@@ -1,0 +1,15 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: kyverno
+spec:
+  groups:
+    - name: kyverno-policies
+      rules:
+        - alert: KyvernoPolicyViolation
+          expr: sum by (policy, namespace, name) (policy_report_result{status="fail"}) > 0
+          labels:
+            severity: warning
+          annotations:
+            description: "Some resources did not fulfil definied policies on {{ $labels.namespace }}/{{ $labels.region }}"
+            summary: Resources did not fullfill kyverno policies.
