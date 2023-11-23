@@ -95,6 +95,9 @@ spec:
                   name: elasticsearch-cacerts
           containers:
             - name: elasticsearch
+              env:
+                - name: AWS_STS_REGIONAL_ENDPOINTS
+                  value: ""
               resources:
                 # Production Readiness - Adjust Pod Resources
                 requests:
