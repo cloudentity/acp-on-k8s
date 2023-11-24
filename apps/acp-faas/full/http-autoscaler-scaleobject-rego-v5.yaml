@@ -1,0 +1,18 @@
+kind: HTTPScaledObject
+apiVersion: http.keda.sh/v1alpha1
+metadata:
+  name: http-autoscaler-scaledobject-rego-v5
+spec:
+  hosts:
+    - acp-faas-rego-v5-proxy
+    - acp-faas-rego-v5-proxy.NAMESPACE
+    - acp-faas-rego-v5-proxy.NAMESPACE.svc.cluster.local
+  targetPendingRequests: 1
+  scaleTargetRef:
+    deployment: acp-faas-rego-v5
+    service: acp-faas-rego-v5
+    port: 8888
+  replicas:
+    # Production Readiness - Adjust Pod Count
+    min: 1
+    max: 3

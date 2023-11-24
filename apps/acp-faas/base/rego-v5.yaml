@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    environmentName: rego
-  name: acp-faas-rego
+    environmentName: rego-v5
+  name: acp-faas-rego-v5
 spec:
   # Production Readiness - Adjust Pod Count
   replicas: 2
@@ -13,11 +13,11 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      environmentName: rego
+      environmentName: rego-v5
   template:
     metadata:
       labels:
-        environmentName: rego
+        environmentName: rego-v5
     spec:
       imagePullSecrets:
         - name: artifactory
@@ -30,7 +30,7 @@ spec:
       topologySpreadConstraints:
         - labelSelector:
             matchLabels:
-              environmentName: rego
+              environmentName: rego-v5
           maxSkew: 1
           topologyKey: topology.kubernetes.io/zone
           whenUnsatisfiable: ScheduleAnyway
@@ -41,7 +41,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: rego
-          image: docker.cloudentity.io/rego-env:4
+          image: docker.cloudentity.io/rego-env:5
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888

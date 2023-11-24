@@ -4,8 +4,14 @@ namespace: acp-faas
 resources:
   - namespace.yaml
   - networkpolicy.yaml
-  - nodejs.yaml
+  - nodejs-service-v4.yaml
+  - nodejs-service-v5.yaml
   - nodejs-service.yaml
-  - rego.yaml
+  - nodejs-v4.yaml
+  - nodejs-v5.yaml
+  - nodejs.yaml
+  - rego-service-v5.yaml
   - rego-service.yaml
+  - rego-v5.yaml
+  - rego.yaml
   - ../../../secrets/base/registry.yaml

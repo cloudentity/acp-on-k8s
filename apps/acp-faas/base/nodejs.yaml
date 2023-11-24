@@ -40,7 +40,7 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: nodejs-v2
+        - name: nodejs
           image: docker.cloudentity.io/node-env:4.3
           imagePullPolicy: IfNotPresent
           ports:

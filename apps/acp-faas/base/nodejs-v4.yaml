@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    environmentName: rego
-  name: acp-faas-rego
+    environmentName: nodejs-v4
+  name: acp-faas-nodejs-v4
 spec:
   # Production Readiness - Adjust Pod Count
   replicas: 2
@@ -13,11 +13,11 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      environmentName: rego
+      environmentName: nodejs-v4
   template:
     metadata:
       labels:
-        environmentName: rego
+        environmentName: nodejs-v4
     spec:
       imagePullSecrets:
         - name: artifactory
@@ -30,7 +30,7 @@ spec:
       topologySpreadConstraints:
         - labelSelector:
             matchLabels:
-              environmentName: rego
+              environmentName: nodejs-v4
           maxSkew: 1
           topologyKey: topology.kubernetes.io/zone
           whenUnsatisfiable: ScheduleAnyway
@@ -40,8 +40,8 @@ spec:
         seccompProfile:
           type: RuntimeDefault
       containers:
-        - name: rego
-          image: docker.cloudentity.io/rego-env:4
+        - name: nodejs
+          image: docker.cloudentity.io/node-env:4.3
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888

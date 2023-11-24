@@ -3,9 +3,15 @@ kind: Kustomization
 namespace: acp-faas
 resources:
   - ../base
+  - http-autoscaler-scaleobject-nodejs-v4.yaml
+  - http-autoscaler-scaleobject-nodejs-v5.yaml
   - http-autoscaler-scaleobject-nodejs.yaml
+  - http-autoscaler-scaleobject-rego-v5.yaml
   - http-autoscaler-scaleobject-rego.yaml
+  - http-autoscaler-service-nodejs-v4.yaml
+  - http-autoscaler-service-nodejs-v5.yaml
   - http-autoscaler-service-nodejs.yaml
+  - http-autoscaler-service-rego-v5.yaml
   - http-autoscaler-service-rego.yaml
 patches:
   - target:
