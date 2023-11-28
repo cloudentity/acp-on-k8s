@@ -1,0 +1,21 @@
+{{- if .Values.autoscaling.keda.enabled }}
+kind: HTTPScaledObject
+apiVersion: http.keda.sh/v1alpha1
+metadata:
+  name: {{ include "app.fullname" . }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  hosts:
+    - {{ include "app.fullname" . }}-proxy
+    - {{ include "app.fullname" . }}-proxy.{{ .Release.Namespace }}
+    - {{ include "app.fullname" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local
+  targetPendingRequests: {{ .Values.autoscaling.keda.targetPendingRequests }}
+  scaleTargetRef:
+    deployment: {{ include "app.fullname" . }}
+    service: {{ include "app.fullname" . }}
+    port: {{ .Values.autoscaling.keda.port }}
+  replicas:
+    min: {{ .Values.autoscaling.keda.minReplicas }}
+    max: {{ .Values.autoscaling.keda.maxReplicas }}
+{{- end }}

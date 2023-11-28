@@ -74,3 +74,11 @@ spec:
           annotations:
             summary: Pending Messages on Redis
             description: There are {{ $value }} pending messages for redis. Alert fires when there are more than 10 pending messages for 5 minutes.
+        - alert: ACP-5XX-External
+          expr: delta(elasticsearch_indices_docs_total{index="acp-500-external"}[15m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: Kibana alerts available - ACP High 5XX error rate
+            description: There are {{ $value }} new Kibana alerts noticed in {{ $labels.env }} {{ $labels.region_name }}

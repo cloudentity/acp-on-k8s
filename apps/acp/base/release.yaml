@@ -172,8 +172,8 @@ spec:
         captcha:
           enabled: true
         docker:
-          shared_node_url: "http://acp-faas-nodejs.acp-faas:8888"
-          shared_rego_url: "http://acp-faas-rego.acp-faas:8888"
+          shared_node_url: "http://acp-faas-nodejs-v4.acp-faas:8888"
+          shared_rego_url: "http://acp-faas-rego-v5.acp-faas:8888"
     migrateJob:
       enabled: true
       configPath: /data/config.yaml,/secret/secret.yaml

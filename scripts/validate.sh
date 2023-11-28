@@ -20,5 +20,5 @@ eval_kustomization() {
 }
 export -f eval_kustomization
 
-find . -type f -name '*.yaml' | parallel --halt now,fail=1 "yq eval 'true' {} > /dev/null || echo \"Eval failed for {}\" | grep -v \"true\" | false"
-find . -type f -name ${kustomize_config} | parallel --halt now,fail=1 eval_kustomization
+find . -not -path './charts/*' -type f -name '*.yaml' | parallel --halt now,fail=1 "yq eval 'true' {} > /dev/null || echo \"Eval failed for {}\" | grep -v \"true\" | false"
+find . -not -path './charts/*' -type f -name ${kustomize_config} | parallel --halt now,fail=1 eval_kustomization

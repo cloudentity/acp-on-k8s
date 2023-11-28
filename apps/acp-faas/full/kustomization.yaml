@@ -3,34 +3,7 @@ kind: Kustomization
 namespace: acp-faas
 resources:
   - ../base
-  - http-autoscaler-scaleobject-nodejs-v4.yaml
-  - http-autoscaler-scaleobject-nodejs-v5.yaml
-  - http-autoscaler-scaleobject-nodejs.yaml
-  - http-autoscaler-scaleobject-rego-v5.yaml
-  - http-autoscaler-scaleobject-rego.yaml
-  - http-autoscaler-service-nodejs-v4.yaml
-  - http-autoscaler-service-nodejs-v5.yaml
-  - http-autoscaler-service-nodejs.yaml
-  - http-autoscaler-service-rego-v5.yaml
-  - http-autoscaler-service-rego.yaml
 patches:
-  - target:
-      group: apps
-      version: v1
-      kind: Deployment
-    patch: |-
-      - op: remove
-        path: /spec/replicas
-replacements:
-  - source:
-      kind: Namespace
-      fieldPath: metadata.name
-    targets:
-      - select:
-          kind: HTTPScaledObject
-        fieldPaths:
-          - spec.hosts.1
-          - spec.hosts.2
-        options:
-          delimiter: "."
-          index: 1
+  - path: nodejs-v4.yaml
+  - path: nodejs-v5.yaml
+  - path: rego-v5.yaml

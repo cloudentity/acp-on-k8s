@@ -1,95 +1,30 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
 metadata:
-  labels:
-    environmentName: nodejs-v5
   name: acp-faas-nodejs-v5
 spec:
-  # Production Readiness - Adjust Pod Count
-  replicas: 2
-  strategy:
-    rollingUpdate:
-      maxSurge: 50%
-      maxUnavailable: 0
-  selector:
-    matchLabels:
-      environmentName: nodejs-v5
-  template:
-    metadata:
-      labels:
-        environmentName: nodejs-v5
+  releaseName: acp-faas-nodejs-v5
+  chart:
     spec:
-      imagePullSecrets:
-        - name: artifactory
-      nodeSelector:
-        faas: "true"
-      tolerations:
-        - key: faas
-          value: "true"
-          effect: NoSchedule
-      topologySpreadConstraints:
-        - labelSelector:
-            matchLabels:
-              environmentName: nodejs-v5
-          maxSkew: 1
-          topologyKey: topology.kubernetes.io/zone
-          whenUnsatisfiable: ScheduleAnyway
-      securityContext:
-        fsGroup: 65535
-        runAsNonRoot: true
-        seccompProfile:
-          type: RuntimeDefault
-      containers:
-        - name: nodejs
-          image: docker.cloudentity.io/node-env:5.3
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 8888
-              name: http-env
-              protocol: TCP
-          resources:
-            requests:
-              cpu: 10m
-              memory: 48Mi
-            limits:
-              cpu: 100m
-              memory: 96Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            privileged: false
-            readOnlyRootFilesystem: true
-            runAsGroup: 65535
-            runAsNonRoot: true
-            runAsUser: 65535
-            seccompProfile:
-              type: RuntimeDefault
-          lifecycle:
-            preStop:
-              exec:
-                command:
-                  - /bin/sleep
-                  - "1"
-          startupProbe:
-            failureThreshold: 3
-            initialDelaySeconds: 2
-            periodSeconds: 2
-            httpGet:
-              path: /healthz
-              port: 8888
-          readinessProbe:
-            failureThreshold: 3
-            periodSeconds: 10
-            timeoutSeconds: 1
-            httpGet:
-              path: /healthz
-              port: 8888
-          livenessProbe:
-            failureThreshold: 3
-            periodSeconds: 10
-            timeoutSeconds: 1
-            httpGet:
-              path: /healthz
-              port: 8888
+      chart: ./charts/acp-faas
+      sourceRef:
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+  interval: 10m
+  timeout: 9m30s
+  install:
+    remediation:
+      retries: 3
+  values:
+    image:
+      name: node-env
+      tag: 5.3
+    topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/name: acp-faas
+            app.kubernetes.io/instance: acp-faas-nodejs-v5
+        maxSkew: 1
+        topologyKey: topology.kubernetes.io/zone
+        whenUnsatisfiable: ScheduleAnyway

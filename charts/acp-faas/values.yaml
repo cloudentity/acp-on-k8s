@@ -1,0 +1,224 @@
+## Image parameters
+##
+image:
+  ## Image repository
+  ##
+  repository: docker.cloudentity.io
+
+  ## Image name
+  ##
+  name:
+
+  ## Image tag (immutable tags are recommended)
+  ##
+  tag:
+
+  ## Image pull policy
+  ##
+  pullPolicy: IfNotPresent
+
+## Global Docker registry secret names as an array
+##
+imagePullSecrets:
+  - name: docker.cloudentity.io
+
+## String to partially override name
+##
+# nameOverride: ""
+
+## String to fully override fullname
+##
+# fullnameOverride: ""
+
+## Additional labels to apply to all Kubernetes resources created by this chart.
+##
+labels: {}
+
+## Define serviceAccount
+##
+serviceAccount:
+  ## Specifies whether a service account should be created
+  ##
+  create: true
+
+  ## Annotations to add to the service account
+  ##
+  annotations: {}
+
+  ## The name of the service account to use.
+  ## If not set and create is true, a name is generated using the fullname template
+  # name: ""
+
+## Array with ports to add to the container
+##
+ports:
+  http-env: 8888
+
+## Define service
+##
+service:
+  ## Enables service
+  ##
+  enabled: true
+
+  ## Service type
+  ##
+  type: ClusterIP
+
+## Autoscaling parameters
+##
+autoscaling:
+  ## Keda based autoscaling
+  ##
+  keda:
+    ## Enable autoscaling
+    ##
+    enabled: false
+
+    ## Define mix replica count
+    ##
+    # minReplicas: 0
+
+    ## Define max replica count
+    ##
+    # maxReplicas: 1
+
+    ## Define scaled object port
+    ##
+    # port: 8888
+
+    ## Define scaled object targetPendingRequests
+    ##
+    # targetPendingRequests: 1
+
+    ## Define keda interceptor proxy dns
+    ##
+    # interceptor_dns: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
+
+  hpa:
+    ## Enable autoscaling
+    ##
+    enabled: false
+  
+    ## Define mix replica count
+    ##
+    # minReplicas: 0
+  
+    ## Define max replica count
+    ##
+    # maxReplicas: 1
+  
+    ## The average CPU usage of a all pods in a deployment
+    ##
+    # targetCPUUtilizationPercentage: ""
+  
+    ## The average memory usage of a all pods in a deployment
+    ##
+    # targetMemoryUtilizationPercentage: ""
+  
+    ## Custom scaling behavior
+    ##
+    #  behavior: {}
+
+## Number of app replicas to deploy
+##
+replicaCount: 2
+
+## Deployment lifecycle
+##
+lifecycle:
+  preStop:
+    exec:
+      command:
+        - /bin/sleep
+        - "1"
+
+## Pod Update strategy
+##
+updateStrategy:
+  rollingUpdate:
+    maxSurge: 50%
+    maxUnavailable: 0
+
+## Liveness Probe configuration
+##
+livenessProbe:
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 1
+  httpGet:
+    path: /healthz
+    port: 8888
+
+## Startup Probe configuration
+##
+startupProbe:
+  failureThreshold: 3
+  initialDelaySeconds: 2
+  periodSeconds: 2
+  httpGet:
+    path: /healthz
+    port: 8888
+
+## Readiness Probe configuration
+##
+readinessProbe:
+  failureThreshold: 3
+  periodSeconds: 10
+  timeoutSeconds: 1
+  httpGet:
+    path: /healthz
+    port: 8888
+
+## Resource requests and limits
+##
+resources:
+  requests:
+    cpu: 10m
+    memory: 48Mi
+  limits:
+    cpu: 100m
+    memory: 96Mi
+
+## Node selector
+##
+nodeSelector:
+  faas: "true"
+
+## Pod affinity
+##
+# affinity: {}
+
+## Pod tolerations
+##
+tolerations:
+  - key: faas
+    value: "true"
+    effect: NoSchedule
+
+## Pod topology spread constraints
+##
+# topologySpreadConstraints: {}
+
+## Pod security context
+##
+podSecurityContext:
+  fsGroup: 65535
+  runAsNonRoot: true
+  seccompProfile:
+    type: RuntimeDefault
+
+## Container security context
+##
+containerSecurityContext:
+  runAsUser: 65535
+  runAsGroup: 65535
+  runAsNonRoot: true
+  privileged: false
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+  seccompProfile:
+    type: RuntimeDefault
