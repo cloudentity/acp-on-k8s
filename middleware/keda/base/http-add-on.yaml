@@ -6,12 +6,11 @@ spec:
   releaseName: http-add-on
   chart:
     spec:
-      chart: keda-add-ons-http
+      chart: http-add-on
       sourceRef:
-        kind: HelmRepository
-        name: keda
+        kind: GitRepository
+        name: keda-http-add-on
         namespace: keda
-      version: 0.6.0 # helm:autoupdate:keda-add-ons-http-prod
   interval: 1m
   install:
     remediation:

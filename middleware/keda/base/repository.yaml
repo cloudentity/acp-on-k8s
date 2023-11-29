@@ -5,3 +5,13 @@ metadata:
 spec:
   interval: 24h
   url: https://kedacore.github.io/charts
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: GitRepository
+metadata:
+  name: keda-http-add-on
+spec:
+  interval: 24h
+  url: https://github.com/kedacore/charts/
+  ref:
+    tag: keda-add-ons-http-v0.6.0
