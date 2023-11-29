@@ -4,7 +4,7 @@ metadata:
   name: filebeat
 spec:
   type: filebeat
-  version: 8.7.0 # {"$imagepolicy": "elastic:filebeat-image-policy-prod:tag"}
+  version: 8.11.1 # {"$imagepolicy": "elastic:filebeat-image-policy-prod:tag"}
   elasticsearchRef:
     name: elastic
   kibanaRef:
