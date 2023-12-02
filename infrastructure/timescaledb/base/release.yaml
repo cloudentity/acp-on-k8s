@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: timescaledb
         namespace: timescaledb-${cluster_region}
-      version: 0.30.0 # helm:autoupdate:timescaledb-single-prod
+      version: 0.30.0 # helm:autoupdate:timescaledb-prod
   interval: 25m
   timeout: 24m30s
   #  https://github.com/timescale/timescaledb-kubernetes/blob/master/charts/timescaledb-single/values.yaml

@@ -19,7 +19,7 @@ spec:
   values:
     image:
       name: rego-env
-      tag: 5
+      tag: "5" # {"$imagepolicy": "acp-faas:rego-env-v5-image-policy-prod:tag"}
     topologySpreadConstraints:
       - labelSelector:
           matchLabels:
