@@ -19,7 +19,7 @@ spec:
   values:
     image:
       name: node-env
-      tag: "4.3" # {"$imagepolicy": "acp-faas:node-env-v4-image-policy-prod:tag"}
+      tag: "v4-20231201-110927-d511a9a7" # {"$imagepolicy": "acp-faas:node-env-v4-image-policy-prod:tag"}
     topologySpreadConstraints:
       - labelSelector:
           matchLabels:

@@ -33,6 +33,10 @@ spec:
             {{- toYaml .Values.containerSecurityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}/{{ .Values.image.name}}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.env }}
+          env:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           ports:
           {{- range $key, $value := .Values.ports }}
             - name: {{ $key }}
