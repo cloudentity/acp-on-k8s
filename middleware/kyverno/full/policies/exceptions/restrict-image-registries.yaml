@@ -1,5 +1,5 @@
 # Used by local deployment
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-image-registries-kube-system

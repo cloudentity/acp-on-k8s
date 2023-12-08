@@ -1,4 +1,4 @@
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-privilege-escalation-elastic
@@ -20,7 +20,7 @@ spec:
           names:
             - elastic-es-*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-privilege-escalation-lacework
@@ -44,7 +44,7 @@ spec:
           names:
             - lacework-agent*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-privilege-escalation-kube-system
@@ -75,7 +75,7 @@ spec:
             - kube-scheduler*
 ---
 # required to perform chaos experiments
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-privilege-escalation-chaos-mesh

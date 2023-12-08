@@ -1,5 +1,5 @@
 # acp uses otel host port to connect to instance on the same node
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-ports-observability
@@ -21,7 +21,7 @@ spec:
             - opentelemetry-collector*
 ---
 # Required for node monitoring purposes
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-ports-prometheus-node-exporter
@@ -42,7 +42,7 @@ spec:
           names:
             - kube-prometheus-stack-prometheus-node-exporter*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-ports-kube-system

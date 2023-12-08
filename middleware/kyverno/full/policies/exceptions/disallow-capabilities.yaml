@@ -1,4 +1,4 @@
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-kube-system
@@ -27,7 +27,7 @@ spec:
             - kube-scheduler*
 ---
 # required to perform chaos experiments
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-chaos-mesh
@@ -51,7 +51,7 @@ spec:
             - chaos-daemon*
 ---
 # redisinsight2 requires CAP_IPC_LOCK to work correctly
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-redisinsight

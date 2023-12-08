@@ -1,4 +1,4 @@
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-path-lacework
@@ -21,7 +21,7 @@ spec:
           names:
             - lacework-agent*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-path-elastic
@@ -45,7 +45,7 @@ spec:
             - filebeat-beat-*
 ---
 # Required in order to gather metrics about node by node exporter
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-path-prometheus-node-exporter
@@ -66,7 +66,7 @@ spec:
           names:
             - kube-prometheus-stack-prometheus-node-exporter*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-path-kube-system
@@ -97,7 +97,7 @@ spec:
             - kube-scheduler*
 ---
 # required to perform chaos experiments
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-path-chaos-mesh

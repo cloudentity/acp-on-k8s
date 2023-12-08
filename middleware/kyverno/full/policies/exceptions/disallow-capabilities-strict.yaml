@@ -1,4 +1,4 @@
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-strict-lacework
@@ -23,7 +23,7 @@ spec:
             - lacework-agent*
 ---
 # init-container for cockroach requires additional CHOWN capability
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-strict-cockroachdb
@@ -45,7 +45,7 @@ spec:
             - cockroachdb*
 ---
 # redisinsight2 requires CAP_IPC_LOCK capability as it uses gnome-keyring-daemon
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-strict-redisinsight2
@@ -67,7 +67,7 @@ spec:
           names:
             - redisinsight2*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-strict-kube-system
@@ -102,7 +102,7 @@ spec:
             - kube-scheduler*
 ---
 # filesystem init container requires additional permissions
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-strict-elastic
@@ -126,7 +126,7 @@ spec:
             - elastic-es-*
 ---
 # redisinsight2 requires CAP_IPC_LOCK to work correctly
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-strict-redisinsight
@@ -149,7 +149,7 @@ spec:
             - redisinsight2*
 ---
 # required to perform chaos experiments
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-strict-chaos-mesh

@@ -31,6 +31,7 @@ spec:
             ingest,
           ]
         logger.org.elasticsearch: warn
+        cluster.routing.allocation.allow_rebalance: indices_primaries_active
       podTemplate:
         spec:
           serviceAccountName: elastic-sa

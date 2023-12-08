@@ -1,5 +1,5 @@
 # Part of local deployment with kind, so there is no point in patching it
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-seccomp-strict-local-path-storage
@@ -22,7 +22,7 @@ spec:
             - "local-path-provisioner*"
             - "helper-pod-create-pvc*"
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: require-run-as-nonroot-local-path-storage
@@ -45,7 +45,7 @@ spec:
             - "local-path-provisioner*"
             - "helper-pod-create-pvc*"
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-privilege-escalation-local-path-storage
@@ -68,7 +68,7 @@ spec:
             - "local-path-provisioner*"
             - "helper-pod-create-pvc*"
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-strict-local-path-storage
@@ -91,7 +91,7 @@ spec:
             - "local-path-provisioner*"
             - "helper-pod-create-pvc*"
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-privileged-containers-local-path-storage
@@ -113,7 +113,7 @@ spec:
           names:
             - "helper-pod-create-pvc*"
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-path-local-path-storage
@@ -136,7 +136,7 @@ spec:
             - "helper-pod-create-pvc*"
 ---
 # Used only for local deployments using kind
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-volume-types-local-path-storage

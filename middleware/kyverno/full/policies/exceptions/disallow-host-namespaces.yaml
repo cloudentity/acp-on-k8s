@@ -1,5 +1,5 @@
 # Required for node monitoring purposes
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-namespaces-lacework
@@ -23,7 +23,7 @@ spec:
             - lacework-agent*
 ---
 # Required for node monitoring purposes
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-namespaces-prometheus-node-exporter
@@ -44,7 +44,7 @@ spec:
           names:
             - kube-prometheus-stack-prometheus-node-exporter*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-namespaces-kube-system
@@ -75,7 +75,7 @@ spec:
 
 ---
 # required to perform chaos experiments
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-host-namespaces-chaos-mesh

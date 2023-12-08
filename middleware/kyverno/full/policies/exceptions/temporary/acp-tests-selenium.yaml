@@ -1,5 +1,5 @@
 # Most (if not all) fixed in newest version of selenium-hub charts, requires upgrade in order to fix them
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-capabilities-strict-acp-tests-selenium
@@ -22,7 +22,7 @@ spec:
           names:
             - "selenium-*"
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: disallow-privilege-escalation-acp-tests-selenium
@@ -45,7 +45,7 @@ spec:
           names:
             - "selenium-*"
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: require-run-as-nonroot-acp-tests-selenium
@@ -68,7 +68,7 @@ spec:
           names:
             - "selenium-*"
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-seccomp-strict-acp-tests-selenium

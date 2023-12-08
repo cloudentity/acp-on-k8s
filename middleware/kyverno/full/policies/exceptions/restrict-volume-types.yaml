@@ -1,4 +1,4 @@
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-volume-types-lacework
@@ -21,7 +21,7 @@ spec:
           names:
             - lacework-agent*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-volume-types-elastic
@@ -45,7 +45,7 @@ spec:
             - filebeat*
 ---
 # Caused by hostPath being monted in order to monitor node statistics (which results in not allowed empty type)
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-volume-types-prometheus-node-exporter
@@ -66,7 +66,7 @@ spec:
           names:
             - kube-prometheus-stack-prometheus-node-exporter*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-volume-types-kube-system
@@ -97,7 +97,7 @@ spec:
             - kube-scheduler*
 ---
 # required to perform chaos experiments
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-volume-types-chaos-mesh

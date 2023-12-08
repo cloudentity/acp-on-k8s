@@ -1,4 +1,4 @@
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-seccomp-strict-lacework
@@ -22,7 +22,7 @@ spec:
           names:
             - lacework-agent*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: restrict-seccomp-strict-kube-system

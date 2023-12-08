@@ -1,4 +1,4 @@
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: require-run-as-non-root-user-elastic
@@ -27,7 +27,7 @@ spec:
             - filebeat*
             - elastic-es-*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: require-run-as-non-root-user-lacework
@@ -50,7 +50,7 @@ spec:
           names:
             - lacework-agent*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: require-run-as-non-root-user-tools
@@ -73,7 +73,7 @@ spec:
             - cockroachdb*
 ---
 # db-init job requires to run as root to change permissions
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: require-run-as-non-root-user-cockroachdb
@@ -97,7 +97,7 @@ spec:
             - cockroachdb*
 ---
 # unable to start pipeline otherwise
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: require-run-as-non-root-user-observability
@@ -118,7 +118,7 @@ spec:
           names:
             - opentelemetry-collector*
 ---
-apiVersion: kyverno.io/v2alpha1
+apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
   name: require-run-as-non-root-user-kube-system
