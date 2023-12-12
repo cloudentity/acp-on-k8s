@@ -7,9 +7,9 @@ spec:
     - name: kyverno-policies
       rules:
         - alert: KyvernoPolicyViolation
-          expr: sum by (policy, namespace, name) (policy_report_result{status="fail"}) > 0
+          expr: sum by (policy, exported_namespace, name) (policy_report_result{status="fail"}) > 0
           labels:
             severity: warning
           annotations:
-            description: "Some resources did not fulfil definied policies on {{ $labels.namespace }}/{{ $labels.region }}"
+            description: "Resources did not fulfil policy {{ $labels.policy }} on {{ $labels.exported_namespace }}"
             summary: Resources did not fullfill kyverno policies.
