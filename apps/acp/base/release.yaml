@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: acp
         namespace: acp
-      version: 2.20.0 # helm:autoupdate:acp-prod
+      version: 2.21.0-3 # helm:autoupdate:acp-prod
   interval: 5m
   timeout: 20m
   install:
@@ -171,9 +171,6 @@ spec:
           default_format: "hash"
         captcha:
           enabled: true
-        docker:
-          shared_node_url: "http://acp-faas-nodejs-v4.acp-faas:8888"
-          shared_rego_url: "http://acp-faas-rego-v5.acp-faas:8888"
     migrateJob:
       enabled: true
       configPath: /data/config.yaml,/secret/secret.yaml
@@ -255,3 +252,23 @@ spec:
     faas:
       enabled: true
       provider: docker
+      namespace:
+        create: false
+      environments:
+        settings:
+          resources:
+            requests:
+              cpu: 10m
+              memory: 48Mi
+            limits:
+              cpu: 100m
+              memory: 96Mi
+          nodeSelector:
+            faas: "true"
+          tolerations:
+            - key: faas
+              value: "true"
+              effect: NoSchedule
+        autoscaling:
+          hpa:
+            enabled: true

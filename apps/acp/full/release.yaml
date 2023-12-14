@@ -19,9 +19,6 @@ spec:
             - tracecontext
           jaeger:
             header: "x-trace-id"
-        docker:
-          shared_node_url: "http://acp-faas-nodejs-v4-proxy.acp-faas:8080"
-          shared_rego_url: "http://acp-faas-rego-v5-proxy.acp-faas:8080"
     certManager:
       extraNames:
         - acp-primary
@@ -42,6 +39,13 @@ spec:
         valueFrom:
           fieldRef:
             fieldPath: status.hostIP
+    faas:
+      environments:
+        autoscaling:
+          keda:
+            enabled: true
+          hpa:
+            enabled: false
   postRenderers:
     - kustomize:
         patchesJson6902:

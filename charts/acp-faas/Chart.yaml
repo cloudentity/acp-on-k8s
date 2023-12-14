@@ -1,5 +1,0 @@
-apiVersion: v2
-name: acp-faas
-description: Cloudentity function as a service
-type: application
-version: 1.0.1

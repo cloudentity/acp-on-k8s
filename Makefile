@@ -6,9 +6,9 @@ MODE   ?= base
 # Production Readiness - Use Your Own Source
 REPO   ?= https://github.com/cloudentity/acp-on-k8s
 BRANCH ?= main
-TAG ?= 
+TAG ?= 2.21.0-3
 TOOLBOX_DOCKER_IMAGE ?= cloudentity/toolbox
-TOOLBOX_TAG ?= latest
+TOOLBOX_TAG ?= 2.21.0-3
 STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
 PRETTIER_PATH ?= .
 

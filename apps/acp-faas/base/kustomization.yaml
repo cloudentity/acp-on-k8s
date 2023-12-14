@@ -3,8 +3,4 @@ kind: Kustomization
 namespace: acp-faas
 resources:
   - namespace.yaml
-  - networkpolicy.yaml
-  - nodejs-v4.yaml
-  - nodejs-v5.yaml
-  - rego-v5.yaml
   - ../../../secrets/base/registry.yaml
