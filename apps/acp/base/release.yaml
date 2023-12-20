@@ -116,8 +116,8 @@ spec:
         cert: "/tls/tls.crt"
         insecure_skip_verify: true
       max_retries: 10
-      min_retry_backoff: 32
-      max_retry_backoff: 1024
+      min_retry_backoff: 32ms
+      max_retry_backoff: 1024ms
     config:
       create: true
       name: acp-data
