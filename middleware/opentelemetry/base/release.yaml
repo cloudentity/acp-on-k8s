@@ -22,6 +22,7 @@ spec:
     mode: "daemonset"
     service:
       enabled: true
+      internalTrafficPolicy: Cluster
     config:
       extensions:
         file_storage:
