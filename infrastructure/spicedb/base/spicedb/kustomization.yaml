@@ -9,6 +9,6 @@ resources:
   - tls.yaml
 images:
   - name: authzed/spicedb
-    newTag: v1.27.0 # {"$imagepolicy": "spicedb:spicedb-image-policy-prod:tag"}
+    newTag: v1.28.0 # {"$imagepolicy": "spicedb:spicedb-image-policy-prod:tag"}
 configurations:
   - kustomizeconfig.yaml
