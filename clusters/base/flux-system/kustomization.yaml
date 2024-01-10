@@ -4,6 +4,7 @@ namespace: flux-system
 resources:
   - gotk-components.yaml
   - gotk-sync.yaml
+  - gotk-pvc.yaml
 patches:
   - target:
       kind: Deployment
@@ -18,3 +19,18 @@ patches:
           spec:
             nodeSelector:
               clusterCritical: "true"
+  - target:
+      kind: Deployment
+      name: source-controller
+    patch: |
+      - op: add
+        path: '/spec/template/spec/volumes/-'
+        value:
+          name: persistent-data
+          persistentVolumeClaim:
+            claimName: gotk-pvc
+      - op: replace
+        path: '/spec/template/spec/containers/0/volumeMounts/0'
+        value:
+          name: persistent-data
+          mountPath: /data

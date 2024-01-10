@@ -1,10 +1,10 @@
 FROM alpine:3.18
 
-ARG FLUX_VERSION=2.1.2
-ARG KUBECONFORM_VERSION=0.6.3
-ARG KUBERNETES_VERSION=1.27.7
-ARG KUSTOMIZE_VERSION=5.2.1
-ARG SOPS_VERSION=3.8.0
+ARG FLUX_VERSION=2.2.2
+ARG KUBECONFORM_VERSION=0.6.4
+ARG KUBERNETES_VERSION=1.27.9
+ARG KUSTOMIZE_VERSION=5.3.0
+ARG SOPS_VERSION=3.8.1
 ARG FILENAME_FORMAT='{kind}-{group}-{version}'
 
 WORKDIR /tmp
@@ -13,7 +13,7 @@ RUN mkdir ~/.gnupg
 
 RUN apk add --no-cache --update \
     curl bash gnupg parallel shellcheck \
-    python3 py3-pip subversion npm yq
+    python3 py3-pip npm yq git
 
 COPY secrets/base/private.key private.key
 
@@ -36,12 +36,16 @@ RUN curl -s https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/h
     mv kustomize /usr/local/bin
 
 RUN curl -LO https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_amd64.tar.gz && \
-    tar xf flux_${FLUX_VERSION}_linux_amd64.tar.gz -C /usr/local/bin
+    tar xf flux_${FLUX_VERSION}_linux_amd64.tar.gz -C /usr/local/bin && \
+    rm flux_${FLUX_VERSION}_linux_amd64.tar.gz
 
 RUN curl -L https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64 -o /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops
 
-RUN svn export https://github.com/yannh/kubernetes-json-schema/trunk/v${KUBERNETES_VERSION}-standalone /kubernetes-json-schemas/master-standalone
+RUN git clone -n --depth=1 --filter=tree:0 https://github.com/yannh/kubernetes-json-schema /kubernetes-json-schemas && \
+    cd /kubernetes-json-schemas && \ 
+    git sparse-checkout set --no-cone v${KUBERNETES_VERSION}-standalone && \
+    git checkout && mv v${KUBERNETES_VERSION}-standalone master-standalone
 
 RUN curl -LO https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/crd-schemas.tar.gz && \
     tar xf crd-schemas.tar.gz -C /kubernetes-json-schemas/master-standalone && \
