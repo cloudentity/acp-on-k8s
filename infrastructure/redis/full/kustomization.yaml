@@ -7,7 +7,7 @@ patches:
   - path: release.yaml
   - target:
       group: helm.toolkit.fluxcd.io
-      version: v2beta1
+      version: v2beta2
       kind: HelmRelease
       name: redis
     patch: |-
