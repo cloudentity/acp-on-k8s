@@ -10,7 +10,7 @@ spec:
           expr: sum by (method, path, ingress, exported_namespace) (rate(nginx_ingress_controller_requests{status=~"^5..",controller_class="k8s.io/public-nginx"}[5m])) / sum by (method, path, ingress, exported_namespace) (rate(nginx_ingress_controller_requests{controller_class="k8s.io/public-nginx"}[5m])) * 100 > 5
           for: 1m
           labels:
-            severity: critical
+            severity: warning
           annotations:
             summary: Public Nginx high HTTP 5xx error rate on {{ $labels.method }} {{ $labels.path }} (ingress {{ $labels.ingress }} , namespace {{ $labels.exported_namespace }}
             description: "Too many HTTP requests with status 5xx (> 5%), VALUE = {{ $value }}"
