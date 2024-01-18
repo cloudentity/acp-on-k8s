@@ -111,13 +111,13 @@ spec:
         add: ["NET_BIND_SERVICE"]
   postRenderers:
     - kustomize:
-        patchesJson6902:
+        patches:
           - target:
               group: apps
               version: v1
               kind: StatefulSet
               name: redis-local-redis-cluster
-            patch:
+            patch: |-
               - op: add
                 path: /spec/template/spec/containers/0/lifecycle
                 value:
@@ -127,13 +127,11 @@ spec:
                         - sh
                         - -c
                         - /scripts/failover.sh master
-    - kustomize:
-        patchesJson6902:
           - target:
               version: v1
               kind: ConfigMap
               name: redis-local-redis-cluster-scripts
-            patch:
+            patch: |-
               - op: add
                 path: /data/redisearch.sh
                 value: |-

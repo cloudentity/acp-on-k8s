@@ -54,12 +54,12 @@ spec:
             topologyKey: kubernetes.io/hostname
   postRenderers:
     - kustomize:
-        patchesJson6902:
+        patches:
           - target:
               kind: Deployment
               name: loadtester
               version: v1
-            patch:
+            patch: |-
               - op: add
                 path: /spec/template/spec/topologySpreadConstraints
                 value:

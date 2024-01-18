@@ -48,12 +48,12 @@ spec:
             enabled: false
   postRenderers:
     - kustomize:
-        patchesJson6902:
+        patches:
           - target:
               kind: PodDisruptionBudget
               name: acp
               version: v1
-            patch:
+            patch: |-
               - op: add
                 path: /spec/selector/matchLabels
                 value:
@@ -62,7 +62,7 @@ spec:
               kind: PodDisruptionBudget
               name: acp-workers
               version: v1
-            patch:
+            patch: |-
               - op: add
                 path: /spec/selector/matchLabels
                 value:

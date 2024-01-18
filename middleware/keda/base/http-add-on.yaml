@@ -74,71 +74,74 @@ spec:
       install: false
   postRenderers:
     - kustomize:
-        patchesStrategicMerge:
-          - kind: Deployment
-            apiVersion: apps/v1
-            metadata:
-              name: keda-add-ons-http-controller-manager
-              namespace: keda
-            spec:
-              template:
-                spec:
-                  securityContext:
-                    runAsNonRoot: true
-                    seccompProfile:
-                      type: RuntimeDefault
-                  containers:
-                    - name: keda-add-ons-http-operator
-                      securityContext:
-                        allowPrivilegeEscalation: false
-                        capabilities:
-                          drop:
-                            - ALL
-                          add: ["NET_BIND_SERVICE"]
-                    - name: kube-rbac-proxy
-                      securityContext:
-                        allowPrivilegeEscalation: false
-                        capabilities:
-                          drop:
-                            - ALL
-                          add: ["NET_BIND_SERVICE"]
-          - kind: Deployment
-            apiVersion: apps/v1
-            metadata:
-              name: keda-add-ons-http-external-scaler
-              namespace: keda
-            spec:
-              template:
-                spec:
-                  securityContext:
-                    runAsNonRoot: true
-                    seccompProfile:
-                      type: RuntimeDefault
-                  containers:
-                    - name: keda-add-ons-http-external-scaler
-                      securityContext:
-                        allowPrivilegeEscalation: false
-                        capabilities:
-                          drop:
-                            - ALL
-                          add: ["NET_BIND_SERVICE"]
-          - kind: Deployment
-            apiVersion: apps/v1
-            metadata:
-              name: keda-add-ons-http-interceptor
-              namespace: keda
-            spec:
-              template:
-                spec:
-                  securityContext:
-                    runAsNonRoot: true
-                    seccompProfile:
-                      type: RuntimeDefault
-                  containers:
-                    - name: keda-add-ons-http-interceptor
-                      securityContext:
-                        allowPrivilegeEscalation: false
-                        capabilities:
-                          drop:
-                            - ALL
-                          add: ["NET_BIND_SERVICE"]
+        patches:
+          - patch: |-
+              kind: Deployment
+              apiVersion: apps/v1
+              metadata:
+                name: keda-add-ons-http-controller-manager
+                namespace: keda
+              spec:
+                template:
+                  spec:
+                    securityContext:
+                      runAsNonRoot: true
+                      seccompProfile:
+                        type: RuntimeDefault
+                    containers:
+                      - name: keda-add-ons-http-operator
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          capabilities:
+                            drop:
+                              - ALL
+                            add: ["NET_BIND_SERVICE"]
+                      - name: kube-rbac-proxy
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          capabilities:
+                            drop:
+                              - ALL
+                            add: ["NET_BIND_SERVICE"]
+          - patch: |-
+              kind: Deployment
+              apiVersion: apps/v1
+              metadata:
+                name: keda-add-ons-http-external-scaler
+                namespace: keda
+              spec:
+                template:
+                  spec:
+                    securityContext:
+                      runAsNonRoot: true
+                      seccompProfile:
+                        type: RuntimeDefault
+                    containers:
+                      - name: keda-add-ons-http-external-scaler
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          capabilities:
+                            drop:
+                              - ALL
+                            add: ["NET_BIND_SERVICE"]
+          - patch: |-
+              kind: Deployment
+              apiVersion: apps/v1
+              metadata:
+                name: keda-add-ons-http-interceptor
+                namespace: keda
+              spec:
+                template:
+                  spec:
+                    securityContext:
+                      runAsNonRoot: true
+                      seccompProfile:
+                        type: RuntimeDefault
+                    containers:
+                      - name: keda-add-ons-http-interceptor
+                        securityContext:
+                          allowPrivilegeEscalation: false
+                          capabilities:
+                            drop:
+                              - ALL
+                            add: ["NET_BIND_SERVICE"]

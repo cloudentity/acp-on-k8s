@@ -25,15 +25,5 @@ spec:
       - key: system
         value: "true"
         effect: NoSchedule
-  postRenderers:
-    - kustomize:
-        patchesJson6902:
-          - target:
-              group: apps
-              version: v1
-              kind: Deployment
-              name: metrics-server
-            patch:
-              - op: add
-                path: /spec/template/spec/containers/0/args/-
-                value: --kubelet-insecure-tls
+    args:
+      - --kubelet-insecure-tls

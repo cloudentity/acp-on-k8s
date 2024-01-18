@@ -7,4 +7,4 @@ spec:
     replicaCount: 1
     backup:
       enabled: false
-  postRenderers: []
+  postRenderers: null

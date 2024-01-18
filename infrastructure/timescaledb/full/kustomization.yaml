@@ -5,3 +5,67 @@ resources:
   - ../base
 patches:
   - path: release.yaml
+  - target:
+      group: helm.toolkit.fluxcd.io
+      version: v2beta2
+      kind: HelmRelease
+      name: timescaledb
+    patch: |-
+      - op: add
+        path: /spec/postRenderers/0/kustomize/patches/-
+        value:
+          target:
+            group: "apps"
+            kind: StatefulSet
+            name: timescaledb
+            version: v1
+          patch: |-
+            - op: add
+              path: /spec/template/spec/volumes/-
+              value:
+                  name: timescaledb-node-cert
+                  secret:
+                    secretName: timescaledb-node-cert
+                    defaultMode: 416
+            - op: add
+              path: /spec/template/spec/containers/0/volumeMounts/-
+              value:
+                  mountPath: /etc/timescaledb-node-cert
+                  name: timescaledb-node-cert
+                  readOnly: true
+            - op: add
+              path: /spec/template/spec/volumes/-
+              value:
+                  name: timescaledb-superuser-cert
+                  secret:
+                    secretName: timescaledb-superuser-cert
+                    defaultMode: 416
+            - op: add
+              path: /spec/template/spec/containers/0/volumeMounts/-
+              value:
+                  mountPath: /etc/timescaledb-superuser-cert
+                  name: timescaledb-superuser-cert
+                  readOnly: true
+            - op: add
+              path: /spec/template/spec/containers/1/resources
+              value:
+                limits:
+                  memory: 512Mi
+      - op: add
+        path: /spec/postRenderers/0/kustomize/patches/-
+        value:
+          target:
+            group: "rbac.authorization.k8s.io"
+            kind: Role
+            name: timescaledb
+            version: v1
+          patch: |-
+            - op: add
+              path: /rules/-
+              value:
+                  apiGroups:
+                  - ""
+                  resources:
+                  - services
+                  verbs:
+                  - create

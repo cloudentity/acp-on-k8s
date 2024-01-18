@@ -110,13 +110,13 @@ spec:
                   cluster-name: "timescaledb"
   postRenderers:
     - kustomize:
-        patchesJson6902:
+        patches:
           - target:
               group: "batch"
               kind: CronJob
               name: timescaledb-incr.*repo1
               version: v1
-            patch:
+            patch: |-
               - op: add
                 path: /spec/jobTemplate/spec/activeDeadlineSeconds
                 value: 600
@@ -132,7 +132,7 @@ spec:
                   timescaledb: "true"
               - op: replace
                 path: /spec/jobTemplate/spec/template/spec/containers/0/args/9
-                value: '{"type": "incr", "repo": "1"}'
+                value: "{\"type\": \"incr\", \"repo\": \"1\"}"
               - op: add
                 path: /spec/jobTemplate/spec/template/spec/securityContext
                 value:
@@ -154,7 +154,7 @@ spec:
               kind: CronJob
               name: timescaledb-full.*repo1
               version: v1
-            patch:
+            patch: |-
               - op: add
                 path: /spec/jobTemplate/spec/activeDeadlineSeconds
                 value: 600
@@ -170,7 +170,7 @@ spec:
                   timescaledb: "true"
               - op: replace
                 path: /spec/jobTemplate/spec/template/spec/containers/0/args/9
-                value: '{"type": "full", "repo": "1"}'
+                value: "{\"type\": \"full\", \"repo\": \"1\"}"
               - op: add
                 path: /spec/jobTemplate/spec/template/spec/securityContext
                 value:
@@ -192,7 +192,7 @@ spec:
               kind: StatefulSet
               name: timescaledb
               version: v1
-            patch:
+            patch: |-
               - op: add
                 path: /spec/template/spec/containers/1/volumeMounts/-
                 value:

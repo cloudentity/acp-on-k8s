@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: monitoring
 resources:
   - acp.yaml
-  - cert-menager.yaml
+  - cert-manager.yaml
   - cockroachdb.yaml
   - elastic.yaml
   - faas.yaml

@@ -81,4 +81,4 @@ spec:
             severity: warning
           annotations:
             summary: Kibana alerts available - ACP High 5XX error rate
-            description: There are {{ $value }} new Kibana alerts noticed in {{ $labels.env }} {{ $labels.region_name }}
+            description: There are {{ humanize $value }} new Kibana alerts to review

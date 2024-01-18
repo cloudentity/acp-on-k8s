@@ -12,35 +12,32 @@ patches:
       name: redis
     patch: |-
       - op: add
-        path: /spec/postRenderers/-
+        path: /spec/postRenderers/0/kustomize/patches/-
         value:
-          kustomize:
-            patchesJson6902:
-            - patch:
-              - op: add
-                path: /spec/template/spec/containers/1/securityContext
-                value:
-                  allowPrivilegeEscalation: false
-                  runAsNonRoot: true
-                  capabilities:
-                    drop:
-                      - ALL
-                    add: ["NET_BIND_SERVICE"]
-              target:
-                group: apps
-                kind: StatefulSet
-                name: redis-local-redis-cluster
-                version: v1
+          target:
+            group: apps
+            kind: StatefulSet
+            name: redis-local-redis-cluster
+            version: v1
+          patch: |-
+            - op: add
+              path: /spec/template/spec/containers/1/securityContext
+              value:
+                allowPrivilegeEscalation: false
+                runAsNonRoot: true
+                capabilities:
+                  drop:
+                    - ALL
+                  add: ["NET_BIND_SERVICE"]
       - op: add
-        path: /spec/postRenderers/-
+        path: /spec/postRenderers/0/kustomize/patches/-
         value:
-          kustomize:
-            patchesStrategicMerge:
-              - kind: ServiceMonitor
-                apiVersion: monitoring.coreos.com/v1
-                metadata:
-                  name: redis-local-redis-cluster
-                  namespace: redis
-                spec:
-                  podTargetLabels:
-                    - topology.kubernetes.io/zone
+          patch: |-
+            kind: ServiceMonitor
+            apiVersion: monitoring.coreos.com/v1
+            metadata:
+              name: redis-local-redis-cluster
+              namespace: redis
+            spec:
+              podTargetLabels:
+                - topology.kubernetes.io/zone
