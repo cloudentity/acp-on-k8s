@@ -15,9 +15,9 @@ resources:
   - secret.yaml
 images:
   - name: ribbybibby/ssl-exporter
-    newTag: 2.4.2 # {"$imagepolicy": "monitoring:ssl-exporter-prod:tag"}
+    newTag: 2.4.2 # {"$imagepolicy": "monitoring:ssl-exporter-policy-prod:tag"}
   - name: ghcr.io/justwatchcom/sql_exporter
-    newTag: latest # {"$imagepolicy": "monitoring:prom-sql-exporter-prod:tag"}
+    newTag: latest # {"$imagepolicy": "monitoring:prom-sql-exporter-policy-prod:tag"}
 configMapGenerator:
   - name: grafana-dashboards-acp
     files:
