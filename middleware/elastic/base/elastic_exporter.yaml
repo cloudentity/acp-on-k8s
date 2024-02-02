@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: prometheus
         namespace: monitoring
-      version: 5.2.0 # helm:autoupdate:elastic-exporter-prod
+      version: 5.4.0 # helm:autoupdate:elastic-exporter-prod
   interval: 60m
   install:
     remediation:
@@ -21,7 +21,7 @@ spec:
   # https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-elasticsearch-exporter/values.yaml
   values:
     image:
-      tag: v1.6.0 # {"$imagepolicy": "elastic:elastic-exporter-image-policy-prod:tag"}
+      tag: v1.7.0 # {"$imagepolicy": "elastic:elastic-exporter-image-policy-prod:tag"}
     serviceMonitor:
       enabled: true
     es:

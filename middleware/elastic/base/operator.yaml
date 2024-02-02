@@ -11,13 +11,13 @@ spec:
         kind: HelmRepository
         name: elastic
         namespace: elastic
-      version: 2.9.0 # helm:autoupdate:eck-operator-prod
+      version: 2.11.1 # helm:autoupdate:eck-operator-prod
   interval: 5m
   timeout: 15m
   # https://github.com/elastic/cloud-on-k8s/blob/main/deploy/eck-operator/values.yaml
   values:
     image:
-      tag: 2.10.0 # {"$imagepolicy": "elastic:eck-operator-image-policy-prod:tag"}
+      tag: 2.11.0 # {"$imagepolicy": "elastic:eck-operator-image-policy-prod:tag"}
     installCRDs: false
     nodeSelector:
       elastic: "true"

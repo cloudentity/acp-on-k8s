@@ -147,6 +147,13 @@ spec:
         enabled: true
         overwrite: true
         policy_file: /usr/share/filebeat/ilm/policy.json
+      template:
+        overwrite: true
+        settings:
+          index:
+            mapping:
+              total_fields:
+                limit: 11000
   daemonSet:
     podTemplate:
       spec:
