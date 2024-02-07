@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: nginx
-      version: 4.9.0 # helm:autoupdate:nginx-prod
+      version: 4.9.1 # helm:autoupdate:nginx-prod
   interval: 20m
   timeout: 19m30s
   install:
