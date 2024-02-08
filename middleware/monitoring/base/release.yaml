@@ -126,8 +126,9 @@ spec:
         replicas: 2
         thanos:
           objectStorageConfig:
-            key: objstore.yml
-            name: thanos-objstore
+            existingSecret:
+              key: objstore.yml
+              name: thanos-objstore
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
         ruleSelectorNilUsesHelmValues: false

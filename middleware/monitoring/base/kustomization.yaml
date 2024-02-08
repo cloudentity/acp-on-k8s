@@ -17,7 +17,7 @@ images:
   - name: ribbybibby/ssl-exporter
     newTag: 2.4.2 # {"$imagepolicy": "monitoring:ssl-exporter-policy-prod:tag"}
   - name: ghcr.io/justwatchcom/sql_exporter
-    newTag: latest # {"$imagepolicy": "monitoring:prom-sql-exporter-policy-prod:tag"}
+    newTag: v0.5.2 # {"$imagepolicy": "monitoring:prom-sql-exporter-policy-prod:tag"}
 configMapGenerator:
   - name: grafana-dashboards-acp
     files:

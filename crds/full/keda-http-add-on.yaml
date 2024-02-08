@@ -1,3 +1,5 @@
+---
+# Source: keda-add-ons-http/templates/crd.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -16,15 +18,12 @@ spec:
   scope: Namespaced
   versions:
     - additionalPrinterColumns:
-        - jsonPath: .spec.scaleTargetRef.deploymentName
-          name: ScaleTargetDeploymentName
+        - jsonPath: .status.targetWorkload
+          name: TargetWorkload
           type: string
-        - jsonPath: .spec.scaleTargetRef
-          name: ScaleTargetServiceName
+        - jsonPath: .status.targetService
+          name: TargetService
           type: string
-        - jsonPath: .spec.scaleTargetRef
-          name: ScaleTargetPort
-          type: integer
         - jsonPath: .spec.replicas.min
           name: MinReplicas
           type: integer
@@ -59,21 +58,13 @@ spec:
             spec:
               description: HTTPScaledObjectSpec defines the desired state of HTTPScaledObject
               properties:
-                host:
-                  description:
-                    (optional) (deprecated) The host to route. All requests
-                    which the "Host" header matches .spec.host and the Request Target
-                    matches any .spec.pathPrefixes will be routed to the Service and
-                    Port specified in the scaleTargetRef. The .spec.host field is mutually
-                    exclusive with the .spec.hosts field.
-                  type: string
                 hosts:
                   description:
-                    (optional) The hosts to route. All requests which the
-                    "Host" header matches any .spec.hosts and the Request Target matches
-                    any .spec.pathPrefixes will be routed to the Service and Port specified
-                    in the scaleTargetRef. The .spec.hosts field is mutually exclusive
-                    with the .spec.host field.
+                    The hosts to route. All requests which the "Host" header
+                    matches any .spec.hosts and the Request Target matches any .spec.pathPrefixes
+                    will be routed to the Service and Port specified in the scaleTargetRef.
+                    The .spec.hosts field is mutually exclusive with the .spec.host
+                    field.
                   items:
                     type: string
                   type: array
@@ -109,10 +100,16 @@ spec:
                     The name of the deployment to route HTTP requests to
                     (and to autoscale).
                   properties:
+                    apiVersion:
+                      type: string
                     deployment:
                       description:
-                        The name of the deployment to scale according to
-                        HTTP traffic
+                        "Deprecated: The name of the deployment to scale
+                        according to HTTP traffic"
+                      type: string
+                    kind:
+                      type: string
+                    name:
                       type: string
                     port:
                       description: The port to route to
@@ -122,7 +119,6 @@ spec:
                       description: The name of the service to route to
                       type: string
                   required:
-                    - deployment
                     - port
                     - service
                   type: object
@@ -181,6 +177,12 @@ spec:
                       - type
                     type: object
                   type: array
+                targetService:
+                  description: TargetService reflects details about the scaled service.
+                  type: string
+                targetWorkload:
+                  description: TargetWorkload reflects details about the scaled workload.
+                  type: string
               type: object
           type: object
       served: true

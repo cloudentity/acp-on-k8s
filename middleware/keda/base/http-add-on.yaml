@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: keda
         namespace: keda
-      version: 0.6.0 # helm:autoupdate:keda-add-ons-http-prod
+      version: 0.7.0 # helm:autoupdate:keda-add-ons-http-prod
   interval: 1m
   install:
     remediation:
@@ -19,6 +19,57 @@ spec:
   # Default values
   # https://github.com/kedacore/charts/blob/main/http-add-on/values.yaml
   values:
+    securityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      operator:
+        capabilities:
+          drop:
+            - ALL
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        seccompProfile:
+          type: RuntimeDefault
+      kuberbacproxy:
+        capabilities:
+          drop:
+            - ALL
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        seccompProfile:
+          type: RuntimeDefault
+      scaler:
+        capabilities:
+          drop:
+            - ALL
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        seccompProfile:
+          type: RuntimeDefault
+      interceptor:
+        capabilities:
+          drop:
+            - ALL
+        allowPrivilegeEscalation: false
+        readOnlyRootFilesystem: true
+        seccompProfile:
+          type: RuntimeDefault
+    podSecurityContext:
+      operator:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      scaler:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      interceptor:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
     operator:
       nodeSelector:
         system: "true"
