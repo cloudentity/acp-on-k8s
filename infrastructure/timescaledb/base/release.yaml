@@ -24,7 +24,7 @@ spec:
       # TimescaleDB doesn't officially support the ARM platform, so we are currently using the unofficial version available at https://hub.docker.com/r/timescaledev/timescaledb-ha/tags.
       # You may want to consider switching to the official version at https://hub.docker.com/r/timescale/timescaledb-ha.
       repository: timescaledev/timescaledb-ha
-      tag: pg14.11-ts2.14.0 # {"$imagepolicy": "timescaledb-us-east-1:timescaledev-image-policy-preprod:tag"}
+      tag: pg14.11-ts2.14.0 # {"$imagepolicy": "timescaledb-us-east-1:timescaledev-image-policy-prod:tag"}
     secrets:
       # https://github.com/timescale/timescaledb-kubernetes/issues/346
       credentialsSecretName: timescaledb-credentials

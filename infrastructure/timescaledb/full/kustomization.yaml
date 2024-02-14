@@ -46,11 +46,6 @@ patches:
                   mountPath: /etc/timescaledb-superuser-cert
                   name: timescaledb-superuser-cert
                   readOnly: true
-            - op: add
-              path: /spec/template/spec/containers/1/resources
-              value:
-                limits:
-                  memory: 512Mi
       - op: add
         path: /spec/postRenderers/0/kustomize/patches/-
         value:

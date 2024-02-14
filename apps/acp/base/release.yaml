@@ -22,7 +22,7 @@ spec:
     image:
       repository: docker.cloudentity.io/acp-distroless
     podDisruptionBudget:
-      minAvailable: 30%
+      minAvailable: 40%
     ingress:
       ingressClassName: public-nginx
       customAnnotations:
@@ -219,7 +219,7 @@ spec:
       service:
         enabled: true
       podDisruptionBudget:
-        minAvailable: 30%
+        minAvailable: 40%
       # Production Readiness - Adjust Pod Count
       replicaCount: 1
       # Production Readiness - Adjust Pod Resources

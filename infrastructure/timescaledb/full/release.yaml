@@ -8,3 +8,7 @@ spec:
       enabled: true
     podMonitor:
       enabled: true
+    backup:
+      resources:
+        limits:
+          memory: 512Mi
