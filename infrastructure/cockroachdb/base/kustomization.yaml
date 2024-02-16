@@ -11,6 +11,6 @@ images:
   - name: cockroachdb/cockroach-operator
     newTag: v2.12.0 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-operator-image-policy-prod:tag"}
   - name: cockroachdb/cockroach
-    newTag: v23.1.14 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-image-policy-prod:tag"}
+    newTag: v23.2.0 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-image-policy-prod:tag"}
 configurations:
   - kustomizeconfig.yaml
