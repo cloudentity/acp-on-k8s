@@ -19,12 +19,6 @@ spec:
     image:
       tag: 2.11.1 # {"$imagepolicy": "elastic:eck-operator-image-policy-prod:tag"}
     installCRDs: false
-    nodeSelector:
-      elastic: "true"
-    tolerations:
-      - key: elastic
-        value: "true"
-        effect: NoSchedule
     createClusterScopedResources: true
     podSecurityContext:
       runAsNonRoot: true
