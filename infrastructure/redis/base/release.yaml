@@ -21,7 +21,7 @@ spec:
   # https://github.com/bitnami/charts/blob/master/bitnami/redis-cluster/values.yaml
   values:
     image:
-      tag: 6.2.14 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
+      tag: 6.2.14-debian-11-r22 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
     cluster:
       nodes: 6
       replicas: 1

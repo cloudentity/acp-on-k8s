@@ -20,14 +20,9 @@ spec:
   # https://github.com/deliveryhero/helm-charts/blob/master/stable/node-local-dns/values.yaml
   values:
     config:
-      setupInterface: true
-      setupIptables: true
-      skipTeardown: false
+      bindIp: true
     serviceMonitor:
       enabled: true
     securityContext:
       seccompProfile:
         type: RuntimeDefault
-      capabilities:
-        add:
-          - NET_ADMIN
