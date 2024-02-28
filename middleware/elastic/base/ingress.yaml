@@ -10,7 +10,7 @@ spec:
   ingressClassName: private-nginx
   tls:
     - hosts:
-        - kibana.acp.${cluster_region}.${cluster_domain}
+        - kibana.tools.${cluster_region}.${cluster_domain}
       secretName: kibana-ingress-tls
   rules:
     - host: kibana.tools.${cluster_region}.${cluster_domain}

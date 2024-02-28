@@ -14,7 +14,7 @@ spec:
       elasticsearchRefs:
         - name: elastic
   config:
-    server.publicBaseUrl: https://kibana.acp.local:9443
+    server.publicBaseUrl: https://kibana.tools.${cluster_region}.${cluster_domain}
     logging.root.level: warn
     csp:
       script_src: ["self", "unsafe-eval", "unsafe-inline"]

@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: metrics-server
         namespace: kube-system
-      version: "3.10.0" # helm:autoupdate:metrics-server-prod
+      version: 3.12.0 # helm:autoupdate:metrics-server-prod
   interval: 5m
   install:
     remediation:
