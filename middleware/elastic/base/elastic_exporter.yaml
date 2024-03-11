@@ -12,7 +12,7 @@ spec:
         kind: HelmRepository
         name: prometheus
         namespace: monitoring
-      version: 5.5.0 # helm:autoupdate:elastic-exporter-prod
+      version: 5.6.0 # helm:autoupdate:elastic-exporter-prod
   interval: 60m
   install:
     remediation:

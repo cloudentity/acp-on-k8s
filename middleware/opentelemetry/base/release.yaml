@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: opentelemetry-collector
         namespace: observability
-      version: 0.81.2 # helm:autoupdate:opentelemetry-collector-prod
+      version: 0.82.0 # helm:autoupdate:opentelemetry-collector-prod
   interval: 5m
   install:
     remediation:

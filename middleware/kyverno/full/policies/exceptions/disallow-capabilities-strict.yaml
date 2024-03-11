@@ -44,11 +44,11 @@ spec:
           names:
             - cockroachdb*
 ---
-# redisinsight2 requires CAP_IPC_LOCK capability as it uses gnome-keyring-daemon
+# redisinsight requires CAP_IPC_LOCK capability as it uses gnome-keyring-daemon
 apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
-  name: disallow-capabilities-strict-redisinsight2
+  name: disallow-capabilities-strict-redisinsight
 spec:
   background: true
   exceptions:
@@ -61,11 +61,11 @@ spec:
           kinds:
             - Deployment
             - Pod
-            - StatefulSet
+            - ReplicaSet
           namespaces:
             - redisinsight
           names:
-            - redisinsight2*
+            - redisinsight*
 ---
 apiVersion: kyverno.io/v2beta1
 kind: PolicyException
@@ -124,29 +124,6 @@ spec:
             - elastic
           names:
             - elastic-es-*
----
-# redisinsight2 requires CAP_IPC_LOCK to work correctly
-apiVersion: kyverno.io/v2beta1
-kind: PolicyException
-metadata:
-  name: disallow-capabilities-strict-redisinsight
-spec:
-  background: true
-  exceptions:
-    - policyName: disallow-capabilities-strict
-      ruleNames:
-        - "*"
-  match:
-    any:
-      - resources:
-          kinds:
-            - Deployment
-            - Pod
-            - ReplicaSet
-          namespaces:
-            - redisinsight
-          names:
-            - redisinsight2*
 ---
 # required to perform chaos experiments
 apiVersion: kyverno.io/v2beta1

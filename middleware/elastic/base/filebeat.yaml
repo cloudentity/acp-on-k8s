@@ -4,7 +4,7 @@ metadata:
   name: filebeat
 spec:
   type: filebeat
-  version: 8.12.1 # {"$imagepolicy": "elastic:filebeat-image-policy-prod:tag"}
+  version: 8.12.2 # {"$imagepolicy": "elastic:filebeat-image-policy-prod:tag"}
   elasticsearchRef:
     name: elastic
   kibanaRef:
@@ -159,6 +159,7 @@ spec:
       spec:
         serviceAccountName: filebeat
         automountServiceAccountToken: true
+        priorityClassName: system-cluster-critical
         containers:
           - name: filebeat
             env:

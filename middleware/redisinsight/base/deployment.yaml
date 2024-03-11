@@ -28,19 +28,20 @@ spec:
             claimName: redisinsight-pv-claim
       containers:
         - name: redisinsight
-          image: redislabs/redisinsight:1.14.0
+          image: redis/redisinsight
           volumeMounts:
             - name: db
               mountPath: /db
           ports:
             - name: http
-              containerPort: 8001
+              containerPort: 5540
               protocol: TCP
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
               drop:
                 - ALL
+              add: ["CAP_IPC_LOCK"]
             runAsNonRoot: true
             runAsUser: 1000
             seccompProfile:

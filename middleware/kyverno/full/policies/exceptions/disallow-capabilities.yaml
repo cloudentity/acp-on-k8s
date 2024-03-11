@@ -50,7 +50,7 @@ spec:
           names:
             - chaos-daemon*
 ---
-# redisinsight2 requires CAP_IPC_LOCK to work correctly
+# redisinsight requires CAP_IPC_LOCK capability as it uses gnome-keyring-daemon
 apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
@@ -71,4 +71,4 @@ spec:
           namespaces:
             - redisinsight
           names:
-            - redisinsight2*
+            - redisinsight*

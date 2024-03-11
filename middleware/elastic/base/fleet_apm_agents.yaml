@@ -3,7 +3,7 @@ kind: Agent
 metadata:
   name: apm-agent
 spec:
-  version: 8.12.1 # {"$imagepolicy": "elastic:elastic-agent-image-policy-prod:tag"}
+  version: 8.12.2 # {"$imagepolicy": "elastic:elastic-agent-image-policy-prod:tag"}
   kibanaRef:
     name: kibana
   fleetServerRef:

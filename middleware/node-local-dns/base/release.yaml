@@ -26,3 +26,5 @@ spec:
     securityContext:
       seccompProfile:
         type: RuntimeDefault
+    image:
+      tag: 1.22.23 # {"$imagepolicy": "kube-system:dns-node-cache-image-policy-prod:tag"}
