@@ -4,7 +4,6 @@ namespace: redisinsight
 resources:
   - namespace.yaml
   - serviceaccount.yaml
-  - pvc.yaml
   - tls.yaml
   - deployment.yaml
   - service.yaml

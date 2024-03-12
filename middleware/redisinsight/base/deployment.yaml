@@ -7,8 +7,6 @@ metadata:
     app.kubernetes.io/name: redisinsight
 spec:
   replicas: 1
-  strategy:
-    type: Recreate
   selector:
     matchLabels:
       app.kubernetes.io/instance: redisinsight
@@ -22,16 +20,9 @@ spec:
       serviceAccountName: redisinsight
       securityContext:
         fsGroup: 2000
-      volumes:
-        - name: db
-          persistentVolumeClaim:
-            claimName: redisinsight-pv-claim
       containers:
         - name: redisinsight
           image: redis/redisinsight
-          volumeMounts:
-            - name: db
-              mountPath: /db
           ports:
             - name: http
               containerPort: 5540
@@ -53,3 +44,35 @@ spec:
             limits:
               cpu: 100m
               memory: 10Gi
+        - name: configure-database
+          image: curlimages/curl
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+            seccompProfile:
+              type: RuntimeDefault
+          command:
+            - /bin/sh
+          args:
+            - -c
+            - |
+              sleep 40 && curl -X PATCH -H 'content-type: application/json' -d '{"agreements":{"analytics":false,"notifications":false,"encryption":false,"eula":true}}' http://localhost:5540/api/settings && curl -H 'content-type: application/json' -d "{\"name\":\"redis-cluster\",\"host\":\"redis-local-redis-cluster.redis\",\"port\":6379,\"db\":0,\"password\":\"$REDIS_PASSWORD\",\"compressor\":\"NONE\",\"timeout\":30000,\"tls\":true,\"verifyServerCert\":true,\"caCert\":{\"name\":\"redisinsight\",\"certificate\":\"$(awk '{printf "%s\\\\n", $0}' /cert/ca.crt)\"},\"clientCert\":{\"name\":\"redisinsight\",\"certificate\":\"$(awk '{printf "%s\\\\n", $0}' /cert/tls.crt)\",\"key\":\"$(awk '{printf "%s\\\\n", $0}' /cert/tls.key)\"}}" http://localhost:5540/api/databases && sleep 604800
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: redis-credentials
+                  key: redis-password
+          volumeMounts:
+            - name: redis-certificates
+              mountPath: /cert
+              readOnly: true
+      volumes:
+        - name: redis-certificates
+          secret:
+            defaultMode: 256
+            secretName: redisinsight-tls
