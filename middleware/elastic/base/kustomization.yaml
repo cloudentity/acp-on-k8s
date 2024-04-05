@@ -21,4 +21,5 @@ resources:
   - filerealm.yaml
   - secret.yaml
   - init_configs.yaml
-  - init_job.yaml
+  - init_job_snapshot.yaml
+  - init_job_ingest.yaml

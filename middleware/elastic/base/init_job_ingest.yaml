@@ -1,0 +1,75 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kibana-ingest-setup
+spec:
+  ttlSecondsAfterFinished: 3600
+  backoffLimit: 8
+  template:
+    spec:
+      volumes:
+        - name: ingest-pipelines
+          configMap:
+            name: ingest-pipelines
+      containers:
+        - name: kibana-setup
+          image: curlimages/curl:latest
+          volumeMounts:
+            - name: ingest-pipelines
+              mountPath: /data/pipelines
+          command: ["/bin/sh", "-c"]
+          env:
+            - name: KB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: elastic-setup-credentials
+                  key: username
+            - name: KB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: elastic-setup-credentials
+                  key: password
+            - name: KIBANA_URL
+              value: "https://kibana-kb-http.elastic.svc:5601"
+          args:
+            - |
+              #!/bin/sh
+              curl \
+                --retry-all-errors --retry 5 --retry-delay 30 \
+                --insecure --fail \
+                --silent --write-out '%{http_code}' --output /dev/null \
+                $KIBANA_URL/login
+              echo "Kibana is ready"
+
+              sleep 10
+
+              curl \
+                -u "$KB_USERNAME:$KB_PASSWORD" \
+                --fail --insecure --silent \
+                --write-out "%{errormsg}" \
+                -H "kbn-xsrf: true" \
+                $KIBANA_URL/api/ingest_pipelines/id-token-ingest-pipeline ||\
+              curl -X POST \
+                -u "$KB_USERNAME:$KB_PASSWORD" \
+                --insecure --write-out "%{errormsg}" --fail \
+                --silent --include \
+                -H 'Content-Type: application/json' \
+                -H "kbn-xsrf: true" \
+                $KIBANA_URL/api/ingest_pipelines \
+                --data-binary "@/data/pipelines/id_token_ingest_pipeline.json"
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add: ["NET_BIND_SERVICE"]
+            allowPrivilegeEscalation: false
+      imagePullSecrets:
+        - name: artifactory
+      restartPolicy: Never
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
