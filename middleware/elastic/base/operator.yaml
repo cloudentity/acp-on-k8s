@@ -17,7 +17,7 @@ spec:
   # https://github.com/elastic/cloud-on-k8s/blob/main/deploy/eck-operator/values.yaml
   values:
     image:
-      tag: 2.11.1 # {"$imagepolicy": "elastic:eck-operator-image-policy-prod:tag"}
+      tag: 2.12.1 # {"$imagepolicy": "elastic:eck-operator-image-policy-prod:tag"}
     installCRDs: false
     createClusterScopedResources: true
     podSecurityContext:
