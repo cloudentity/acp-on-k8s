@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: reloader
         namespace: reloader
-      version: 1.0.71 # helm:autoupdate:reloader-prod
+      version: 1.0.76 # helm:autoupdate:reloader-prod
   interval: 1m
   install:
     remediation:
