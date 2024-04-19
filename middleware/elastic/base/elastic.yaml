@@ -3,7 +3,7 @@ kind: Elasticsearch
 metadata:
   name: elastic
 spec:
-  version: 8.13.1 # {"$imagepolicy": "elastic:elastic-agent-image-policy-prod:tag"}
+  version: 8.13.2 # {"$imagepolicy": "elastic:elastic-agent-image-policy-prod:tag"}
   auth:
     fileRealm:
       - secretName: filerealm

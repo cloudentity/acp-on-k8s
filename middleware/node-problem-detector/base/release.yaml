@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: node-problem-detector
         namespace: kube-system
-      version: 2.3.12 # helm:autoupdate:node-problem-detector-prod
+      version: 2.3.13 # helm:autoupdate:node-problem-detector-prod
   interval: 1m
   install:
     remediation:

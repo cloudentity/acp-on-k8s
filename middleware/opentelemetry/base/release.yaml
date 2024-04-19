@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: opentelemetry-collector
         namespace: observability
-      version: 0.83.1 # helm:autoupdate:opentelemetry-collector-prod
+      version: 0.87.0 # helm:autoupdate:opentelemetry-collector-prod
   interval: 5m
   install:
     remediation:
@@ -59,7 +59,7 @@ spec:
         extensions: [health_check, memory_ballast, file_storage]
         pipelines:
           traces:
-            exporters: [logging, otlp/elastic-local]
+            exporters: [debug, otlp/elastic-local]
     extraEnvs:
       - name: APM_LOCAL_TOKEN
         valueFrom:
