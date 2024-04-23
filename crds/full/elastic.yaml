@@ -1,4 +1,3 @@
-# Source: eck-operator-crds/templates/all-crds.yaml
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -8,8 +7,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: agents.agent.k8s.elastic.co
 spec:
   group: agent.k8s.elastic.co
@@ -1172,8 +1171,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: apmservers.apm.k8s.elastic.co
 spec:
   group: apm.k8s.elastic.co
@@ -2438,8 +2437,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: beats.beat.k8s.elastic.co
 spec:
   group: beat.k8s.elastic.co
@@ -2943,8 +2942,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: elasticmapsservers.maps.k8s.elastic.co
 spec:
   group: maps.k8s.elastic.co
@@ -3559,8 +3558,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: elasticsearchautoscalers.autoscaling.k8s.elastic.co
 spec:
   group: autoscaling.k8s.elastic.co
@@ -3950,8 +3949,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: elasticsearches.elasticsearch.k8s.elastic.co
 spec:
   group: elasticsearch.k8s.elastic.co
@@ -6758,8 +6757,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: enterprisesearches.enterprisesearch.k8s.elastic.co
 spec:
   group: enterprisesearch.k8s.elastic.co
@@ -7950,8 +7949,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: kibanas.kibana.k8s.elastic.co
 spec:
   group: kibana.k8s.elastic.co
@@ -9293,8 +9292,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: logstashes.logstash.k8s.elastic.co
 spec:
   group: logstash.k8s.elastic.co
@@ -9310,6 +9309,10 @@ spec:
   scope: Namespaced
   versions:
     - additionalPrinterColumns:
+        - description: Health
+          jsonPath: .status.health
+          name: health
+          type: string
         - description: Available nodes
           jsonPath: .status.availableNodes
           name: available
@@ -10506,6 +10509,8 @@ spec:
                 expectedNodes:
                   format: int32
                   type: integer
+                health:
+                  type: string
                 monitoringAssociationStatus:
                   additionalProperties:
                     description: AssociationStatus is the status of an association resource.
@@ -10551,8 +10556,8 @@ metadata:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.11.0"
-    helm.sh/chart: "eck-operator-crds-2.11.0"
+    app.kubernetes.io/version: "2.12.1"
+    helm.sh/chart: "eck-operator-crds-2.12.1"
   name: stackconfigpolicies.stackconfigpolicy.k8s.elastic.co
 spec:
   group: stackconfigpolicy.k8s.elastic.co
@@ -10962,3 +10967,5 @@ spec:
       storage: true
       subresources:
         status: {}
+---
+
