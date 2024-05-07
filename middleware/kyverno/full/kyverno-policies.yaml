@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: kyverno
         namespace: kyverno
-      version: 3.1.4 # helm:autoupdate:kyverno-policies-prod
+      version: 3.2.0 # helm:autoupdate:kyverno-policies-prod
   interval: 1m
   install:
     remediation:

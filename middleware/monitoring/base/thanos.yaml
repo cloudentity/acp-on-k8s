@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: thanos
         namespace: monitoring
-      version: 15.0.5 # helm:autoupdate:thanos-prod
+      version: 15.4.3 # helm:autoupdate:thanos-prod
   interval: 1m
   install:
     remediation:

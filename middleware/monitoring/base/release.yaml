@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: prometheus
         namespace: monitoring
-      version: 57.0.3 # helm:autoupdate:prometheus-prod
+      version: 58.2.2 # helm:autoupdate:prometheus-prod
   interval: 1m
   install:
     remediation:
