@@ -4,4 +4,4 @@ metadata:
   name: acp
 spec:
   interval: 60m
-  url: https://charts.cloudentity.io
+  url: https://charts.artifactory.cloudentity.com
