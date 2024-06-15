@@ -8,7 +8,7 @@ spec:
       rules:
         - alert: OpentelemetryCollectorQueueSize
           expr: otelcol_exporter_queue_size/otelcol_exporter_queue_capacity >= 0.85
-          for: 15m
+          for: 30m
           labels:
             severity: critical
           annotations:
@@ -16,7 +16,7 @@ spec:
             description: "The queue size has reached 85%, VALUE = {{ $value }}."
         - alert: OpentelemetryCollectorQueueSize
           expr: otelcol_exporter_queue_size/otelcol_exporter_queue_capacity >= 0.5
-          for: 30m
+          for: 60m
           labels:
             severity: warning
           annotations:
