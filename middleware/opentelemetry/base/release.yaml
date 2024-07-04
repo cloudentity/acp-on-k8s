@@ -106,10 +106,25 @@ spec:
       limits:
         cpu: 1
         memory: 2Gi
-    nodeSelector:
-      compute: "true"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: compute
+                  operator: In
+                  values:
+                    - "true"
+            - matchExpressions:
+                - key: faas
+                  operator: In
+                  values:
+                    - "true"
     tolerations:
       - key: compute
+        value: "true"
+        effect: NoSchedule
+      - key: faas
         value: "true"
         effect: NoSchedule
     serviceMonitor:
