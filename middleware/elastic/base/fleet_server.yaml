@@ -16,15 +16,6 @@ spec:
     replicas: 1
     podTemplate:
       spec:
-        affinity:
-          podAffinity:
-            preferredDuringSchedulingIgnoredDuringExecution:
-              - weight: 100
-                podAffinityTerm:
-                  labelSelector:
-                    matchLabels:
-                      elasticsearch.k8s.elastic.co/statefulset-name: elastic-es-hot-nodes
-                  topologyKey: kubernetes.io/hostname
         serviceAccountName: fleet-server
         automountServiceAccountToken: true
         containers:
@@ -42,13 +33,7 @@ spec:
               requests:
                 memory: 200Mi
               limits:
-                memory: 400Mi
-        nodeSelector:
-          elastic: "true"
-        tolerations:
-          - key: elastic
-            value: "true"
-            effect: NoSchedule
+                memory: 600Mi
         volumes:
           - name: agent-data
             emptyDir: {}

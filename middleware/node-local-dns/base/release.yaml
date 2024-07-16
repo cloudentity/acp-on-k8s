@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: node-local-dns
         namespace: kube-system
-      version: 2.0.8 # helm:autoupdate:node-local-dns-prod
+      version: 2.0.13 # helm:autoupdate:node-local-dns-prod
   interval: 1m
   install:
     remediation:
