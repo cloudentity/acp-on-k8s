@@ -3,7 +3,7 @@ kind: Kibana
 metadata:
   name: kibana
 spec:
-  version: 8.13.3 # {"$imagepolicy": "elastic:kibana-image-policy-prod:tag"}
+  version: 8.14.3 # {"$imagepolicy": "elastic:kibana-image-policy-prod:tag"}
   count: 1
   elasticsearchRef:
     name: elastic
@@ -21,6 +21,7 @@ spec:
       strict: false
       warnLegacyBrowsers: false
     monitoring.ui.ccs.enabled: false
+    xpack.reporting.roles.enabled: false
     xpack.fleet.agents.elasticsearch.hosts:
       ["https://elastic-es-http.elastic.svc:9200"]
     xpack.fleet.agents.fleet_server.hosts:
@@ -37,7 +38,6 @@ spec:
     xpack.fleet.agentPolicies:
       - name: Fleet Server on ECK policy
         id: eck-fleet-server
-        is_default_fleet_server: true
         namespace: elastic
         monitoring_enabled:
           - logs
@@ -55,7 +55,6 @@ spec:
           - logs
           - metrics
         unenroll_timeout: 900
-        is_default: true
         package_policies:
           - package:
               name: apm

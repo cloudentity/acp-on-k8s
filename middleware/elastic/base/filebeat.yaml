@@ -4,23 +4,88 @@ metadata:
   name: filebeat
 spec:
   type: filebeat
-  version: 8.13.3 # {"$imagepolicy": "elastic:filebeat-image-policy-prod:tag"}
+  version: 8.14.3 # {"$imagepolicy": "elastic:filebeat-image-policy-prod:tag"}
   elasticsearchRef:
     name: elastic
   kibanaRef:
     name: kibana
   config:
     filebeat.inputs:
+      # JSON based logs
       - type: container
         paths:
           - /var/log/containers/*.log
-        exclude_files: [".*ingress-nginx.*", ".*acp-faas.*"]
+        exclude_files:
+          [
+            ".*acp-faas.*",
+            ".*allure-docker-service.*",
+            ".*external-dns.*",
+            ".*ingress-nginx.*",
+            ".*nginx-proxy.*",
+            ".*prod-qa-tests.*",
+            ".*prometheus.*",
+            "acp-tests.*",
+            "aws.*",
+            "cert-manager.*",
+            "descheduler.*",
+            "ebs.*",
+            "elastic-exporter.*",
+            "grafana.*",
+            "imgproxy.*",
+            "keda.*",
+            "kibana.*",
+            "kube-proxy.*",
+            "lacework.*",
+            "metrics-server.*",
+            "mks-tests.*",
+            "node-problem-detector.*",
+            "opencost.*",
+            "opentelemetry.*",
+            "redis.*",
+            "reqon.*",
+            "selenium.*",
+            "spicedb-operator.*",
+            "timescaledb.*",
+            "vpa.*",
+          ]
         processors:
           - decode_json_fields:
               fields: ["message"]
               target: json
               max_depth: 1
               add_error_key: true
+      # Standard logs
+      - type: container
+        paths:
+          - /var/log/containers/*allure-docker-service*.log
+          - /var/log/containers/*external-dns*.log
+          - /var/log/containers/*nginx-proxy*.log
+          - /var/log/containers/*prod-qa-tests*.log
+          - /var/log/containers/*prometheus*.log
+          - /var/log/containers/acp-tests*.log
+          - /var/log/containers/aws*.log
+          - /var/log/containers/cert-manager*.log
+          - /var/log/containers/descheduler*.log
+          - /var/log/containers/ebs*.log
+          - /var/log/containers/elastic-exporter*.log
+          - /var/log/containers/grafana*.log
+          - /var/log/containers/imgproxy*.log
+          - /var/log/containers/keda*.log
+          - /var/log/containers/kibana*.log
+          - /var/log/containers/kube-proxy*.log
+          - /var/log/containers/lacework*.log
+          - /var/log/containers/metrics-server*.log
+          - /var/log/containers/mks-tests*.log
+          - /var/log/containers/node-problem-detector*.log
+          - /var/log/containers/opencost*.log
+          - /var/log/containers/opentelemetry*.log
+          - /var/log/containers/redis*.log
+          - /var/log/containers/reqon*.log
+          - /var/log/containers/selenium*.log
+          - /var/log/containers/spicedb-operator*.log
+          - /var/log/containers/timescaledb*.log
+          - /var/log/containers/vpa*.log
+      # Ingress-nginx logs
       - type: container
         paths:
           - /var/log/containers/*ingress-nginx*.log
@@ -46,6 +111,7 @@ spec:
                   replacement: " "
               ignore_missing: true
               fail_on_error: false
+      # acp-faas logs
       - type: container
         paths:
           - /var/log/containers/*acp-faas*.log
@@ -187,7 +253,7 @@ spec:
                 memory: 128Mi
               limits:
                 cpu: 1
-                memory: 256Mi
+                memory: 324Mi
             volumeMounts:
               - name: beat-data
                 mountPath: /usr/share/metricbeat/data

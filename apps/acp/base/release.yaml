@@ -261,8 +261,8 @@ spec:
               cpu: 10m
               memory: 48Mi
             limits:
-              cpu: 100m
-              memory: 96Mi
+              cpu: 1
+              memory: 1Gi
           nodeSelector:
             faas: "true"
           tolerations:

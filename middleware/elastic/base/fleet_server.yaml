@@ -3,7 +3,7 @@ kind: Agent
 metadata:
   name: apm-fleet-server
 spec:
-  version: 8.13.3 # {"$imagepolicy": "elastic:elastic-agent-image-policy-prod:tag"}
+  version: 8.14.3 # {"$imagepolicy": "elastic:elastic-agent-image-policy-prod:tag"}
   kibanaRef:
     name: kibana
   elasticsearchRefs:
@@ -12,6 +12,7 @@ spec:
   fleetServerEnabled: true
   secureSettings:
     - secretName: apm-token
+  policyID: eck-fleet-server
   deployment:
     replicas: 1
     podTemplate:
