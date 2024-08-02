@@ -1,0 +1,16 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: acp-faas-cert
+spec:
+  usages:
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - acp-faas
+  secretName: acp-faas-tls
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer

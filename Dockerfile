@@ -1,5 +1,6 @@
-FROM alpine:3.18
+FROM alpine:3.20
 
+ARG ARCH=amd64
 ARG FLUX_VERSION=2.2.2
 ARG KUBECONFORM_VERSION=0.6.4
 ARG KUBERNETES_VERSION=1.29.1
@@ -13,37 +14,34 @@ RUN mkdir ~/.gnupg
 
 RUN apk add --no-cache --update \
     curl bash gnupg parallel shellcheck \
-    python3 py3-pip npm yq git
+    python3 py3-pip py3-yaml npm yq git
 
 COPY secrets/base/private.key private.key
 
 RUN gpg --import private.key
 
-RUN pip3 install --upgrade \
-    pip pyaml
-
 RUN npm install -g prettier
 
-RUN curl -LO https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz && \
-    tar xf kubeconform-linux-amd64.tar.gz -C /usr/local/bin && \
-    rm kubeconform-linux-amd64.tar.gz
+RUN curl -LO https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM_VERSION}/kubeconform-linux-${ARCH}.tar.gz && \
+    tar xf kubeconform-linux-${ARCH}.tar.gz -C /usr/local/bin && \
+    rm kubeconform-linux-${ARCH}.tar.gz
 
-RUN curl -L https://dl.k8s.io/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl -o /usr/local/bin/kubectl && \
+RUN curl -L https://dl.k8s.io/release/v${KUBERNETES_VERSION}/bin/linux/${ARCH}/kubectl -o /usr/local/bin/kubectl && \
     chmod +x /usr/local/bin/kubectl
 
 RUN curl -s https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh \
     | bash -s ${KUSTOMIZE_VERSION} && \
     mv kustomize /usr/local/bin
 
-RUN curl -LO https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_amd64.tar.gz && \
-    tar xf flux_${FLUX_VERSION}_linux_amd64.tar.gz -C /usr/local/bin && \
-    rm flux_${FLUX_VERSION}_linux_amd64.tar.gz
+RUN curl -LO https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_${ARCH}.tar.gz && \
+    tar xf flux_${FLUX_VERSION}_linux_${ARCH}.tar.gz -C /usr/local/bin && \
+    rm flux_${FLUX_VERSION}_linux_${ARCH}.tar.gz
 
-RUN curl -L https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.amd64 -o /usr/local/bin/sops && \
+RUN curl -L https://github.com/getsops/sops/releases/download/v${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${ARCH} -o /usr/local/bin/sops && \
     chmod +x /usr/local/bin/sops
 
 RUN git clone -n --depth=1 --filter=tree:0 https://github.com/yannh/kubernetes-json-schema /kubernetes-json-schemas && \
-    cd /kubernetes-json-schemas && \ 
+    cd /kubernetes-json-schemas && \
     git sparse-checkout set --no-cone v${KUBERNETES_VERSION}-standalone && \
     git checkout && mv v${KUBERNETES_VERSION}-standalone master-standalone
 

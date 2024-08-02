@@ -56,9 +56,9 @@ spec:
             description: Redis cluster {{ $labels.cluster }} has evicted {{ $value }} keys in the last 5 minutes
         - alert: RedisTooManyMastersSingleAZ
           expr: |-
-            count by(job, topology_kubernetes_io_zone) (redis_instance_info{role="master",topology_kubernetes_io_zone!=""})
+            count by(job, topology_kubernetes_io_zone, namespace) (redis_instance_info{role="master",topology_kubernetes_io_zone!=""})
               /
-            ignoring (topology_kubernetes_io_zone) group_left count by(job) (redis_instance_info{role="master"})
+            ignoring (topology_kubernetes_io_zone) group_left count by(job, namespace) (redis_instance_info{role="master"})
               * 3 > 1
           for: 2h
           labels:

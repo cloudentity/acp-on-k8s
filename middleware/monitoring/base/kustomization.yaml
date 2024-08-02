@@ -23,6 +23,7 @@ configMapGenerator:
     files:
       - dashboards/golang.json
       - dashboards/acp.json
+      - dashboards/risk-engine.json
     options:
       labels:
         grafana_dashboard: "1"

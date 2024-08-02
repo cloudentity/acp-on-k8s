@@ -56,7 +56,7 @@ spec:
             level: "warn"
           metrics:
             level: "basic"
-        extensions: [health_check, memory_ballast, file_storage]
+        extensions: [health_check, file_storage]
         pipelines:
           traces:
             exporters: [debug, otlp/elastic-local]

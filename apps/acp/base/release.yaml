@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: acp
         namespace: acp
-      version: 2.21.0 # helm:autoupdate:acp-prod
+      version: 2.22.0 # helm:autoupdate:acp-prod
   interval: 5m
   timeout: 20m
   install:
@@ -255,6 +255,14 @@ spec:
       namespace:
         create: false
       environments:
+        node:
+          v5:
+            enabled: true
+          v6:
+            enabled: true
+        rego:
+          v6:
+            enabled: true
         settings:
           resources:
             requests:

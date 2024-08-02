@@ -41,6 +41,48 @@ spec:
             fieldPath: status.hostIP
     faas:
       environments:
+        node:
+          v6:
+            env:
+              - name: ENABLE_TRACING
+                value: "true"
+              - name: HOST_IP
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.hostIP
+              - name: TRACE_EXPORTER_URL
+                value: "https://$(HOST_IP):4318/v1/traces"
+              - name: OTLP_INSECURE_SKIP_VERIFY
+                value: "true"
+              - name: OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE
+                value: "/tls/ca.crt"
+        rego:
+          v6:
+            env:
+              - name: HOST_IP
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.hostIP
+              - name: REGO_TRACE_EXPORTER_URL
+                value: "$(HOST_IP):4318"
+              - name: OTLP_INSECURE_HTTP
+                value: "false"
+              - name: OTLP_INSECURE_SKIP_VERIFY
+                value: "true"
+              - name: OTLP_ROOT_CA
+                value: "/tls/ca.crt"
+        settings:
+          volumes:
+            - name: tls
+              projected:
+                defaultMode: 384
+                sources:
+                  - secret:
+                      name: acp-faas-tls
+          volumeMounts:
+            - mountPath: /tls
+              name: tls
+              readOnly: true
         autoscaling:
           keda:
             enabled: true

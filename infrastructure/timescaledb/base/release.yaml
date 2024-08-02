@@ -21,7 +21,7 @@ spec:
       initialDelaySeconds: 30
     image:
       repository: timescale/timescaledb-ha
-      tag: pg14.11-ts2.14.2 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}
+      tag: pg14.12-ts2.15.3 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}
     secrets:
       # https://github.com/timescale/timescaledb-kubernetes/issues/346
       credentialsSecretName: timescaledb-credentials

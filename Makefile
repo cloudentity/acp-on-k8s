@@ -6,9 +6,9 @@ MODE   ?= base
 # Production Readiness - Use Your Own Source
 REPO   ?= https://github.com/cloudentity/acp-on-k8s
 BRANCH ?= main
-TAG ?= 
+TAG ?= 2.22.0
 TOOLBOX_DOCKER_IMAGE ?= cloudentity/toolbox
-TOOLBOX_TAG ?= latest
+TOOLBOX_TAG ?= 2.22.0
 STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
 PRETTIER_PATH ?= .
 
@@ -26,7 +26,7 @@ RUN = docker run $(DOCKER_FLAGS) --rm \
 all: setup deploy wait run-lightweight-tests
 
 prepare:
-	docker build --tag ${TOOLBOX_DOCKER_IMAGE}:${TOOLBOX_TAG} .
+	docker build --build-arg ARCH=$(shell uname -m) --tag ${TOOLBOX_DOCKER_IMAGE}:${TOOLBOX_TAG} .
 
 setup:
 	kind create cluster --name=cloudentity --config=scripts/kind-config.yaml
