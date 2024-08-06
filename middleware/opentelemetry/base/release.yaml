@@ -20,6 +20,10 @@ spec:
   # https://github.com/open-telemetry/opentelemetry-helm-charts/blob/main/charts/opentelemetry-collector/values.yaml
   values:
     mode: "daemonset"
+    image:
+      repository: otel/opentelemetry-collector-k8s
+    command:
+      name: otelcol-k8s
     service:
       enabled: true
       internalTrafficPolicy: Cluster
