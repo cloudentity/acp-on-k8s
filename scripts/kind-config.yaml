@@ -35,7 +35,7 @@ nodes:
         kind: JoinConfiguration
         nodeRegistration:
           kubeletExtraArgs:
-            node-labels: "faas=true,redis=true,cockroachdb=true,timescaledb=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=locala"
+            node-labels: "faas=true,redis=true,cockroachdb=true,timescaledb=true,risk-engine=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=locala"
   - role: worker
     image: kindest/node:v1.29.1@sha256:a0cc28af37cf39b019e2b448c54d1a3f789de32536cb5a5db61a49623e527144
     kubeadmConfigPatches:
@@ -43,7 +43,7 @@ nodes:
         kind: JoinConfiguration
         nodeRegistration:
           kubeletExtraArgs:
-            node-labels: "faas=true,redis=true,cockroachdb=true,timescaledb=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=localb"
+            node-labels: "faas=true,redis=true,cockroachdb=true,timescaledb=true,risk-engine=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=localb"
   - role: worker
     image: kindest/node:v1.29.1@sha256:a0cc28af37cf39b019e2b448c54d1a3f789de32536cb5a5db61a49623e527144
     kubeadmConfigPatches:
@@ -51,4 +51,4 @@ nodes:
         kind: JoinConfiguration
         nodeRegistration:
           kubeletExtraArgs:
-            node-labels: "faas=true,redis=true,cockroachdb=true,timescaledb=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=localc"
+            node-labels: "faas=true,redis=true,cockroachdb=true,timescaledb=true,risk-engine=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=localc"

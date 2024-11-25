@@ -53,5 +53,5 @@ spec:
         templateRef:
           name: acp-workers-lag-messages
         thresholdRange:
-          max: 15
+          max: 60
         interval: 60s

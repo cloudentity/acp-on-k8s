@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: minio
         namespace: minio
-      version: 12.8.16 # helm:autoupdate:minio-prod
+      version: 14.8.5 # no autoupdate due to lack of oci support in toolkit
   interval: 1m
   install:
     remediation:

@@ -8,8 +8,10 @@ spec:
   nodes: 3
   additionalArgs:
     - --locality=region=${cluster_region}
-  cache: 35%
-  maxSQLMemory: 35%
+  # Production Readiness - Adjust memory settings
+  # explicitly set to ~25% of the mem limit (do not use %)
+  cache: 512MiB
+  maxSQLMemory: 512MiB
   dataStore:
     pvc:
       spec:
@@ -26,13 +28,9 @@ spec:
     # Production Readiness - Adjust Pod Resources
     requests:
       cpu: 100m
-      memory: 100Mi
+      memory: 2Gi
     limits:
       memory: 2Gi
-  podEnvVariables:
-    # Production Readiness - Adjust Pod Resources
-    - name: GOMEMLIMIT
-      value: "1500MiB"
   nodeSelector:
     cockroachdb: "true"
   tolerations:

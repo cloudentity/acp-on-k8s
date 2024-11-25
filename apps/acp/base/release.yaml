@@ -78,7 +78,7 @@ spec:
       - --demo
       - --create-default-tenant
       - --create-default-workspaces
-    configPath: /data/config.yaml,/data/extraconfig.yaml,/secret/secret.yaml,/secret/embedded_idps.yaml
+    configPath: /data/config.yaml,/data/extraconfig.yaml,/secret/secret.yaml,/secret/embedded_idps.yaml,/secret/risk_engine.yaml
     nodeSelector:
       compute: "true"
     tolerations:
@@ -108,7 +108,6 @@ spec:
         - "redis-local-redis-cluster-headless.redis:6379"
         - "redis-local-redis-cluster-headless.redis:6379"
       redis_search: true
-      redis_search_index_name: acp-local
       tls:
         enabled: true
         ca: "/tls/ca.crt"
@@ -140,14 +139,20 @@ spec:
           max_idle_conns: 128
         redis:
           max_backoff_retries: 10
-          number_of_workers: 32
           number_of_consumers: 1
-          pool_size: 200
-          min_idle_conns: 100
+          pool_size: 48
+          min_idle_conns: 24
           streams:
+            sleep: 1s
             disable_trim: false
+            number_of_workers: 2
             max_length: 100000
           consumer_groups:
+            identity_messenger:
+              timeout: 1m
+              batch_size: 10
+              max_retries: 1
+              number_of_workers: 8
             refresh_tokens:
               batch_size: 200
             identity:
@@ -158,6 +163,9 @@ spec:
               batch_size: 200
             webhook:
               batch_size: 400
+            webhook_notification:
+              batch_size: 12
+              number_of_workers: 8
         timescale:
           enabled: true
         spicedb:
@@ -181,7 +189,6 @@ spec:
             - "redis-local-redis-cluster-headless.redis:6379"
             - "redis-local-redis-cluster-headless.redis:6379"
           redis_search: true
-          redis_search_index_name: acp-local
           tls:
             enabled: true
             ca: "/tls/ca.crt"

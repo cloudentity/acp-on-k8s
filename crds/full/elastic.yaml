@@ -2,14 +2,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: agents.agent.k8s.elastic.co
 spec:
   group: agent.k8s.elastic.co
@@ -406,6 +406,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -521,6 +522,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -656,6 +658,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -916,6 +928,7 @@ spec:
                                 items:
                                   type: string
                                 type: array
+                                x-kubernetes-list-type: atomic
                               dataSource:
                                 description: |-
                                   dataSource field can be used to specify either:
@@ -1066,11 +1079,13 @@ spec:
                                           items:
                                             type: string
                                           type: array
+                                          x-kubernetes-list-type: atomic
                                       required:
                                         - key
                                         - operator
                                       type: object
                                     type: array
+                                    x-kubernetes-list-type: atomic
                                   matchLabels:
                                     additionalProperties:
                                       type: string
@@ -1098,7 +1113,7 @@ spec:
                                   If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
                                   set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                   exists.
-                                  More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+                                  More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
                                   (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
                                 type: string
                               volumeMode:
@@ -1170,14 +1185,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: apmservers.apm.k8s.elastic.co
 spec:
   group: apm.k8s.elastic.co
@@ -1376,6 +1391,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -1491,6 +1507,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -1626,6 +1643,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -2023,6 +2050,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -2138,6 +2166,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -2273,6 +2302,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -2439,14 +2478,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: beats.beat.k8s.elastic.co
 spec:
   group: beat.k8s.elastic.co
@@ -2949,14 +2988,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: elasticmapsservers.maps.k8s.elastic.co
 spec:
   group: maps.k8s.elastic.co
@@ -3170,6 +3209,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -3285,6 +3325,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -3420,6 +3461,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -3567,14 +3618,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: elasticsearchautoscalers.autoscaling.k8s.elastic.co
 spec:
   group: autoscaling.k8s.elastic.co
@@ -3959,14 +4010,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: elasticsearches.elasticsearch.k8s.elastic.co
 spec:
   group: elasticsearch.k8s.elastic.co
@@ -4164,6 +4215,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -4279,6 +4331,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -4414,6 +4467,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -4673,6 +4736,7 @@ spec:
                                   items:
                                     type: string
                                   type: array
+                                  x-kubernetes-list-type: atomic
                                 dataSource:
                                   description: |-
                                     dataSource field can be used to specify either:
@@ -4824,11 +4888,13 @@ spec:
                                             items:
                                               type: string
                                             type: array
+                                            x-kubernetes-list-type: atomic
                                         required:
                                           - key
                                           - operator
                                         type: object
                                       type: array
+                                      x-kubernetes-list-type: atomic
                                     matchLabels:
                                       additionalProperties:
                                         type: string
@@ -4856,7 +4922,7 @@ spec:
                                     If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
                                     set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                     exists.
-                                    More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+                                    More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
                                     (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
                                   type: string
                                 volumeMode:
@@ -4964,11 +5030,13 @@ spec:
                                     items:
                                       type: string
                                     type: array
+                                    x-kubernetes-list-type: atomic
                                 required:
                                   - key
                                   - operator
                                 type: object
                               type: array
+                              x-kubernetes-list-type: atomic
                             matchLabels:
                               additionalProperties:
                                 type: string
@@ -5205,6 +5273,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -5320,6 +5389,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -5455,6 +5525,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -5510,6 +5590,17 @@ spec:
                             extension of each Elasticsearch node's transport TLS certificate.
                             Example: if set to "node.cluster.local", the generated certificate will have its otherName set to "<pod_name>.node.cluster.local".
                           type: string
+                        selfSignedCertificates:
+                          description:
+                            SelfSignedCertificates allows configuring the
+                            self-signed certificate generated by the operator.
+                          properties:
+                            disabled:
+                              description:
+                                Disabled indicates that provisioning of the
+                                self-signed certificates should be disabled.
+                              type: boolean
+                          type: object
                         subjectAltNames:
                           description:
                             SubjectAlternativeNames is a list of SANs to
@@ -5917,6 +6008,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -6032,6 +6124,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -6167,6 +6260,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -6327,6 +6430,7 @@ spec:
                                   items:
                                     type: string
                                   type: array
+                                  x-kubernetes-list-type: atomic
                                 dataSource:
                                   description: |-
                                     dataSource field can be used to specify either:
@@ -6478,11 +6582,13 @@ spec:
                                             items:
                                               type: string
                                             type: array
+                                            x-kubernetes-list-type: atomic
                                         required:
                                           - key
                                           - operator
                                         type: object
                                       type: array
+                                      x-kubernetes-list-type: atomic
                                     matchLabels:
                                       additionalProperties:
                                         type: string
@@ -6510,7 +6616,7 @@ spec:
                                     If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
                                     set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                                     exists.
-                                    More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+                                    More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
                                     (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
                                   type: string
                                 volumeMode:
@@ -6619,11 +6725,13 @@ spec:
                                     items:
                                       type: string
                                     type: array
+                                    x-kubernetes-list-type: atomic
                                 required:
                                   - key
                                   - operator
                                 type: object
                               type: array
+                              x-kubernetes-list-type: atomic
                             matchLabels:
                               additionalProperties:
                                 type: string
@@ -6775,14 +6883,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: enterprisesearches.enterprisesearch.k8s.elastic.co
 spec:
   group: enterprisesearch.k8s.elastic.co
@@ -6994,6 +7102,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -7109,6 +7218,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -7244,6 +7354,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -7587,6 +7707,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -7702,6 +7823,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -7837,6 +7959,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -7970,14 +8102,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: kibanas.kibana.k8s.elastic.co
 spec:
   group: kibana.k8s.elastic.co
@@ -8207,6 +8339,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -8322,6 +8455,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -8457,6 +8591,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -8917,6 +9061,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             externalName:
                               description: |-
                                 externalName is the external reference that discovery mechanisms will
@@ -9032,6 +9177,7 @@ spec:
                               items:
                                 type: string
                               type: array
+                              x-kubernetes-list-type: atomic
                             ports:
                               description: |-
                                 The list of ports that are exposed by this service.
@@ -9167,6 +9313,16 @@ spec:
                                       type: integer
                                   type: object
                               type: object
+                            trafficDistribution:
+                              description: |-
+                                TrafficDistribution offers a way to express preferences for how traffic is
+                                distributed to Service endpoints. Implementations can use this field as a
+                                hint, but are not required to guarantee strict adherence. If the field is
+                                not set, the implementation will apply its default routing strategy. If set
+                                to "PreferClose", implementations should prioritize endpoints that are
+                                topologically close (e.g., same zone).
+                                This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                              type: string
                             type:
                               description: |-
                                 type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -9318,14 +9474,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: logstashes.logstash.k8s.elastic.co
 spec:
   group: logstash.k8s.elastic.co
@@ -9729,6 +9885,7 @@ spec:
                                 items:
                                   type: string
                                 type: array
+                                x-kubernetes-list-type: atomic
                               externalName:
                                 description: |-
                                   externalName is the external reference that discovery mechanisms will
@@ -9844,6 +10001,7 @@ spec:
                                 items:
                                   type: string
                                 type: array
+                                x-kubernetes-list-type: atomic
                               ports:
                                 description: |-
                                   The list of ports that are exposed by this service.
@@ -9979,6 +10137,16 @@ spec:
                                         type: integer
                                     type: object
                                 type: object
+                              trafficDistribution:
+                                description: |-
+                                  TrafficDistribution offers a way to express preferences for how traffic is
+                                  distributed to Service endpoints. Implementations can use this field as a
+                                  hint, but are not required to guarantee strict adherence. If the field is
+                                  not set, the implementation will apply its default routing strategy. If set
+                                  to "PreferClose", implementations should prioritize endpoints that are
+                                  topologically close (e.g., same zone).
+                                  This is an alpha field and requires enabling ServiceTrafficDistribution feature.
+                                type: string
                               type:
                                 description: |-
                                   type determines how the Service is exposed. Defaults to ClusterIP. Valid
@@ -10148,6 +10316,7 @@ spec:
                             items:
                               type: string
                             type: array
+                            x-kubernetes-list-type: atomic
                           dataSource:
                             description: |-
                               dataSource field can be used to specify either:
@@ -10290,11 +10459,13 @@ spec:
                                       items:
                                         type: string
                                       type: array
+                                      x-kubernetes-list-type: atomic
                                   required:
                                     - key
                                     - operator
                                   type: object
                                 type: array
+                                x-kubernetes-list-type: atomic
                               matchLabels:
                                 additionalProperties:
                                   type: string
@@ -10322,7 +10493,7 @@ spec:
                               If the resource referred to by volumeAttributesClass does not exist, this PersistentVolumeClaim will be
                               set to a Pending state, as reflected by the modifyVolumeStatus field, until such as a resource
                               exists.
-                              More info: https://kubernetes.io/docs/concepts/storage/persistent-volumes#volumeattributesclass
+                              More info: https://kubernetes.io/docs/concepts/storage/volume-attributes-classes/
                               (Alpha) Using this field requires the VolumeAttributesClass feature gate to be enabled.
                             type: string
                           volumeMode:
@@ -10349,6 +10520,7 @@ spec:
                             items:
                               type: string
                             type: array
+                            x-kubernetes-list-type: atomic
                           allocatedResourceStatuses:
                             additionalProperties:
                               description: |-
@@ -10441,7 +10613,7 @@ spec:
                           conditions:
                             description: |-
                               conditions is the current Condition of persistent volume claim. If underlying persistent volume is being
-                              resized then the Condition will be set to 'ResizeStarted'.
+                              resized then the Condition will be set to 'Resizing'.
                             items:
                               description:
                                 PersistentVolumeClaimCondition contains details
@@ -10467,7 +10639,7 @@ spec:
                                 reason:
                                   description: |-
                                     reason is a unique, this should be a short, machine understandable string that gives the reason
-                                    for condition's last transition. If it reports "ResizeStarted" that means the underlying
+                                    for condition's last transition. If it reports "Resizing" that means the underlying
                                     persistent volume is being resized.
                                   type: string
                                 status:
@@ -10482,6 +10654,9 @@ spec:
                                 - type
                               type: object
                             type: array
+                            x-kubernetes-list-map-keys:
+                              - type
+                            x-kubernetes-list-type: map
                           currentVolumeAttributesClassName:
                             description: |-
                               currentVolumeAttributesClassName is the current name of the VolumeAttributesClass the PVC is using.
@@ -10586,14 +10761,14 @@ apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.14.0
+    controller-gen.kubebuilder.io/version: v0.15.0
     helm.sh/resource-policy: keep
   labels:
     app.kubernetes.io/instance: "elastic-operator"
     app.kubernetes.io/managed-by: "Helm"
     app.kubernetes.io/name: "eck-operator-crds"
-    app.kubernetes.io/version: "2.13.0"
-    helm.sh/chart: "eck-operator-crds-2.13.0"
+    app.kubernetes.io/version: "2.14.0"
+    helm.sh/chart: "eck-operator-crds-2.14.0"
   name: stackconfigpolicies.stackconfigpolicy.k8s.elastic.co
 spec:
   group: stackconfigpolicy.k8s.elastic.co
@@ -10848,11 +11023,13 @@ spec:
                             items:
                               type: string
                             type: array
+                            x-kubernetes-list-type: atomic
                         required:
                           - key
                           - operator
                         type: object
                       type: array
+                      x-kubernetes-list-type: atomic
                     matchLabels:
                       additionalProperties:
                         type: string
@@ -11003,3 +11180,5 @@ spec:
       storage: true
       subresources:
         status: {}
+---
+

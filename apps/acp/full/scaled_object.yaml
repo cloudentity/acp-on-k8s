@@ -12,8 +12,8 @@ spec:
       metadata:
         name: prom-trigger
         serverAddress: http://prometheus-prometheus.monitoring:9090
-        threshold: "10"
-        query: 'round(max(avg(histogram_quantile(0.9, rate(acp_redis_lag_seconds_bucket{job="acp-workers-primary", namespace="acp${namespace_suffix}", stream!~"(.+)cdr_sync_register"}[1m])) > 0) by (group, stream)))'
+        threshold: "60"
+        query: 'round(max(avg(histogram_quantile(0.9, rate(acp_redis_lag_seconds_bucket{job="acp-workers", namespace="acp${namespace_suffix}", stream=~"(.*)cdr_sync_register|(.*)webhook_notification|(.*)identity_send_message|(.*)send_otp"}[1m])) > 0) by (group, stream)))'
   advanced:
     horizontalPodAutoscalerConfig:
       behavior:

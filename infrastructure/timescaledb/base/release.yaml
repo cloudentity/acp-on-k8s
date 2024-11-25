@@ -12,8 +12,8 @@ spec:
         name: timescaledb
         namespace: timescaledb-${cluster_region}
       version: 0.33.1 # helm:autoupdate:timescaledb-prod
-  interval: 25m
-  timeout: 24m30s
+  interval: 45m
+  timeout: 44m30s
   #  https://github.com/timescale/timescaledb-kubernetes/blob/master/charts/timescaledb-single/values.yaml
   values:
     replicaCount: 3
@@ -21,7 +21,7 @@ spec:
       initialDelaySeconds: 30
     image:
       repository: timescale/timescaledb-ha
-      tag: pg14.12-ts2.15.3 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}
+      tag: pg14.14-ts2.17.2 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}
     secrets:
       # https://github.com/timescale/timescaledb-kubernetes/issues/346
       credentialsSecretName: timescaledb-credentials
@@ -196,3 +196,11 @@ spec:
                   mountPath: /etc/certificate
                   name: certificate
                   readOnly: true
+          - target:
+              kind: Service
+              name: timescaledb
+              version: v1
+            patch: |-
+              - op: add
+                path: /spec/selector/role
+                value: primary

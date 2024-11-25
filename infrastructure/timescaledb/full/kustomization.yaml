@@ -64,3 +64,14 @@ patches:
                   - services
                   verbs:
                   - create
+      - op: add
+        path: /spec/postRenderers/0/kustomize/patches/-
+        value:
+          target:
+            kind: Service
+            name: timescaledb-backup
+            version: v1
+          patch: |-
+            - op: add
+              path: /spec/selector/role
+              value: primary

@@ -136,7 +136,7 @@ spec:
             - ALL
           add: ["NET_BIND_SERVICE"]
       persistence:
-        size: 100Gi
+        size: 200Gi
       ingress:
         enabled: true
         hostname: "compactor.tools.${cluster_region}.${cluster_domain}"

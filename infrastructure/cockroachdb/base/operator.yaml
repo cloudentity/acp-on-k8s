@@ -389,7 +389,6 @@ spec:
               cpu: 10m
               memory: 32Mi
             limits:
-              cpu: 64m
               memory: 256M
       securityContext:
         fsGroup: 1000581000

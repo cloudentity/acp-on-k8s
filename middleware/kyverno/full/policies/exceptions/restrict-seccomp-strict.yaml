@@ -47,3 +47,24 @@ spec:
             - kindnet*
             - kube-proxy*
             - coredns*
+---
+apiVersion: kyverno.io/v2beta1
+kind: PolicyException
+metadata:
+  name: restrict-seccomp-strict-cockroachdb-init-job
+spec:
+  background: true
+  exceptions:
+    - policyName: restrict-seccomp-strict
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Pod
+            - Job
+          namespaces:
+            - cockroach*
+          names:
+            - cockroachdb-local-vcheck*

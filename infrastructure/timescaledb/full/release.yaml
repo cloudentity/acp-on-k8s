@@ -6,6 +6,8 @@ spec:
   values:
     prometheus:
       enabled: true
+      image:
+        tag: v0.16.0
     podMonitor:
       enabled: true
     backup:

@@ -97,3 +97,25 @@ spec:
             - chaos-mesh
           names:
             - chaos-daemon*
+---
+# required to perform chaos experiments
+apiVersion: kyverno.io/v2beta1
+kind: PolicyException
+metadata:
+  name: disallow-privilege-escalation-cockroach-init-job
+spec:
+  background: true
+  exceptions:
+    - policyName: disallow-privilege-escalation
+      ruleNames:
+        - "*"
+  match:
+    any:
+      - resources:
+          kinds:
+            - Job
+            - Pod
+          namespaces:
+            - cockroachdb*
+          names:
+            - cockroachdb-local-vcheck*

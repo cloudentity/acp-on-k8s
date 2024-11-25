@@ -39,6 +39,7 @@ spec:
           kinds:
             - Pod
             - StatefulSet
+            - Job
           namespaces:
             - cockroachdb*
           names:

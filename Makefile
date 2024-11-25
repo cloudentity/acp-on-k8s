@@ -26,7 +26,7 @@ RUN = docker run $(DOCKER_FLAGS) --rm \
 all: setup deploy wait run-lightweight-tests
 
 prepare:
-	docker build --build-arg ARCH=$(shell uname -m) --tag ${TOOLBOX_DOCKER_IMAGE}:${TOOLBOX_TAG} .
+	docker buildx build --tag ${TOOLBOX_DOCKER_IMAGE}:${TOOLBOX_TAG} . --load
 
 setup:
 	kind create cluster --name=cloudentity --config=scripts/kind-config.yaml

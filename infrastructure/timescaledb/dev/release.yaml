@@ -7,4 +7,14 @@ spec:
     replicaCount: 1
     backup:
       enabled: false
-  postRenderers: null
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Service
+              name: timescaledb
+              version: v1
+            patch: |-
+              - op: add
+                path: /spec/selector/role
+                value: primary

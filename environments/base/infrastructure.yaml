@@ -99,5 +99,9 @@ spec:
       kind: SpiceDBCluster
       name: spicedb
       namespace: spicedb
+    - apiVersion: apps/v1
+      kind: Deployment
+      name: spicedb-operator
+      namespace: spicedb-operator
   dependsOn:
     - name: cockroachdb

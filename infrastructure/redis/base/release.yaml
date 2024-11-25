@@ -18,9 +18,11 @@ spec:
     remediation:
       retries: 3
   # Default values
-  # https://github.com/bitnami/charts/blob/master/bitnami/redis-cluster/values.yaml
+  # https://github.com/bitnami/charts/blob/redis-cluster/7.6.4/bitnami/redis-cluster/values.yaml
   values:
     global:
+      # Location of the Redis image
+      # https://gallery.ecr.aws/bitnami/redis-cluster
       imageRegistry: public.ecr.aws
     image:
       tag: 6.2.14-debian-12-r13 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}

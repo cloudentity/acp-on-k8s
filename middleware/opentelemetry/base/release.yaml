@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: opentelemetry-collector
         namespace: observability
-      version: 0.97.1 # helm:autoupdate:opentelemetry-collector-prod
+      version: 0.110.0 # helm:autoupdate:opentelemetry-collector-prod
   interval: 5m
   install:
     remediation:
@@ -124,11 +124,19 @@ spec:
                   operator: In
                   values:
                     - "true"
+            - matchExpressions:
+                - key: risk-engine
+                  operator: In
+                  values:
+                    - "true"
     tolerations:
       - key: compute
         value: "true"
         effect: NoSchedule
       - key: faas
+        value: "true"
+        effect: NoSchedule
+      - key: risk-engine
         value: "true"
         effect: NoSchedule
     serviceMonitor:

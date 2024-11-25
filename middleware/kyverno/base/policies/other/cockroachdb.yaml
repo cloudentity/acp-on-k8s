@@ -26,38 +26,3 @@ spec:
           metadata:
             annotations:
               secret.reloader.stakater.com/reload: "cockroachdb-node-tls,cockroachdb-client-tls"
----
-apiVersion: kyverno.io/v1
-kind: ClusterPolicy
-metadata:
-  name: cockroachdb-add-vcheck-mem-limit
-  annotations:
-    policies.kyverno.io/title: Increase default memory limit for CockroachDB vCheck
-    policies.kyverno.io/category: Other
-    policies.kyverno.io/severity: medium
-    policies.kyverno.io/subject: Pod
-    policies.kyverno.io/minversion: 1.6.0
-    policies.kyverno.io/description: "It's not possible to override it using the operator. The current value is too small, causing OOMs."
-spec:
-  failurePolicy: Fail
-  rules:
-    - name: increase-memory-limit
-      match:
-        any:
-          - resources:
-              kinds:
-                - Job
-              namespaces:
-                - cockroachdb-${cluster_region}
-              names:
-                - "cockroachdb-*-vcheck-*"
-      mutate:
-        patchStrategicMerge:
-          spec:
-            template:
-              spec:
-                containers:
-                  - name: crdb
-                    resources:
-                      limits:
-                        memory: 512Mi

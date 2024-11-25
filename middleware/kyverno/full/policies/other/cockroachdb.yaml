@@ -108,33 +108,3 @@ spec:
                   fsGroup: 1000581000
                   runAsUser: 1000581000
                   runAsNonRoot: true
-    - name: add-security-context-jobs-vcheck
-      match:
-        any:
-          - resources:
-              kinds:
-                - Job
-              namespaces:
-                - cockroachdb-${cluster_region}
-              names:
-                - "cockroachdb-local-vcheck*"
-      mutate:
-        patchStrategicMerge:
-          spec:
-            template:
-              spec:
-                containers:
-                  - name: crdb
-                    securityContext:
-                      allowPrivilegeEscalation: false
-                      capabilities:
-                        drop:
-                          - ALL
-                        add: ["NET_BIND_SERVICE"]
-                      privileged: false
-                      seccompProfile:
-                        type: RuntimeDefault
-                securityContext:
-                  fsGroup: 1000581000
-                  runAsUser: 1000581000
-                  runAsNonRoot: true
