@@ -60,7 +60,12 @@ spec:
           args:
             - -c
             - |
-              sleep 40 && curl -X PATCH -H 'content-type: application/json' -d '{"agreements":{"analytics":false,"notifications":false,"encryption":false,"eula":true}}' http://localhost:5540/api/settings && curl -H 'content-type: application/json' -d "{\"name\":\"redis-cluster\",\"host\":\"redis-local-redis-cluster.redis\",\"port\":6379,\"db\":0,\"password\":\"$REDIS_PASSWORD\",\"compressor\":\"NONE\",\"timeout\":30000,\"tls\":true,\"verifyServerCert\":true,\"caCert\":{\"name\":\"redisinsight\",\"certificate\":\"$(awk '{printf "%s\\\\n", $0}' /cert/ca.crt)\"},\"clientCert\":{\"name\":\"redisinsight\",\"certificate\":\"$(awk '{printf "%s\\\\n", $0}' /cert/tls.crt)\",\"key\":\"$(awk '{printf "%s\\\\n", $0}' /cert/tls.key)\"}}" http://localhost:5540/api/databases && sleep 604800
+              sleep 40 &&
+              echo "Checking if RedisInsight is up" &&
+              curl -s -o - -w "\nHTTP Status: %{http_code}\n" -X PATCH -H 'content-type: application/json' -d '{"agreements":{"analytics":false,"notifications":false,"encryption":false,"eula":true}}' http://localhost:5540/api/settings &&
+              echo "Configuring RedisInsight database" &&
+              curl -s -o - -w "\nHTTP Status: %{http_code}\n" -H 'content-type: application/json' -d "{\"name\":\"redis-cluster\",\"host\":\"redis-local-redis-cluster.redis\",\"port\":6379,\"db\":0,\"password\":\"$REDIS_PASSWORD\",\"compressor\":\"NONE\",\"timeout\":30000,\"tls\":true,\"verifyServerCert\":true,\"caCert\":{\"name\":\"redisinsight\",\"certificate\":\"$(awk '{printf "%s\\\\n", $0}' /cert/ca.crt)\"},\"clientCert\":{\"name\":\"redisinsight\",\"certificate\":\"$(awk '{printf "%s\\\\n", $0}' /cert/tls.crt)\",\"key\":\"$(awk '{printf "%s\\\\n", $0}' /cert/tls.key)\"}}" http://localhost:5540/api/databases &&
+              sleep 604800
           env:
             - name: REDIS_PASSWORD
               valueFrom:
