@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: keda
         namespace: keda
-      version: 2.14.2 # helm:autoupdate:keda-prod
+      version: 2.16.0 # helm:autoupdate:keda-prod
   interval: 1m
   install:
     remediation:

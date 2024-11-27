@@ -15,9 +15,9 @@ metadata:
     app.kubernetes.io/name: "cert-manager"
     app.kubernetes.io/instance: "release-name"
     # Generated labels
-    app.kubernetes.io/version: "v1.16.1"
+    app.kubernetes.io/version: "v1.16.2"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.1
+    helm.sh/chart: cert-manager-v1.16.2
 spec:
   group: cert-manager.io
   names:
@@ -338,9 +338,9 @@ metadata:
     app.kubernetes.io/name: "cert-manager"
     app.kubernetes.io/instance: "release-name"
     # Generated labels
-    app.kubernetes.io/version: "v1.16.1"
+    app.kubernetes.io/version: "v1.16.2"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.1
+    helm.sh/chart: cert-manager-v1.16.2
 spec:
   group: cert-manager.io
   names:
@@ -1109,9 +1109,9 @@ metadata:
     app.kubernetes.io/name: "cert-manager"
     app.kubernetes.io/instance: "release-name"
     # Generated labels
-    app.kubernetes.io/version: "v1.16.1"
+    app.kubernetes.io/version: "v1.16.2"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.1
+    helm.sh/chart: cert-manager-v1.16.2
 spec:
   group: acme.cert-manager.io
   names:
@@ -4334,9 +4334,9 @@ metadata:
     app.kubernetes.io/name: "cert-manager"
     app.kubernetes.io/instance: "release-name"
     # Generated labels
-    app.kubernetes.io/version: "v1.16.1"
+    app.kubernetes.io/version: "v1.16.2"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.1
+    helm.sh/chart: cert-manager-v1.16.2
 spec:
   group: cert-manager.io
   names:
@@ -8128,9 +8128,9 @@ metadata:
     app.kubernetes.io/instance: "release-name"
     app.kubernetes.io/component: "crds"
     # Generated labels
-    app.kubernetes.io/version: "v1.16.1"
+    app.kubernetes.io/version: "v1.16.2"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.1
+    helm.sh/chart: cert-manager-v1.16.2
 spec:
   group: cert-manager.io
   names:
@@ -11921,9 +11921,9 @@ metadata:
     app.kubernetes.io/instance: "release-name"
     app.kubernetes.io/component: "crds"
     # Generated labels
-    app.kubernetes.io/version: "v1.16.1"
+    app.kubernetes.io/version: "v1.16.2"
     app.kubernetes.io/managed-by: Helm
-    helm.sh/chart: cert-manager-v1.16.1
+    helm.sh/chart: cert-manager-v1.16.2
 spec:
   group: acme.cert-manager.io
   names:
