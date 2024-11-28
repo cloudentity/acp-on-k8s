@@ -19,6 +19,7 @@ spec:
           namespaces:
             - acp-tests-selenium
             - acp-tests-selenium-internal
+            - acp-tests-selenium-sa
           names:
             - "selenium-*"
 ---
@@ -42,6 +43,7 @@ spec:
           namespaces:
             - acp-tests-selenium
             - acp-tests-selenium-internal
+            - acp-tests-selenium-sa
           names:
             - "selenium-*"
 ---
@@ -65,6 +67,7 @@ spec:
           namespaces:
             - acp-tests-selenium
             - acp-tests-selenium-internal
+            - acp-tests-selenium-sa
           names:
             - "selenium-*"
 ---
@@ -88,5 +91,6 @@ spec:
           namespaces:
             - acp-tests-selenium
             - acp-tests-selenium-internal
+            - acp-tests-selenium-sa
           names:
             - "selenium-*"
