@@ -27,7 +27,7 @@ spec:
             - -v=4
             - --crd=false
             - --config
-            - /opt/operator/config.yaml
+            - /opt/operator/update-graph.yaml
           image: authzed/spicedb-operator
           livenessProbe:
             httpGet:
@@ -57,7 +57,7 @@ spec:
               cpu: 10m
               memory: 50Mi
             limits:
-              memory: 120Mi
+              memory: 200Mi
           securityContext:
             privileged: false
             allowPrivilegeEscalation: false
@@ -67,6 +67,10 @@ spec:
               drop:
                 - ALL
               add: ["NET_BIND_SERVICE"]
+          volumeMounts:
+            - mountPath: /opt/operator
+              name: config
+              readOnly: true
       serviceAccountName: spicedb-operator
       securityContext:
         privileged: false
@@ -76,3 +80,8 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: update-graph
+          name: config
