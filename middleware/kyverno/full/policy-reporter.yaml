@@ -11,7 +11,7 @@ spec:
         kind: HelmRepository
         name: policy-reporter
         namespace: kyverno
-      version: 2.22.5 # helm:autoupdate:policy-reporter-prod
+      version: 2.24.2 # helm:autoupdate:policy-reporter-prod
   interval: 5m
   install:
     remediation:

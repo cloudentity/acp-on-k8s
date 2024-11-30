@@ -10,4 +10,4 @@ resources:
   - ingress.yaml
 images:
   - name: redis/redisinsight
-    newTag: "2.58.0" # {"$imagepolicy": "redisinsight:redisinsight-image-policy-prod:tag"}
+    newTag: "2.62.0" # {"$imagepolicy": "redisinsight:redisinsight-image-policy-prod:tag"}
