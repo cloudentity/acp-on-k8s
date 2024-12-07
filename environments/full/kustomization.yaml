@@ -81,15 +81,15 @@ patches:
       spec:
         path: ./middleware/kyverno/full
         healthChecks:
-          - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+          - apiVersion: helm.toolkit.fluxcd.io/v2
             kind: HelmRelease
             name: kyverno
             namespace: kyverno
-          - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+          - apiVersion: helm.toolkit.fluxcd.io/v2
             kind: HelmRelease
             name: kyverno-policies
             namespace: kyverno
-          - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+          - apiVersion: helm.toolkit.fluxcd.io/v2
             kind: HelmRelease
             name: policy-reporter
             namespace: kyverno

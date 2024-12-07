@@ -120,6 +120,7 @@ spec:
               when:
                 contains:
                   message: "GET /healthz"
+
     processors:
       - add_kubernetes_metadata:
           host: ${NODE_NAME}

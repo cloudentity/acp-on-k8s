@@ -15,7 +15,7 @@ spec:
       - kind: Secret
         name: docker-cloudentity
   healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2beta2
+    - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
       name: acp
       namespace: acp
