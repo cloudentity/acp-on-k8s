@@ -12,5 +12,7 @@ spec:
       enabled: true
     backup:
       resources:
+        requests:
+          memory: 512Mi
         limits:
           memory: 512Mi
