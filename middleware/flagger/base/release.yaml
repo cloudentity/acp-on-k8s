@@ -10,7 +10,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: flagger
-        namespace: flagger
       version: 1.39.0 # helm:autoupdate:flagger-prod
   interval: 5m
   install:

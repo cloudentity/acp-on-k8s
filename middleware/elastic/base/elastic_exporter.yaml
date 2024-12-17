@@ -10,8 +10,7 @@ spec:
       chart: prometheus-elasticsearch-exporter
       sourceRef:
         kind: HelmRepository
-        name: prometheus
-        namespace: monitoring
+        name: elastic-exporter
       version: 6.5.1 # helm:autoupdate:elastic-exporter-prod
   interval: 60m
   install:

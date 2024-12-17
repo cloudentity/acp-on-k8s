@@ -10,7 +10,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: prometheus
-        namespace: monitoring
       version: 9.1.0 # helm:autoupdate:blackbox-exporter-prod
   interval: 60m
   install:

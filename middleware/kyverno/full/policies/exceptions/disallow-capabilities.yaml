@@ -26,30 +26,6 @@ spec:
             - kube-controller*
             - kube-scheduler*
 ---
-# required to perform chaos experiments
-apiVersion: kyverno.io/v2beta1
-kind: PolicyException
-metadata:
-  name: disallow-capabilities-chaos-mesh
-spec:
-  background: true
-  exceptions:
-    - policyName: disallow-capabilities
-      ruleNames:
-        - "*"
-  match:
-    any:
-      - resources:
-          kinds:
-            - DaemonSet
-            - Deployment
-            - Pod
-            - ReplicaSet
-          namespaces:
-            - chaos-mesh
-          names:
-            - chaos-daemon*
----
 # redisinsight requires CAP_IPC_LOCK capability as it uses gnome-keyring-daemon
 apiVersion: kyverno.io/v2beta1
 kind: PolicyException

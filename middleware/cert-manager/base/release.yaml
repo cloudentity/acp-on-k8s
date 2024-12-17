@@ -10,7 +10,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: jetstack
-        namespace: cert-manager
       version: v1.16.2 # helm:autoupdate:cert-manager-prod
   interval: 5m
   install:

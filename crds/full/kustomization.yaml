@@ -4,7 +4,6 @@ resources:
   - ../base
   - elastic.yaml
   - flagger.yaml
-  - istio.yaml
   - keda-http-add-on.yaml
   - keda.yaml
   - prometheus.yaml

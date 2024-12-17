@@ -10,7 +10,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: ingress-nginx
-        namespace: nginx
       version: 4.11.3 # helm:autoupdate:nginx-prod
   interval: 20m
   timeout: 19m30s

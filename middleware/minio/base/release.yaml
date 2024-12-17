@@ -10,7 +10,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: minio
-        namespace: minio
       version: 14.8.5 # no autoupdate due to lack of oci support in toolkit
   interval: 1m
   install:

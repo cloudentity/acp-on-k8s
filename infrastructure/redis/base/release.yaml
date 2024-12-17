@@ -10,7 +10,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: redis
-        namespace: redis
       version: 7.6.4 # helm:autoupdate:redis-prod
   interval: 15m
   timeout: 45m

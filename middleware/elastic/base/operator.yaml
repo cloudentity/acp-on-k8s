@@ -10,7 +10,6 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: elastic
-        namespace: elastic
       version: 2.15.0 # helm:autoupdate:eck-operator-prod
   interval: 5m
   timeout: 15m

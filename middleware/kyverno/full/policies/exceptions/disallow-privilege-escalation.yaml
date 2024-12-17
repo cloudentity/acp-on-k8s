@@ -74,31 +74,6 @@ spec:
             - kube-controller*
             - kube-scheduler*
 ---
-# required to perform chaos experiments
-apiVersion: kyverno.io/v2beta1
-kind: PolicyException
-metadata:
-  name: disallow-privilege-escalation-chaos-mesh
-spec:
-  background: true
-  exceptions:
-    - policyName: disallow-privilege-escalation
-      ruleNames:
-        - "*"
-  match:
-    any:
-      - resources:
-          kinds:
-            - DaemonSet
-            - Deployment
-            - Pod
-            - ReplicaSet
-          namespaces:
-            - chaos-mesh
-          names:
-            - chaos-daemon*
----
-# required to perform chaos experiments
 apiVersion: kyverno.io/v2beta1
 kind: PolicyException
 metadata:
