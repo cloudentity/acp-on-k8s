@@ -9,8 +9,8 @@ resources:
   - job.yaml
 images:
   - name: cockroachdb/cockroach-operator
-    newTag: v2.16.1 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-operator-image-policy-prod:tag"}
+    newTag: v2.16.1
   - name: cockroachdb/cockroach
-    newTag: v24.2.4 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-image-policy-prod:tag"}
+    newTag: v24.2.4
 configurations:
   - kustomizeconfig.yaml

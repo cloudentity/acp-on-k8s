@@ -12,4 +12,5 @@ metadata:
   name: thanos
 spec:
   interval: 24h
-  url: https://charts.bitnami.com/bitnami
+  url: oci://registry-1.docker.io/bitnamicharts
+  type: oci

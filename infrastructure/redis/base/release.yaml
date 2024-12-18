@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: redis
-      version: 7.6.4 # helm:autoupdate:redis-prod
+      version: 7.6.4
   interval: 15m
   timeout: 45m
   install:
@@ -24,7 +24,7 @@ spec:
       # https://gallery.ecr.aws/bitnami/redis-cluster
       imageRegistry: public.ecr.aws
     image:
-      tag: 6.2.14-debian-12-r26 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
+      tag: 6.2.14-debian-12-r26
     cluster:
       nodes: 6
       replicas: 1

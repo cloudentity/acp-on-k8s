@@ -12,8 +12,8 @@ resources:
   - timescale.yaml
 images:
   - name: cockroachdb/cockroach
-    newTag: v24.2.4 # {"$imagepolicy": "cockroachdb-us-east-1:cockroachdb-image-policy-prod:tag"}
+    newTag: v24.2.4
   - name: bitnami/redis-cluster
-    newTag: 6.2.14-debian-12-r26 # {"$imagepolicy": "redis:redis-image-policy-prod:tag"}
+    newTag: 6.2.14-debian-12-r26
   - name: timescale/timescaledb-ha
-    newTag: pg14.15-ts2.17.2 # {"$imagepolicy": "timescaledb-us-east-1:timescaledb-image-policy-prod:tag"}
+    newTag: pg14.15-ts2.17.2

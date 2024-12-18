@@ -3,7 +3,7 @@ kind: Kibana
 metadata:
   name: kibana
 spec:
-  version: 8.16.1 # {"$imagepolicy": "elastic:kibana-image-policy-prod:tag"}
+  version: 8.16.1
   count: 1
   elasticsearchRef:
     name: elastic

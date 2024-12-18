@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: metrics-server
-      version: 3.12.2 # helm:autoupdate:metrics-server-prod
+      version: 3.12.2
   interval: 5m
   install:
     remediation:

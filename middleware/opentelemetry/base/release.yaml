@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: opentelemetry-collector
-      version: 0.110.5 # helm:autoupdate:opentelemetry-collector-prod
+      version: 0.110.5
   interval: 5m
   install:
     remediation:

@@ -10,4 +10,4 @@ resources:
   - configmap.yaml
 images:
   - name: authzed/spicedb-operator
-    newTag: v1.17.0 # {"$imagepolicy": "spicedb-operator:spicedb-operator-image-policy-prod:tag"}
+    newTag: v1.17.0

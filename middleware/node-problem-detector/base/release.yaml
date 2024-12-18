@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: node-problem-detector
-      version: 2.3.14 # helm:autoupdate:node-problem-detector-prod
+      version: 2.3.14
   interval: 1m
   install:
     remediation:

@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: policy-reporter
-      version: 2.24.2 # helm:autoupdate:policy-reporter-prod
+      version: 2.24.2
   interval: 5m
   install:
     remediation:

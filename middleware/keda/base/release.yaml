@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: keda
-      version: 2.16.0 # helm:autoupdate:keda-prod
+      version: 2.16.0
   interval: 1m
   install:
     remediation:
