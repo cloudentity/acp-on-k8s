@@ -4,7 +4,7 @@ metadata:
   name: metricbeat
 spec:
   type: metricbeat
-  version: 8.16.1
+  version: 8.17.0 # Metricbeat version
   elasticsearchRef:
     name: elastic
   kibanaRef:

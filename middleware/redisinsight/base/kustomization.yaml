@@ -10,4 +10,4 @@ resources:
   - ingress.yaml
 images:
   - name: redis/redisinsight
-    newTag: "2.62.0"
+    newTag: "2.64.1@sha256:53618017b60bc825b5049d7f0bb40bc6bf5e551ae26a3b3dfc77f5af3733e812"

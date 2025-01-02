@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: acp
-      version: 2.23.0
+      version: 2.23.1
   interval: 5m
   timeout: 20m
   install:

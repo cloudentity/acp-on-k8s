@@ -25,5 +25,3 @@ spec:
     securityContext:
       seccompProfile:
         type: RuntimeDefault
-    image:
-      tag: 1.22.23

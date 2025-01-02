@@ -131,9 +131,11 @@ spec:
                       type: object
                       properties:
                         minReplicas:
-                          type: number
+                          type: integer
+                          minimum: 1
                         maxReplicas:
-                          type: number
+                          type: integer
+                          minimum: 1
                 ingressRef:
                   description: Ingress selector
                   type: object
@@ -484,6 +486,55 @@ spec:
                         uri:
                           format: string
                           type: string
+                        authority:
+                          format: string
+                          type: string
+                        type:
+                          format: string
+                          type: string
+                    mirror:
+                      description: Mirror defines a schema for a filter that mirrors requests.
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          backendRef:
+                            properties:
+                              group:
+                                default: ""
+                                maxLength: 253
+                                pattern: ^$|^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$
+                                type: string
+                              kind:
+                                default: Service
+                                maxLength: 63
+                                minLength: 1
+                                pattern: ^[a-zA-Z]([-a-zA-Z0-9]*[a-zA-Z0-9])?$
+                                type: string
+                              name:
+                                maxLength: 253
+                                minLength: 1
+                                type: string
+                              namespace:
+                                maxLength: 63
+                                minLength: 1
+                                pattern: ^[a-z0-9]([-a-z0-9]*[a-z0-9])?$
+                                type: string
+                              port:
+                                format: int32
+                                maximum: 65535
+                                minimum: 1
+                                type: integer
+                            required:
+                              - name
+                            type: object
+                            x-kubernetes-validations:
+                              - message: Must have port for Service reference
+                                rule:
+                                  "(size(self.group) == 0 && self.kind == 'Service')
+                                  ? has(self.port) : true"
+                      required:
+                        - backendRef
                     headers:
                       description: Headers operations
                       type: object
@@ -770,6 +821,9 @@ spec:
                                 - PASSTHROUGH
                                 - LEAST_REQUEST
                               type: string
+                            warmupDurationSecs:
+                              description: Represents the warmup duration of Service.
+                              type: string
                         outlierDetection:
                           description: Settings controlling eviction of unhealthy hosts from the load balancing pool.
                           type: object
@@ -950,6 +1004,34 @@ spec:
                                   description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax)
                                   format: string
                                   type: string
+                          queryParams:
+                            description: Query parameters for matching.
+                            type: object
+                            additionalProperties:
+                              oneOf:
+                                - not:
+                                    anyOf:
+                                      - required:
+                                          - exact
+                                      - required:
+                                          - prefix
+                                      - required:
+                                          - regex
+                                - required:
+                                    - exact
+                                - required:
+                                    - prefix
+                                - required:
+                                    - regex
+                              properties:
+                                exact:
+                                  type: string
+                                prefix:
+                                  type: string
+                                regex:
+                                  description: RE2 style regex-based match (https://github.com/google/re2/wiki/Syntax).
+                                  type: string
+                              type: object
                           sourceLabels:
                             description: Applicable only when the 'mesh' gateway is included in the service.gateways list
                             type: object
@@ -1067,6 +1149,12 @@ spec:
                             description: Request timeout for this webhook
                             type: string
                             pattern: "^[0-9]+(m|s)"
+                          retries:
+                            description: Number of retries for this webhook
+                            type: number
+                          disableTLS:
+                            description: Disable TLS verification for this webhook
+                            type: boolean
                           metadata:
                             description: Metadata (key-value pairs) for this webhook
                             type: object
@@ -1232,6 +1320,8 @@ spec:
                         - newrelic
                         - graphite
                         - dynatrace
+                        - keptn
+                        - splunk
                     address:
                       description: API address of this provider
                       type: string

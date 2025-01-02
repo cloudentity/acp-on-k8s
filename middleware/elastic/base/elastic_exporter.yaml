@@ -11,7 +11,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: elastic-exporter
-      version: 6.5.1
+      version: 6.6.0
   interval: 60m
   install:
     remediation:
@@ -19,8 +19,6 @@ spec:
   # Default values
   # https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-elasticsearch-exporter/values.yaml
   values:
-    image:
-      tag: v1.8.0
     serviceMonitor:
       enabled: true
     es:
