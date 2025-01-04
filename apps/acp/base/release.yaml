@@ -148,9 +148,8 @@ spec:
             max_length: 100000
           consumer_groups:
             identity_messenger:
-              timeout: 1m
-              batch_size: 10
-              max_retries: 1
+              timeout: 2m30s
+              batch_size: 4
               number_of_workers: 8
             refresh_tokens:
               batch_size: 200
