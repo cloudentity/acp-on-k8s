@@ -38,6 +38,7 @@ spec:
       config:
         large-client-header-buffers: "4 16k"
         use-forwarded-headers: "true"
+      allowSnippetAnnotations: true
       admissionWebhooks:
         timeoutSeconds: 20
         createSecretJob:
@@ -122,4 +123,3 @@ spec:
           memory: 10Mi
         limits:
           memory: 512Mi
-      allowSnippetAnnotations: true
