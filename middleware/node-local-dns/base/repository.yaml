@@ -3,5 +3,5 @@ kind: HelmRepository
 metadata:
   name: node-local-dns
 spec:
-  interval: 24h
+  interval: 6h
   url: https://charts.deliveryhero.io/

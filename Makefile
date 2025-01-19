@@ -6,9 +6,9 @@ MODE   ?= base
 # Production Readiness - Use Your Own Source
 REPO   ?= https://github.com/cloudentity/acp-on-k8s
 BRANCH ?= main
-TAG ?= 
+TAG ?= 2.23.2
 TOOLBOX_DOCKER_IMAGE ?= cloudentity/toolbox
-TOOLBOX_TAG ?= latest
+TOOLBOX_TAG ?= 2.23.2
 STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
 PRETTIER_PATH ?= .
 
@@ -70,7 +70,7 @@ run-lightweight-tests:
 	@$(RUN) kubectl exec deploy/lightweight-tests -n lightweight-tests -- sh -c 'node dist/index.js run $(STEP_CI_TEST_SUITE_PATH) -s client_secret=$${LIGHTWEIGHT_IDP_CLIENT_SECRET}'
 
 destroy:
-	kind delete cluster --name=cloudentity
+	kind delete cluster --name=secureauth
 
 lint: shellcheck-lint kustomization-lint prettier-lint
 

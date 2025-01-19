@@ -13,7 +13,7 @@ spec:
   postBuild:
     substituteFrom:
       - kind: Secret
-        name: docker-cloudentity
+        name: docker-secureauth
   healthChecks:
     - apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
@@ -41,6 +41,6 @@ spec:
   postBuild:
     substituteFrom:
       - kind: Secret
-        name: docker-cloudentity
+        name: docker-secureauth
   dependsOn:
     - name: nginx

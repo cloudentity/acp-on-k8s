@@ -13,7 +13,7 @@ while [[ "$#" -gt 0 ]]; do
     shift
 done
 
-DOCKER_REGISTRY=docker.cloudentity.io
+DOCKER_REGISTRY=docker.secureauth.com
 
 if [ -z "$DOCKER_USERNAME" ] || [ -z "$DOCKER_PASSWORD" ]; then
     echo "No exported DOCKER_USERNAME or DOCKER_PASSWORD found. Please provide the credentials."
@@ -41,8 +41,8 @@ $RUN bash -c "kubectl --namespace flux-system create secret generic sops-gpg \
     --output=yaml --dry-run=client | kubectl apply --filename -"
 
 echo
-echo "Setting up Cloudentity docker registry secret..."
-$RUN bash -c "kubectl --namespace flux-system create secret generic docker-cloudentity \
+echo "Setting up SecureAuth docker registry secret..."
+$RUN bash -c "kubectl --namespace flux-system create secret generic docker-secureauth \
     --from-literal=docker_auth=$(printf '%s:%s' "$DOCKER_USERNAME" "$DOCKER_PASSWORD" | base64 | tr -d '\n') \
     --output=yaml --dry-run=client | kubectl apply --filename -"
 

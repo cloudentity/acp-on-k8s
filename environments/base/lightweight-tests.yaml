@@ -17,7 +17,7 @@ spec:
       aid: lightweight-tests
     substituteFrom:
       - kind: Secret
-        name: docker-cloudentity
+        name: docker-secureauth
   healthChecks:
     - apiVersion: apps/v1
       kind: Deployment

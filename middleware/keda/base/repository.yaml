@@ -3,5 +3,5 @@ kind: HelmRepository
 metadata:
   name: keda
 spec:
-  interval: 24h
+  interval: 6h
   url: https://kedacore.github.io/charts

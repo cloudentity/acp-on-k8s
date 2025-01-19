@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: thanos
-      version: 15.9.2
+      version: 15.10.1
   interval: 1m
   install:
     remediation:

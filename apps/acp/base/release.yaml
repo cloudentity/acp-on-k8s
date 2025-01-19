@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: acp
-      version: 2.23.1
+      version: 2.23.2
   interval: 5m
   timeout: 20m
   install:
@@ -19,7 +19,7 @@ spec:
   # https://github.com/cloudentity/acp-helm-charts/blob/master/charts/acp/values.yaml
   values:
     image:
-      repository: docker.cloudentity.io/acp-distroless
+      repository: docker.secureauth.com/acp-distroless
     podDisruptionBudget:
       minAvailable: 40%
     ingress:
