@@ -125,3 +125,4 @@ spec:
             - elastic
           names:
             - elastic-es-*
+            - apm-*
