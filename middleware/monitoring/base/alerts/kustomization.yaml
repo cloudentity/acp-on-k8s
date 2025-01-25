@@ -4,6 +4,7 @@ namespace: monitoring
 resources:
   - acp.yaml
   - cert-manager.yaml
+  - cnpg-postgres.yaml
   - cockroachdb.yaml
   - elastic.yaml
   - faas.yaml

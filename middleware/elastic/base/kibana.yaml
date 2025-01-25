@@ -3,7 +3,7 @@ kind: Kibana
 metadata:
   name: kibana
 spec:
-  version: 8.17.0 # Kibana version
+  version: 8.17.1 # Kibana version
   count: 1
   elasticsearchRef:
     name: elastic
@@ -87,7 +87,7 @@ spec:
             runAsUser: 1000
             seccompProfile:
               type: RuntimeDefault
-        - name: elastic-internal-init-config
+        - name: elastic-internal-init
           securityContext:
             capabilities:
               drop:

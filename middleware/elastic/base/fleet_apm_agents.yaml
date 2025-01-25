@@ -3,7 +3,7 @@ kind: Agent
 metadata:
   name: apm-agent
 spec:
-  version: 8.17.0 # Agent version
+  version: 8.17.1 # Agent version
   kibanaRef:
     name: kibana
   fleetServerRef:
