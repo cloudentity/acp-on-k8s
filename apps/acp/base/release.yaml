@@ -136,6 +136,9 @@ spec:
         sql:
           max_open_conns: 128
           max_idle_conns: 128
+        storage:
+          refresh_tokens:
+            batch_limit: 100
         redis:
           max_backoff_retries: 10
           number_of_consumers: 1
