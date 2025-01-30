@@ -5,3 +5,12 @@ metadata:
 spec:
   interval: 6h
   url: https://charts.bitnami.com/bitnami
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: redis-oci
+spec:
+  interval: 6h
+  url: oci://registry-1.docker.io/bitnamicharts
+  type: oci
