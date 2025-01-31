@@ -10,4 +10,4 @@ resources:
   - configmap.yaml
 images:
   - name: authzed/spicedb-operator
-    newTag: v1.17.0
+    newTag: v1.18.0@sha256:b33afa9d76ed735c3e2a2726c5b5c61bd78cc9ad0c7fe8dbf9bd02a93c316c29

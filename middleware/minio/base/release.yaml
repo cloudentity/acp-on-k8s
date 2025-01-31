@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: minio
-      version: 14.10.5
+      version: 15.0.0
   interval: 1m
   install:
     remediation:
