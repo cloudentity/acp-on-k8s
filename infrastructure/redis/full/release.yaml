@@ -6,9 +6,6 @@ spec:
   values:
     metrics:
       enabled: true
-      image:
-        repository: bitnami/redis-exporter
-        tag: 1.61.0
       serviceMonitor:
         enabled: true
       extraArgs:
