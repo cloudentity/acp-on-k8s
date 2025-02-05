@@ -35,7 +35,8 @@ spec:
       certKeyFilename: tls.key
       certCAFilename: ca.crt
     redis:
-      livenessProbe:
+      startupProbe:
+        enabled: true
         initialDelaySeconds: 30
       useAOFPersistence: "no"
       configmap: |
