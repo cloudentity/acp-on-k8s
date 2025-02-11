@@ -28,5 +28,5 @@ spec:
           labels:
             severity: warning
           annotations:
-            summary: Nginx latency high on {{ $labels.method }} {{ $labels.path }} (ingress {{ $labels.ingress }} , namespace {{ $labels.exported_namespace }}
+            summary: Nginx latency high on {{ $labels.method }} {{ $labels.path }} (ingress {{ $labels.ingress }} , namespace {{ $labels.exported_namespace }})
             description: "Nginx latency is higher than 500 milliseconds, VALUE = {{ $value }}"
