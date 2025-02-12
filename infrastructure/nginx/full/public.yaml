@@ -35,5 +35,3 @@ spec:
         serviceMonitor:
           enabled: true
           scrapeInterval: ""
-      opentelemetry:
-        enabled: true
