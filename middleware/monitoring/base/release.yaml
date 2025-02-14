@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: prometheus
-      version: 68.5.0
+      version: 69.2.1
   interval: 1m
   install:
     remediation:

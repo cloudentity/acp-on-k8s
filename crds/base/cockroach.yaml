@@ -1,3 +1,16 @@
+# Copyright 2025 The Cockroach Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
@@ -1554,6 +1567,13 @@ spec:
                 sqlPort:
                   description: "(Optional) The SQL Port number Default: 26257"
                   format: int32
+                  type: integer
+                terminationGracePeriodSecs:
+                  description:
+                    "(Optional) The grace period in seconds prior to the
+                    container being forcibly terminated when marked for deletion or
+                    restarted. Default : 300"
+                  format: int64
                   type: integer
                 tlsEnabled:
                   description:

@@ -9,7 +9,7 @@ resources:
   - job.yaml
 images:
   - name: cockroachdb/cockroach-operator
-    newTag: v2.16.1
+    newTag: v2.17.0@sha256:1848f6da1b9470251ba9637e0a4f887fb83b6d4668b04d39ccb2bdc5f03fc9ba
   - name: cockroachdb/cockroach
     newTag: v24.2.4
 configurations:
