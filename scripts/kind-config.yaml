@@ -2,7 +2,7 @@ kind: Cluster
 apiVersion: kind.x-k8s.io/v1alpha4
 nodes:
   - role: control-plane
-    image: kindest/node:v1.32.1@sha256:6afef2b7f69d627ea7bf27ee6696b6868d18e03bf98167c420df486da4662db6
+    image: kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
     extraPortMappings:
       # private ingress
       ## https
@@ -29,7 +29,7 @@ nodes:
           kubeletExtraArgs:
             node-labels: "nginx=true,topology.kubernetes.io/zone=local"
   - role: worker
-    image: kindest/node:v1.32.1@sha256:6afef2b7f69d627ea7bf27ee6696b6868d18e03bf98167c420df486da4662db6
+    image: kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
     kubeadmConfigPatches:
       - |
         kind: JoinConfiguration
@@ -37,7 +37,7 @@ nodes:
           kubeletExtraArgs:
             node-labels: "faas=true,redis=true,cockroachdb=true,timescaledb=true,risk-engine=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=locala"
   - role: worker
-    image: kindest/node:v1.32.1@sha256:6afef2b7f69d627ea7bf27ee6696b6868d18e03bf98167c420df486da4662db6
+    image: kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
     kubeadmConfigPatches:
       - |
         kind: JoinConfiguration
@@ -45,7 +45,7 @@ nodes:
           kubeletExtraArgs:
             node-labels: "faas=true,redis=true,cockroachdb=true,timescaledb=true,risk-engine=true,spicedb=true,clusterCritical=true,system=true,compute=true,qa=true,elastic=true,topology.kubernetes.io/zone=localb"
   - role: worker
-    image: kindest/node:v1.32.1@sha256:6afef2b7f69d627ea7bf27ee6696b6868d18e03bf98167c420df486da4662db6
+    image: kindest/node:v1.32.2@sha256:f226345927d7e348497136874b6d207e0b32cc52154ad8323129352923a3142f
     kubeadmConfigPatches:
       - |
         kind: JoinConfiguration
