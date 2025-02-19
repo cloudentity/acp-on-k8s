@@ -9,4 +9,14 @@ spec:
       serviceMonitor:
         enabled: true
       extraArgs:
+        is-cluster: true
         skip-tls-verification: true
+        exclude-latency-histogram-metrics: true
+        check-single-streams: "audit,sa_audit"
+        streams-exclude-consumer-metrics: true
+      resources:
+        limits:
+          memory: 256Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi

@@ -37,7 +37,7 @@ spec:
     redis:
       startupProbe:
         enabled: true
-        initialDelaySeconds: 30
+        initialDelaySeconds: 60
       useAOFPersistence: "no"
       configmap: |
         # Production Readiness - Adjust Pod Resources

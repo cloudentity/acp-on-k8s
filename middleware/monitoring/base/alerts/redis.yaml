@@ -66,3 +66,11 @@ spec:
           annotations:
             summary: Too many redis masters on a single availability zone
             description: "There are {{ $value }} redis master pods running on the same AZ: {{ $labels.topology_kubernetes_io_zone }} on job {{ $labels.job }}"
+        - alert: RedisStreamOverflow
+          expr: time() - (redis_stream_first_entry_id / 1000) < 300
+          for: 1s
+          labels:
+            severity: warning
+          annotations:
+            summary: Redis stream overflow
+            description: Oldest event in stream {{ $labels.stream }} is {{ $value }} seconds old
