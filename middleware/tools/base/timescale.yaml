@@ -17,7 +17,8 @@ spec:
     spec:
       containers:
         - name: timescaledb-client
-          image: timescale/timescaledb-ha
+          image: timescale/timescaledb-ha:pg14.15-ts2.17.2
+          imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: client-certs
               mountPath: /client-certs

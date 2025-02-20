@@ -16,7 +16,8 @@ spec:
       restartPolicy: Never
       containers:
         - name: cockroachdb-client
-          image: cockroachdb/cockroach
+          image: cockroachdb/cockroach:v24.2.4
+          imagePullPolicy: IfNotPresent
           command:
             - /bin/bash
           args:

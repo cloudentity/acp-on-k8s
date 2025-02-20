@@ -18,6 +18,8 @@ spec:
   # Default values
   # https://github.com/kedacore/charts/blob/main/keda/values.yaml
   values:
+    image:
+      pullPolicy: IfNotPresent
     operator:
       replicaCount: 2
       affinity:

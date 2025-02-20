@@ -13,11 +13,6 @@ resources:
   - prom-sql-exporter.yaml
   - prom-sql-exporter-secret.yaml
   - secret.yaml
-images:
-  - name: ribbybibby/ssl-exporter
-    newTag: 2.4.3@sha256:f6812639a073f8eedc922e0423a57becd6302ccd04a4182108523e4ff83a2bc1
-  - name: ghcr.io/justwatchcom/sql_exporter
-    newTag: v0.5.9@sha256:4afb3069978c74247ac3c19b85efa7d4cd82f78186d25d67d6c4fd3dcb3cdf55
 configMapGenerator:
   - name: grafana-dashboards-acp
     files:

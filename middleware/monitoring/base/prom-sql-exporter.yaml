@@ -33,7 +33,8 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 10
           name: prom-sql-exporter
-          image: ghcr.io/justwatchcom/sql_exporter
+          image: ghcr.io/justwatchcom/sql_exporter:v0.5.9@sha256:4afb3069978c74247ac3c19b85efa7d4cd82f78186d25d67d6c4fd3dcb3cdf55
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9237
               name: http

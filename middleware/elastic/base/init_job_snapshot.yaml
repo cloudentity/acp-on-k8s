@@ -16,7 +16,8 @@ spec:
             name: snapshot-repositories
       containers:
         - name: kibana-snapshot-setup
-          image: curlimages/curl:latest
+          image: curlimages/curl:8.12.1
+          imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: snapshot-policies
               mountPath: /data/policies

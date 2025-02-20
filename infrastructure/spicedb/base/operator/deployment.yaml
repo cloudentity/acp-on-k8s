@@ -28,7 +28,8 @@ spec:
             - --crd=false
             - --config
             - /opt/operator/update-graph.yaml
-          image: authzed/spicedb-operator
+          image: authzed/spicedb-operator:v1.18.0@sha256:b33afa9d76ed735c3e2a2726c5b5c61bd78cc9ad0c7fe8dbf9bd02a93c316c29
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
               path: /healthz

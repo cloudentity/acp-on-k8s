@@ -21,6 +21,7 @@ spec:
     image:
       repository: timescale/timescaledb-ha
       tag: pg14.15-ts2.17.2
+      pullPolicy: IfNotPresent
     secrets:
       # https://github.com/timescale/timescaledb-kubernetes/issues/346
       credentialsSecretName: timescaledb-credentials

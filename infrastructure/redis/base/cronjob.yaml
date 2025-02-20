@@ -50,7 +50,8 @@ spec:
           restartPolicy: Never
           containers:
             - name: kubectl
-              image: bitnami/kubectl
+              image: bitnami/kubectl:1.32.2
+              imagePullPolicy: IfNotPresent
               command:
                 - /bin/bash
               args:

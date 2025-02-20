@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: policy-reporter
-      version: 3.0.0
+      version: 3.0.3
   interval: 5m
   install:
     remediation:

@@ -8,6 +8,7 @@ spec:
       enabled: true
       image:
         tag: v0.16.0
+        pullPolicy: IfNotPresent
     podMonitor:
       enabled: true
     backup:

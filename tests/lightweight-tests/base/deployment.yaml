@@ -55,7 +55,8 @@ spec:
         - name: artifactory
       containers:
         - name: step-ci
-          image: ghcr.io/stepci/stepci
+          image: ghcr.io/stepci/stepci:2.8.2
+          imagePullPolicy: IfNotPresent
           command: ["/bin/sh", "-c"]
           args:
             - echo Container started. Will be set in sleep mode. In order to run tests please use stepci command;

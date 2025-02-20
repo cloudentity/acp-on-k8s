@@ -374,7 +374,7 @@ spec:
                   fieldPath: metadata.namespace
           imagePullPolicy: IfNotPresent
           name: cockroach-operator
-          image: cockroachdb/cockroach-operator
+          image: cockroachdb/cockroach-operator:v2.17.0@sha256:1848f6da1b9470251ba9637e0a4f887fb83b6d4668b04d39ccb2bdc5f03fc9ba
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:

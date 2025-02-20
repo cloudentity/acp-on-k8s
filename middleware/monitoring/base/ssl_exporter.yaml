@@ -64,8 +64,8 @@ spec:
         fsGroup: 100
       containers:
         - name: ssl-exporter
+          image: ribbybibby/ssl-exporter:2.4.3@sha256:f6812639a073f8eedc922e0423a57becd6302ccd04a4182108523e4ff83a2bc1
           imagePullPolicy: IfNotPresent
-          image: ribbybibby/ssl-exporter
           args:
             - --web.probe-path=/probe
             - --web.listen-address=:9219

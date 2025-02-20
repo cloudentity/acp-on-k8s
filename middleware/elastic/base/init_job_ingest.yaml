@@ -13,7 +13,8 @@ spec:
             name: ingest-pipelines
       containers:
         - name: kibana-setup
-          image: curlimages/curl:latest
+          image: curlimages/curl:8.12.1
+          imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: ingest-pipelines
               mountPath: /data/pipelines

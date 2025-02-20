@@ -70,6 +70,7 @@ spec:
         runAsGroup: 1000
         fsGroup: 1000
     operator:
+      pullPolicy: IfNotPresent
       nodeSelector:
         system: "true"
       tolerations:
@@ -87,6 +88,7 @@ spec:
                       - keda-add-ons-http-controller-manager
               topologyKey: "kubernetes.io/hostname"
     scaler:
+      pullPolicy: IfNotPresent
       nodeSelector:
         system: "true"
       tolerations:
@@ -104,6 +106,7 @@ spec:
                       - keda-add-ons-http-external-scaler
               topologyKey: "kubernetes.io/hostname"
     interceptor:
+      pullPolicy: IfNotPresent
       nodeSelector:
         system: "true"
       tolerations:

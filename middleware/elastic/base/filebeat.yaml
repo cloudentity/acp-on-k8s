@@ -351,14 +351,6 @@ data:
               }
             }
           },
-          "cold": {
-            "min_age": "10d",
-            "actions": {
-              "set_priority": {
-                "priority": 0
-              }
-            }
-          },
           "delete": {
             "min_age": "21d",
             "actions": {

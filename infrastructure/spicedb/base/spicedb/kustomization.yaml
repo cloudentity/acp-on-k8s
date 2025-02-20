@@ -9,6 +9,6 @@ resources:
   - tls.yaml
 images:
   - name: authzed/spicedb
-    newTag: v1.40.0@sha256:a40bf4b4d2e1dbae936b147789463d0b9e6d44d2b8ebfd6ddbc663963a53919c
+    newTag: v1.40.1@sha256:fc33357b99d12f0d0bfb9157cf54f37bf5fa49ac8a1b25935cc86832db8aab3b
 configurations:
   - kustomizeconfig.yaml

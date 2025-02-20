@@ -17,7 +17,8 @@ spec:
     spec:
       containers:
         - name: redis-client
-          image: bitnami/redis-cluster
+          image: bitnami/redis-cluster:6.2.16-debian-12-r3@sha256:d973a2aa8b6688190ca4e4544b2ff859ef1e9f8081518558270df34e23ff1df7
+          imagePullPolicy: IfNotPresent
           volumeMounts:
             - name: client-certs
               mountPath: /client-certs

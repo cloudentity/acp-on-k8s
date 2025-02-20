@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: redis
-      version: 11.4.1
+      version: 11.4.2
   interval: 15m
   timeout: 45m
   install:
