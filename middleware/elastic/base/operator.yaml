@@ -17,6 +17,13 @@ spec:
   values:
     installCRDs: false
     createClusterScopedResources: true
+    config:
+      # logVerbosity defines the logging level. Valid values are as follows:
+      # -2: Errors only
+      # -1: Errors and warnings
+      #  0: Errors, warnings, and information
+      #  number greater than 0: Errors, warnings, information, and debug details.
+      logVerbosity: "-1"
     podSecurityContext:
       runAsNonRoot: true
       seccompProfile:
