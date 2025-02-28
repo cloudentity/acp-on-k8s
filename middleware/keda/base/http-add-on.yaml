@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: keda
-      version: 0.9.0
+      version: 0.10.0
   interval: 1m
   install:
     remediation:
