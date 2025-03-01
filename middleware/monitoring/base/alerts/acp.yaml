@@ -46,6 +46,14 @@ spec:
           annotations:
             description: ACP Redis internal lag is higher than 10 seconds for {{ $labels.group }}/{{ $labels.stream }}, VALUE = {{ $value }}
             summary: ACP Redis internal lag high
+        - alert: ACPRedisLagInternalCritical
+          expr: avg(histogram_quantile(0.9, rate(acp_redis_lag_seconds_bucket{stream!~"(.*)cdr_sync_register|(.*)webhook_notification|(.*)identity_send_message|(.*)send_otp"}[1m])) > 60) by (group, stream)
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: ACP Redis internal lag is higher than 60 seconds for {{ $labels.group }}/{{ $labels.stream }}, VALUE = {{ $value }}
+            summary: ACP Redis internal lag critical
         - alert: ACPRedisLagExternalHigh
           expr: avg(histogram_quantile(0.9, rate(acp_redis_lag_seconds_bucket{stream=~"(.*)cdr_sync_register|(.*)webhook_notification|(.*)identity_send_message|(.*)send_otp"}[1m])) > 20) by (group, stream)
           for: 1m
@@ -54,6 +62,14 @@ spec:
           annotations:
             description: ACP Redis external lag is higher than 20 seconds for {{ $labels.group }}/{{ $labels.stream }}, VALUE = {{ $value }}
             summary: ACP Redis external lag high
+        - alert: ACPRedisLagExternalCritical
+          expr: avg(histogram_quantile(0.9, rate(acp_redis_lag_seconds_bucket{stream=~"(.*)cdr_sync_register|(.*)webhook_notification|(.*)identity_send_message|(.*)send_otp"}[1m])) > 60) by (group, stream)
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: ACP Redis external lag is higher than 1 minute for {{ $labels.group }}/{{ $labels.stream }}, VALUE = {{ $value }}
+            summary: ACP Redis external lag critical
         - alert: ACPAbnormalhHttpRequestsCount
           expr: sum by (namespace) (rate(acp_http_duration_seconds_count[1m]) > 500)
           for: 1m
