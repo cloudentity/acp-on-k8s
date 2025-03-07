@@ -1,0 +1,111 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ilm-es-setup
+  annotations:
+    kustomize.toolkit.fluxcd.io/force: enabled
+spec:
+  template:
+    spec:
+      volumes:
+        - name: ilm
+          configMap:
+            name: ilm
+        - name: components
+          configMap:
+            name: components
+        - name: elastic-ca-cert
+          secret:
+            secretName: elastic-es-http-certs-public
+      containers:
+        - name: es-setup
+          image: docker.secureauth.com/curlimages/curl:8.12.1
+          volumeMounts:
+            - name: ilm
+              mountPath: /data/ilm
+            - name: components
+              mountPath: /data/components
+            - name: elastic-ca-cert
+              mountPath: /etc/ssl/certs/elastic-ca.crt
+              subPath: ca.crt
+          env:
+            - name: ES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: elastic-es-elastic-user
+                  key: elastic
+            - name: ELASTICSEARCH_URL
+              value: "https://elastic-es-http:9200"
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              #!/bin/sh
+              until curl -u "elastic:$ES_PASSWORD" --cacert /etc/ssl/certs/elastic-ca.crt --fail-with-body \
+                --max-time 5 \
+                "$ELASTICSEARCH_URL/_cluster/health" | grep -q '"status":"green"\|"status":"yellow"'; do
+                echo "Waiting for Elasticsearch to be ready..."
+                sleep 10
+              done
+              echo "Elasticsearch is ready"
+
+              for ilm_file in /data/ilm/*.json; do
+                ilm_name=$(basename "$ilm_file" .json)
+                echo "Uploading ILM policy: $ilm_name from file: $ilm_file"
+
+                if curl -u "elastic:$ES_PASSWORD" --cacert /etc/ssl/certs/elastic-ca.crt --fail-with-body --silent \
+                  "$ELASTICSEARCH_URL/_ilm/policy/$ilm_name@custom"; then
+                  echo "ILM policy $ilm_name already exists, skipping upload."
+                else
+                  echo "Creating ILM policy $ilm_name"
+
+                  curl -X PUT -u "elastic:$ES_PASSWORD" --cacert /etc/ssl/certs/elastic-ca.crt --fail-with-body --silent \
+                    -H 'Content-Type: application/json' \
+                    "$ELASTICSEARCH_URL/_ilm/policy/$ilm_name@custom" \
+                    --data-binary "@$ilm_file"
+                  if [ $? -ne 0 ]; then
+                    echo "Failed to create ILM policy $ilm_name"
+                    exit 1
+                  else
+                    echo "ILM policy $ilm_name created successfully."
+                  fi
+                fi
+              done
+
+              for component_file in /data/components/*.json; do
+                component_name=$(basename "$component_file" .json)
+                echo "Uploading component template: $component_name from file: $component_file"
+
+                if curl -u "elastic:$ES_PASSWORD" --cacert /etc/ssl/certs/elastic-ca.crt --fail-with-body --silent \
+                  "$ELASTICSEARCH_URL/_component_template/$component_name@custom"; then
+                  echo "component template $component_name already exists, skipping upload."
+                else
+                  echo "Creating component template $component_name"
+
+                  curl -X PUT -u "elastic:$ES_PASSWORD" --cacert /etc/ssl/certs/elastic-ca.crt --fail-with-body --silent \
+                    -H 'Content-Type: application/json' \
+                    "$ELASTICSEARCH_URL/_component_template/$component_name@custom" \
+                    --data-binary "@$component_file"
+                  echo "component template $component_name created successfully."
+                  if [ $? -ne 0 ]; then
+                    echo "Failed to create component template $component_name"
+                    exit 1
+                  else
+                    echo "component template $component_name created successfully."
+                  fi
+                fi
+              done
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            allowPrivilegeEscalation: false
+      imagePullSecrets:
+        - name: artifactory
+      restartPolicy: Never
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault

@@ -73,6 +73,7 @@ spec:
                     value: "/tls/tls.key"
                   - name: tls_supported_protocols
                     value: ["TLSv1.1", "TLSv1.2", "TLSv1.3"]
+    xpack.fleet.enableDeleteUnenrolledAgents: true
   podTemplate:
     spec:
       initContainers:

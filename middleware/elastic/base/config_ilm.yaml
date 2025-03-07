@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ilm
+data:
+  apm.json: |
+    {
+      "policy": {
+        "phases": {
+          "hot": {
+            "actions": {
+              "rollover": {
+                "max_age": "30d",
+                "max_primary_shard_size": "50gb"
+              },
+              "set_priority": {
+                "priority": 100
+              }
+            },
+            "min_age": "0ms"
+          },
+          "warm": {
+            "min_age": "3d",
+            "actions": {
+              "set_priority": {
+                "priority": 50
+              }
+            }
+          },
+          "delete": {
+            "min_age": "7d",
+            "actions": {
+              "delete": {}
+            }
+          }
+        }
+      }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: components
+data:
+  traces-apm.json: |
+    {
+      "template": {
+        "settings": {
+          "lifecycle": {
+            "name": "apm@custom"
+          }
+        }
+      }
+    }

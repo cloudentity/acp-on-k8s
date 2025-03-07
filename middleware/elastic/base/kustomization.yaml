@@ -2,24 +2,26 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: elastic
 resources:
+  - config_ilm.yaml
+  - elastic_exporter.yaml
   - elastic.yaml
+  - filebeat.yaml
+  - filerealm.yaml
   - fleet_apm_agents.yaml
   - fleet_server.yaml
   - ingress.yaml
+  - init_configs.yaml
+  - init_job_ingest.yaml
+  - init_job_snapshot.yaml
+  - init_job_ilm.yaml
   - kibana.yaml
+  - metricbeat.yaml
   - namespace.yaml
   - operator.yaml
   - rbac.yaml
   - repository.yaml
   - role.yaml
+  - secret.yaml
   - service.yaml
   - serviceaccount.yaml
   - tls.yaml
-  - metricbeat.yaml
-  - filebeat.yaml
-  - elastic_exporter.yaml
-  - filerealm.yaml
-  - secret.yaml
-  - init_configs.yaml
-  - init_job_snapshot.yaml
-  - init_job_ingest.yaml
