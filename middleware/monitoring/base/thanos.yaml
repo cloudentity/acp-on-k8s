@@ -222,3 +222,13 @@ spec:
               - op: replace
                 path: /spec/groups/0/rules/2/labels/severity
                 value: warning
+          - target:
+              kind: PrometheusRule
+              name: thanos-query
+            patch: |-
+              - op: replace
+                path: /spec/groups/0/rules/0/labels/severity
+                value: warning
+              - op: replace
+                path: /spec/groups/0/rules/1/labels/severity
+                value: warning
