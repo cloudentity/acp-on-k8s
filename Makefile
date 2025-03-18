@@ -13,9 +13,9 @@ STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
 PRETTIER_PATH ?= .
 
 ifeq ($(CI),true)
-    DOCKER_FLAGS = --init
+	DOCKER_FLAGS = --init
 else
-    DOCKER_FLAGS = --init --interactive --tty
+	DOCKER_FLAGS = --init --interactive --tty
 endif
 
 RUN = docker run $(DOCKER_FLAGS) --rm \
