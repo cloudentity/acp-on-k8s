@@ -44,4 +44,17 @@ stringData:
           "privileges": [ "read", "monitor", "manage" ]
         }
       ]
-      applications: []
+      applications: [
+        {
+          "application": "kibana-.kibana",
+          "privileges": [
+            "feature_stackAlerts.all",
+            "feature_rulesSettings.all",
+            "feature_actions.all",
+            "feature_logs.all"
+          ],
+          "resources": [
+            "*"
+          ]
+        }
+      ]
