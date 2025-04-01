@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 1m0s
   ref:
-    branch: main
+    tag: 2.24.0
   url: https://github.com/cloudentity/acp-on-k8s
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1

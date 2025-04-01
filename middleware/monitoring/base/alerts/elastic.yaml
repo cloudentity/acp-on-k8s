@@ -39,7 +39,7 @@ spec:
             summary: Elastic failed to create complete snapshot
             description: There are {{ $value }} failed Elastic shards that was not included into snapshots in {{ $labels.env }} {{ $labels.region_name }}
         - alert: ElasticSnapshotAge
-          expr: time() - elasticsearch_snapshot_stats_latest_snapshot_timestamp_seconds > 90000
+          expr: time() - elasticsearch_snapshot_stats_latest_snapshot_timestamp_seconds > 93600
           for: 1h
           labels:
             severity: warning

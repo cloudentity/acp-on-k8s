@@ -5,3 +5,4 @@ resources:
   - cockroach.yaml
   - kyverno.yaml
   - spicedb.yaml
+  - cloudnative-pg.yaml

@@ -15,6 +15,13 @@ patches:
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
       metadata:
+        name: acp
+      spec:
+        path: ./apps/acp/dev
+  - patch: |-
+      apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
         name: cert-manager
       spec:
         dependsOn:
@@ -45,9 +52,9 @@ patches:
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
       metadata:
-        name: timescaledb
+        name: timescaledb-acp
       spec:
-        path: ./infrastructure/timescaledb/dev
+        path: ./infrastructure/timescaledb-acp/dev
   - patch: |-
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization

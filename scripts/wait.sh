@@ -29,7 +29,7 @@ components+=(
     "cockroachdb:kustomization:flux-system:30m"
     "spicedb:kustomization:flux-system:30m"
     "redis:kustomization:flux-system:30m"
-    "timescaledb:kustomization:flux-system:30m"
+    "timescaledb-acp:kustomization:flux-system:30m"
 )
 
 if [ "$MODE" == "full" ]; then

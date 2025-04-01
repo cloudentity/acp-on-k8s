@@ -11,7 +11,7 @@ spec:
   privateKey:
     size: 2048
     algorithm: RSA
-  commonName: postgres
+  commonName: acp
   dnsNames:
     - acp
     - root

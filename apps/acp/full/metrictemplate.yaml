@@ -53,7 +53,7 @@ spec:
       rate(
         acp_tenant_http_duration_seconds_count{
           job="acp-canary", namespace="acp${namespace_suffix}",
-          tenant!~".*amfudxn6.*", status_code!~"5.."}
+          tenant!~".*amfudxn6.*|.*ynjhamfu-qa.*", status_code!~"5..", path!~"/dbfp*"}
         [{{ interval }}]
       )
     )
@@ -61,7 +61,7 @@ spec:
     sum(
       rate(
         acp_tenant_http_duration_seconds_count{
-          job="acp-canary", namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*"}
+          job="acp-canary", namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*|.*ynjhamfu-qa.*", path!~"/dbfp*"}
         [{{ interval }}]
       )
     ) * 100) > 0 or on() vector(0)
@@ -79,7 +79,7 @@ spec:
       rate(
         acp_tenant_http_duration_seconds_count{
           job="acp-canary", namespace="acp${namespace_suffix}",
-          tenant=~".*amfudxn6.*", status_code!~"5.."}
+          tenant=~".*amfudxn6.*|.*ynjhamfu-qa.*", status_code!~"5..", path!~"/dbfp*"}
         [{{ interval }}]
       )
     )
@@ -87,7 +87,7 @@ spec:
     sum(
       rate(
         acp_tenant_http_duration_seconds_count{
-          job="acp-canary", namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*"}
+          job="acp-canary", namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*|.*ynjhamfu-qa.*", path!~"/dbfp*"}
         [{{ interval }}]
       )
     ) * 100) > 0 or on() vector(0)
@@ -101,7 +101,7 @@ spec:
     type: prometheus
     address: http://prometheus-prometheus.monitoring:9090
   query: |
-    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-canary",namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
+    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-canary",namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*|.*ynjhamfu-qa.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration|/dbfp*"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
 ---
 apiVersion: flagger.app/v1beta1
 kind: MetricTemplate
@@ -112,7 +112,7 @@ spec:
     type: prometheus
     address: http://prometheus-prometheus.monitoring:9090
   query: |
-    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-canary",namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
+    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-canary",namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*|.*ynjhamfu-qa.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration|/dbfp^"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
 ---
 
 ---
@@ -151,7 +151,7 @@ spec:
       rate(
         acp_tenant_http_duration_seconds_count{
           job="acp-primary", namespace="acp${namespace_suffix}",
-          tenant!~".*amfudxn6.*", status_code!~"5.."}
+          tenant!~".*amfudxn6.*|.*ynjhamfu-qa.*", status_code!~"5..", path!~"/dbfp*"}
         [{{ interval }}]
       )
     )
@@ -159,7 +159,7 @@ spec:
     sum(
       rate(
         acp_tenant_http_duration_seconds_count{
-          job="acp-primary", namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*"}
+          job="acp-primary", namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*|.*ynjhamfu-qa.*", path!~"/dbfp*"}
         [{{ interval }}]
       )
     ) * 100) > 0 or on() vector(0)
@@ -177,7 +177,7 @@ spec:
       rate(
         acp_tenant_http_duration_seconds_count{
           job="acp-primary", namespace="acp${namespace_suffix}",
-          tenant=~".*amfudxn6.*", status_code!~"5.."}
+          tenant=~".*amfudxn6.*|.*ynjhamfu-qa.*", status_code!~"5..", path!~"/dbfp*"}
         [{{ interval }}]
       )
     )
@@ -185,7 +185,7 @@ spec:
     sum(
       rate(
         acp_tenant_http_duration_seconds_count{
-          job="acp-primary", namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*"}
+          job="acp-primary", namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*|.*ynjhamfu-qa.*", path!~"/dbfp*"}
         [{{ interval }}]
       )
     ) * 100) > 0 or on() vector(0)
@@ -199,7 +199,7 @@ spec:
     type: prometheus
     address: http://prometheus-prometheus.monitoring:9090
   query: |
-    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-primary",namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
+    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-primary",namespace="acp${namespace_suffix}", tenant!~".*amfudxn6.*|.*ynjhamfu-qa.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration|/dbfp*"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
 ---
 apiVersion: flagger.app/v1beta1
 kind: MetricTemplate
@@ -210,4 +210,4 @@ spec:
     type: prometheus
     address: http://prometheus-prometheus.monitoring:9090
   query: |
-    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-primary",namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration"}[{{ interval }}])) > 0) * 1000 or on() vector(0)
+    avg(histogram_quantile(0.95, rate(acp_http_duration_seconds_bucket{job="acp-primary",namespace="acp${namespace_suffix}", tenant=~".*amfudxn6.*|.*ynjhamfu-qa.*", path!~"/api/system/tenants/{tenantID}|/api/system/tenants|/api/system/configuration|^/configuration|/dbfp*"}[{{ interval }}])) > 0) * 1000 or on() vector(0)

@@ -169,16 +169,6 @@ spec:
                 requests:
                   storage: 2Gi
         additionalScrapeConfigs: |
-          - job_name: prom-sql-exporter
-            scrape_interval: 1m
-            scrape_timeout: 10s
-            metrics_path: /metrics
-            scheme: http
-            dns_sd_configs:
-            - names:
-              - prom-sql-exporter.monitoring.svc.cluster.local
-              type: 'A'
-              port: 9237
           - job_name: opencost
             honor_labels: true
             scrape_interval: 1m
@@ -196,7 +186,7 @@ spec:
               module: ["kubernetes"]
             static_configs:
               - targets:
-                  - "timescaledb-${cluster_region}/*"
+                  - "timescaledb/*"
                   - "redis/*"
                   - "spicedb/*"
                   - "spicedb-internal/*"

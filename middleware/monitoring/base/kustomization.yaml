@@ -10,8 +10,6 @@ resources:
   - objstorage.yaml
   - ssl_exporter.yaml
   - blackbox_exporter.yaml
-  - prom-sql-exporter.yaml
-  - prom-sql-exporter-secret.yaml
   - secret.yaml
 configMapGenerator:
   - name: grafana-dashboards-acp

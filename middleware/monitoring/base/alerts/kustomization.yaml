@@ -18,4 +18,3 @@ resources:
   - ssl.yaml
   - state-metrics.yaml
   - thanos-sidecar.yaml
-  - timescaledb.yaml

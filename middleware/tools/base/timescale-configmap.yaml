@@ -6,7 +6,7 @@ data:
   motd: |
     To access timescale database use following command:
 
-    psql "user=postgres host=timescaledb.timescaledb-${cluster_region} sslcert=/client-certs/client.acp.crt sslkey=/client-certs/client.acp.key sslrootcert=/client-certs/ca.crt sslmode=verify-ca"
+    psql "user=acp host=timescaledb-rw.timescaledb sslcert=/client-certs/client.acp.crt sslkey=/client-certs/client.acp.key sslrootcert=/client-certs/ca.crt sslmode=verify-ca"
 
   bashrc: |
     # System-wide .bashrc file for interactive bash(1) shells.

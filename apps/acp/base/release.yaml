@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: acp
-      version: 2.23.2
+      version: 2.24.0
   interval: 5m
   timeout: 20m
   install:
@@ -96,7 +96,7 @@ spec:
       name: secret
     certManager:
       enabled: true
-      commonName: postgres
+      commonName: acp
     serverURL: "https://{{tenantID}}.${cluster_region_domain}:8443"
     sql:
       url: "postgres://acp@cockroachdb-local-public.cockroachdb-${cluster_region}:26257/${cockroachdb_database}?sslcert=%2Ftls%2Ftls.crt&sslkey=%2Ftls%2Ftls.key&sslmode=verify-full&sslrootcert=%2Ftls%2Fca.crt&pool_max_conn_lifetime=3m"
@@ -170,6 +170,8 @@ spec:
               number_of_workers: 8
         timescale:
           enabled: true
+          url: "postgres://acp@timescaledb-rw.timescaledb:5432/acp?sslcert=%2Ftls%2Ftls.crt&sslkey=%2Ftls%2Ftls.key&sslmode=verify-full&sslrootcert=%2Ftls%2Fca.crt"
+          replicas: "postgres://acp@timescaledb-ro.timescaledb:5432/acp?sslcert=%2Ftls%2Ftls.crt&sslkey=%2Ftls%2Ftls.key&sslmode=verify-full&sslrootcert=%2Ftls%2Fca.crt"
         spicedb:
           enabled: true
           url: spicedb.spicedb:50051
@@ -202,6 +204,8 @@ spec:
             timeout: 30m
         timescale:
           enabled: true
+          url: "postgres://acp@timescaledb-rw.timescaledb:5432/acp?sslcert=%2Ftls%2Ftls.crt&sslkey=%2Ftls%2Ftls.key&sslmode=verify-full&sslrootcert=%2Ftls%2Fca.crt"
+          replicas: "postgres://acp@timescaledb-ro.timescaledb:5432/acp?sslcert=%2Ftls%2Ftls.crt&sslkey=%2Ftls%2Ftls.key&sslmode=verify-full&sslrootcert=%2Ftls%2Fca.crt"
     env:
       - name: DEFAULT_IMPORT_CLIENT_SECRET
         valueFrom:

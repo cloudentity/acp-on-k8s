@@ -1,7 +1,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: timescaledb
+  name: cnpg
 spec:
   interval: 6h
-  url: https://charts.timescale.com/
+  url: https://cloudnative-pg.github.io/charts

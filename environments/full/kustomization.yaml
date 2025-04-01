@@ -70,9 +70,9 @@ patches:
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization
       metadata:
-        name: timescaledb
+        name: timescaledb-acp
       spec:
-        path: ./infrastructure/timescaledb/full
+        path: ./infrastructure/timescaledb-acp/full
   - patch: |-
       apiVersion: kustomize.toolkit.fluxcd.io/v1
       kind: Kustomization

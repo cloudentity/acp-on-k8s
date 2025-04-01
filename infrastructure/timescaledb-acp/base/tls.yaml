@@ -1,0 +1,46 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: timescaledb-server-cert
+spec:
+  usages:
+    - server auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  dnsNames:
+    - timescaledb-rw
+    - timescaledb-rw.timescaledb
+    - timescaledb-rw.timescaledb.svc
+    - timescaledb-r
+    - timescaledb-r.timescaledb
+    - timescaledb-r.timescaledb.svc
+    - timescaledb-ro
+    - timescaledb-ro.timescaledb
+    - timescaledb-ro.timescaledb.svc
+  secretName: timescaledb-server-tls
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: timescaledb-client-cert
+spec:
+  usages:
+    - client auth
+  privateKey:
+    size: 2048
+    algorithm: RSA
+  commonName: streaming_replica
+  secretName: timescaledb-client-tls
+  secretTemplate:
+    labels:
+      cnpg.io/reload: "true"
+  issuerRef:
+    name: ca-issuer
+    kind: ClusterIssuer

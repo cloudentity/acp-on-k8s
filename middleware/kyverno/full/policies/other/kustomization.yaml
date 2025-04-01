@@ -5,4 +5,3 @@ resources:
   - elastic.yaml
   - flagger.yaml
   - opentelemetry.yaml
-  - timescaledb.yaml

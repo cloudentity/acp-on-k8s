@@ -1,0 +1,14 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: acp
+spec:
+  values:
+    config:
+      data:
+        timescale:
+          replicas: null
+    migrateJob:
+      config:
+        timescale:
+          replicas: null

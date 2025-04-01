@@ -1,0 +1,59 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: timescaledb
+spec:
+  imageCatalogRef:
+    apiGroup: postgresql.cnpg.io
+    kind: ImageCatalog
+    name: timescaledb
+    major: 17
+  instances: 3
+  primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: switchover
+  postgresUID: 1000
+  postgresGID: 1000
+  bootstrap:
+    initdb:
+      database: "acp"
+      owner: "acp"
+      secret:
+        name: users
+      postInitApplicationSQL:
+        - ALTER ROLE "acp" WITH SUPERUSER;
+        - CREATE EXTENSION IF NOT EXISTS timescaledb;
+  postgresql:
+    shared_preload_libraries:
+      - timescaledb
+    pg_hba:
+      - hostssl all all all cert
+      - hostnossl all all all reject
+  certificates:
+    serverCASecret: timescaledb-server-tls
+    serverTLSSecret: timescaledb-server-tls
+    clientCASecret: timescaledb-client-tls
+    replicationTLSSecret: timescaledb-client-tls
+  storage:
+    storageClass: standard
+    size: 1Gi
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "100m"
+    limits:
+      memory: "1Gi"
+  affinity:
+    podAntiAffinityType: required
+    tolerations:
+      - key: timescaledb
+        value: "true"
+        effect: NoSchedule
+    nodeSelector:
+      timescaledb: "true"
+  topologySpreadConstraints:
+    - maxSkew: 1
+      topologyKey: topology.kubernetes.io/zone
+      whenUnsatisfiable: DoNotSchedule
+      labelSelector:
+        matchLabels:
+          cnpg.io/cluster: timescaledb
