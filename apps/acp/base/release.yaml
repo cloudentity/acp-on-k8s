@@ -157,6 +157,8 @@ spec:
               number_of_workers: 4
             refresh_tokens:
               batch_size: 200
+            analytics:
+              batch_size: 4
             identity:
               batch_size: 200
             audit_logs_timescale:
