@@ -41,7 +41,7 @@ stringData:
       indices: [
         {
           "names": [ "*" ],
-          "privileges": [ "read", "monitor", "manage" ]
+          "privileges": [ "create", "read", "write", "delete", "index", "monitor", "manage" ]
         }
       ]
       applications: [
