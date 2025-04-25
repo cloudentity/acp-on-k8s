@@ -77,7 +77,7 @@ spec:
       - --demo
       - --create-default-tenant
       - --create-default-workspaces
-    configPath: /data/config.yaml,/data/extraconfig.yaml,/secret/secret.yaml,/secret/embedded_idps.yaml,/secret/risk_engine.yaml
+    configPath: /data/config.yaml,/data/extraconfig.yaml,/secret/secret.yaml,/secret/embedded_idps.yaml,/secret/embedded_idp_github.yaml,/secret/risk_engine.yaml
     nodeSelector:
       compute: "true"
     tolerations:
