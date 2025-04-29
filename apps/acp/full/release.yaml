@@ -42,6 +42,10 @@ spec:
     faas:
       environments:
         node:
+          v5:
+            env:
+              - name: NODE_OPTIONS
+                value: "--max-old-space-size=768"
           v6:
             env:
               - name: ENABLE_TRACING
@@ -56,6 +60,8 @@ spec:
                 value: "true"
               - name: OTEL_EXPORTER_OTLP_TRACES_CERTIFICATE
                 value: "/tls/ca.crt"
+              - name: NODE_OPTIONS
+                value: "--max-old-space-size=768"
         rego:
           v6:
             env:
@@ -71,6 +77,8 @@ spec:
                 value: "true"
               - name: OTLP_ROOT_CA
                 value: "/tls/ca.crt"
+              - name: GOMEMLIMIT
+                value: "768MiB"
         settings:
           volumes:
             - name: tls
