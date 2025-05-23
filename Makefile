@@ -63,10 +63,12 @@ sources-check-failing:
 sources-status:
 	@$(RUN) watch flux get sources all --all-namespaces
 
-run-lightweight-tests:
+alive:
 	@$(RUN) kubectl exec deploy/private-ingress-nginx-controller -n nginx -- sh -c 'curl -k -I -s https://acp.acp:8443/alive' | grep -q "HTTP/1.1 200 OK" || { \
 		echo "Tests have not been executed. Simple http request check on /alive endpoint of acp service ends with failure. Check status of acp pods before the test run." && exit 1; \
 	}
+
+run-lightweight-tests: alive
 	@$(RUN) kubectl exec deploy/lightweight-tests -n lightweight-tests -- sh -c 'node dist/index.js run $(STEP_CI_TEST_SUITE_PATH) -s client_secret=$${LIGHTWEIGHT_IDP_CLIENT_SECRET}'
 
 destroy:
@@ -94,3 +96,8 @@ encrypt:
 
 debug:
 	@$(RUN) ./scripts/debug.sh
+
+clean:
+	docker container prune -f
+	docker network prune -f
+	docker volume prune -f
