@@ -6,9 +6,9 @@ MODE   ?= base
 # Production Readiness - Use Your Own Source
 REPO   ?= https://github.com/cloudentity/acp-on-k8s
 BRANCH ?= main
-TAG ?= 
+TAG ?= 2.25.0
 TOOLBOX_DOCKER_IMAGE ?= cloudentity/toolbox
-TOOLBOX_TAG ?= latest
+TOOLBOX_TAG ?= 2.25.0
 STEP_CI_TEST_SUITE_PATH ?= scenarios/suite.yml
 PRETTIER_PATH ?= .
 
@@ -64,7 +64,7 @@ sources-status:
 	@$(RUN) watch flux get sources all --all-namespaces
 
 alive:
-	@$(RUN) kubectl exec deploy/private-ingress-nginx-controller -n nginx -- sh -c 'curl -k -I -s https://acp.acp:8443/alive' | grep -q "HTTP/1.1 200 OK" || { \
+	@$(RUN) kubectl exec deploy/private-ingress-nginx-controller -n nginx -- sh -c 'curl -k -I -s https://acp.acp:8443/alive' | grep -q "HTTP/2 200" || { \
 		echo "Tests have not been executed. Simple http request check on /alive endpoint of acp service ends with failure. Check status of acp pods before the test run." && exit 1; \
 	}
 
