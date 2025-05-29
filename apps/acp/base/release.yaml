@@ -121,9 +121,10 @@ spec:
       name: acp-data
       data:
         client:
-          retry_wait_min: 500ms
-          retry_wait_max: 5s
-          retry_max: 3
+          timeout: 4.5s
+          retry_wait_min: 50ms
+          retry_wait_max: 100ms
+          retry_max: 1
         server:
           port: 8443
           grpc_port: 9443
