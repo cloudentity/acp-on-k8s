@@ -7,8 +7,8 @@ spec:
     - name: elastic
       rules:
         - alert: NewKibanaAlerts
-          expr: delta(elasticsearch_indices_docs_total{index="kibana-alerts"}[15m]) > 0
-          for: 5m
+          expr: delta(elasticsearch_indices_docs_total{index="kibana-alerts"}[60m]) > 0
+          for: 1h
           labels:
             severity: warning
           annotations:

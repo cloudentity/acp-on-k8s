@@ -26,6 +26,12 @@ spec:
     - "*.redis-local-redis-cluster-headless"
     - "*.redis-local-redis-cluster-headless.redis"
     - "*.redis-local-redis-cluster-headless.redis.svc.cluster.local"
+    - redis-cluster-headless
+    - redis-cluster-headless.redis
+    - redis-cluster-headless.redis.svc.cluster.local
+    - "*.redis-cluster-headless"
+    - "*.redis-cluster-headless.redis"
+    - "*.redis-cluster-headless.redis.svc.cluster.local"
   secretName: redis-tls
   issuerRef:
     name: ca-issuer
