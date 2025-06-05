@@ -5,4 +5,4 @@ metadata:
 spec:
   images:
     - major: 17
-      image: timescale/timescaledb-ha:pg17.2-ts2.18.2
+      image: timescale/timescaledb-ha:pg17.5-ts2.20.1
