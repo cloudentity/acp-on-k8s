@@ -6,6 +6,10 @@ spec:
   endpoints:
     - port: metrics
       interval: 10s
+      metricRelabelings:
+        - sourceLabels: [env]
+          targetLabel: faas_env
+          action: replace
   selector:
     matchLabels:
       app.kubernetes.io/name: acp-canary
@@ -17,6 +21,10 @@ metadata:
 spec:
   endpoints:
     - port: metrics
+      metricRelabelings:
+        - sourceLabels: [env]
+          targetLabel: faas_env
+          action: replace
   selector:
     matchLabels:
       app.kubernetes.io/name: acp-primary
@@ -29,6 +37,10 @@ spec:
   endpoints:
     - port: metrics
       interval: 10s
+      metricRelabelings:
+        - sourceLabels: [env]
+          targetLabel: faas_env
+          action: replace
   selector:
     matchLabels:
       app.kubernetes.io/name: acp-workers-canary
@@ -40,6 +52,10 @@ metadata:
 spec:
   endpoints:
     - port: metrics
+      metricRelabelings:
+        - sourceLabels: [env]
+          targetLabel: faas_env
+          action: replace
   selector:
     matchLabels:
       app.kubernetes.io/name: acp-workers-primary
