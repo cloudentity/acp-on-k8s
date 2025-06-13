@@ -29,7 +29,7 @@ prepare:
 	docker buildx build --tag ${TOOLBOX_DOCKER_IMAGE}:${TOOLBOX_TAG} . --load
 
 setup:
-	kind create cluster --name=cloudentity --config=scripts/kind-config.yaml
+	kind create cluster --name=secureauth --config=scripts/kind-config.yaml
 
 deploy:
 	@RUN="$(RUN)" ./scripts/deploy.sh --mode "$(MODE)" --repo "$(REPO)" --branch "$(BRANCH)" --tag "$(TAG)" --git-username "$(GIT_USERNAME)" --git-password "$(GIT_PASSWORD)"
@@ -73,6 +73,7 @@ run-lightweight-tests: alive
 
 destroy:
 	kind delete cluster --name=secureauth
+	docker network rm --force kind || true
 
 lint: shellcheck-lint kustomization-lint prettier-lint
 
