@@ -47,6 +47,7 @@ spec:
             - kindnet*
             - kube-proxy*
             - coredns*
+            - eks-pod-identity-agent*
 ---
 apiVersion: kyverno.io/v2beta1
 kind: PolicyException

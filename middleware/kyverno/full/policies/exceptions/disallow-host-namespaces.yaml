@@ -71,3 +71,4 @@ spec:
             - kube-apiserver*
             - kube-controller*
             - kube-scheduler*
+            - eks-pod-identity-agent*

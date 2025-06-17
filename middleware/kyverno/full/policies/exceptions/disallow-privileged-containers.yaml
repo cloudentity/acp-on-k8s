@@ -66,5 +66,4 @@ spec:
             - ebs-csi-node*
             - kube-proxy*
             - node-problem-detector*
----
-
+            - eks-pod-identity-agent*

@@ -101,6 +101,7 @@ spec:
             - kube-apiserver*
             - kube-controller*
             - kube-scheduler*
+            - eks-pod-identity-agent*
 ---
 # filesystem init container requires additional permissions
 apiVersion: kyverno.io/v2beta1
