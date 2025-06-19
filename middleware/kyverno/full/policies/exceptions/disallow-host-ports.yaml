@@ -63,3 +63,4 @@ spec:
           names:
             - aws-node*
             - node-local-dns*
+            - dcgm-server*

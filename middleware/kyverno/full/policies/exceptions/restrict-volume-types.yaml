@@ -95,3 +95,4 @@ spec:
             - kube-apiserver*
             - kube-controller*
             - kube-scheduler*
+            - eks-node-monitoring-agent*

@@ -152,3 +152,5 @@ spec:
             - kube-controller*
             - kube-scheduler*
             - eks-pod-identity-agent*
+            - eks-node-monitoring-agent*
+            - dcgm-server*

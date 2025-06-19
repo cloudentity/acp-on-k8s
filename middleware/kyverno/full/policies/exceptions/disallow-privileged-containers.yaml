@@ -67,3 +67,5 @@ spec:
             - kube-proxy*
             - node-problem-detector*
             - eks-pod-identity-agent*
+            - eks-node-monitoring-agent*
+            - dcgm-server*

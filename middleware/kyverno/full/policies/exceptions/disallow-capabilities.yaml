@@ -26,6 +26,7 @@ spec:
             - kube-controller*
             - kube-scheduler*
             - eks-pod-identity-agent*
+            - eks-node-monitoring-agent*
 ---
 # redisinsight requires CAP_IPC_LOCK capability as it uses gnome-keyring-daemon
 apiVersion: kyverno.io/v2beta1
