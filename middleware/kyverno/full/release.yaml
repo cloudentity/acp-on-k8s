@@ -14,21 +14,18 @@ spec:
       replicas: 3
       serviceMonitor:
         enabled: true
-      resources:
-        requests:
-          cpu: 300m
-          memory: 200Mi
-        limits:
-          memory: 768Mi
+      container:
+        resources:
+          requests:
+            memory: 128Mi
+          limits:
+            memory: 768Mi
     backgroundController:
       enabled: true
       replicas: 2
       serviceMonitor:
         enabled: true
       priorityClassName: system-cluster-critical
-      resources:
-        limits:
-          memory: 128Mi
       nodeSelector:
         clusterCritical: "true"
       tolerations:

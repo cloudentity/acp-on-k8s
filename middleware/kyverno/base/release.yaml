@@ -21,10 +21,6 @@ spec:
     crds:
       install: false
     admissionController:
-      container:
-        resources:
-          limits:
-            memory: 675Mi
       replicas: 1
       priorityClassName: system-cluster-critical
       nodeSelector:
