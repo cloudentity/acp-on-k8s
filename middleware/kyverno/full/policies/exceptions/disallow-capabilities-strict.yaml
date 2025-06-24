@@ -96,7 +96,6 @@ spec:
             - kindnet*
             - kube-proxy*
             - node-local-dns*
-            - node-problem-detector*
             - etcd*
             - kube-apiserver*
             - kube-controller*

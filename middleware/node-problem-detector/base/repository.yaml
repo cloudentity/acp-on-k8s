@@ -1,7 +1,0 @@
-apiVersion: source.toolkit.fluxcd.io/v1
-kind: HelmRepository
-metadata:
-  name: node-problem-detector
-spec:
-  interval: 6h
-  url: https://charts.deliveryhero.io/

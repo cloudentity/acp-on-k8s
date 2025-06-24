@@ -179,6 +179,8 @@ spec:
           enabled: true
           url: spicedb.spicedb:50051
           ca: "/tls/ca.crt"
+        ipintel:
+          url: https://ipintel.ipintel:8080
         cache:
           redis_ttl: 20m
           local_ttl: 2m

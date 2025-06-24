@@ -140,26 +140,6 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: node-problem-detector
-spec:
-  interval: 24h
-  timeout: 15m
-  prune: true
-  path: ./middleware/node-problem-detector/base
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  healthChecks:
-    - apiVersion: helm.toolkit.fluxcd.io/v2
-      kind: HelmRelease
-      name: node-problem-detector
-      namespace: kube-system
-  dependsOn:
-    - name: kyverno
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: redisinsight
 spec:
   interval: 24h

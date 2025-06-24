@@ -65,7 +65,6 @@ spec:
             - aws-node*
             - ebs-csi-node*
             - kube-proxy*
-            - node-problem-detector*
             - eks-pod-identity-agent*
             - eks-node-monitoring-agent*
             - dcgm-server*

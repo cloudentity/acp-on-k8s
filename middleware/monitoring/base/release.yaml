@@ -83,12 +83,6 @@ spec:
           redis-dashboard:
             # Ref: https://grafana.com/grafana/dashboards/11835-redis-dashboard-for-prometheus-redis-exporter-helm-stable-redis-ha/
             gnetId: 11835
-          node-problem-detector:
-            # Ref: https://grafana.com/grafana/dashboards/15549-node-problem-detector/
-            gnetId: 15549
-            datasource:
-              - name: DS_PROMETHEUS
-                value: Prometheus
           cloudnativepg:
             # Ref: https://grafana.com/grafana/dashboards/20417-cloudnativepg/
             gnetId: 20417

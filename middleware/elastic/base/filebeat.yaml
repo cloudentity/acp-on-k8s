@@ -38,7 +38,6 @@ spec:
             "lacework.*",
             "metrics-server.*",
             "mks-tests.*",
-            "node-problem-detector.*",
             "opencost.*",
             "opentelemetry.*",
             "redis.*",
@@ -76,7 +75,6 @@ spec:
           - /var/log/containers/lacework*.log
           - /var/log/containers/metrics-server*.log
           - /var/log/containers/mks-tests*.log
-          - /var/log/containers/node-problem-detector*.log
           - /var/log/containers/opencost*.log
           - /var/log/containers/opentelemetry*.log
           - /var/log/containers/redis*.log
