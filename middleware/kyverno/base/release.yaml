@@ -22,7 +22,6 @@ spec:
       install: false
     admissionController:
       replicas: 1
-      priorityClassName: system-cluster-critical
       nodeSelector:
         clusterCritical: "true"
       tolerations:
