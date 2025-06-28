@@ -181,6 +181,7 @@ spec:
           ca: "/tls/ca.crt"
         ipintel:
           url: https://ipintel.ipintel:8080
+          timeout: 20ms
         cache:
           redis_ttl: 20m
           local_ttl: 2m
