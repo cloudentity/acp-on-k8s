@@ -5,10 +5,8 @@ resources:
   - namespace.yaml
   - rbac.yaml
   - deployment.yaml
-  - lightweight_secret.yaml
   - certificate.yaml
   - repository.yaml
-  - acp-cd_secret.yaml
   - acp-cd.yaml
   - ../../../secrets/base/registry.yaml
 configMapGenerator:
@@ -17,3 +15,12 @@ configMapGenerator:
       - scenarios/suite.yml
       - scenarios/canary_suite.yml
       - scenarios/auth_with_userinfo.yml
+secretGenerator:
+  - name: default-import
+    envs:
+      - default-import.enc.env
+  - name: lightweight-secret
+    envs:
+      - lightweight-secret.enc.env
+generatorOptions:
+  disableNameSuffixHash: true
