@@ -1,0 +1,9 @@
+{
+  "name": "default",
+  "type": "s3",
+  "settings": {
+    "bucket": "elasticsearch",
+    "endpoint": "minio.minio:9000",
+    "path_style_access": "true"
+  }
+}

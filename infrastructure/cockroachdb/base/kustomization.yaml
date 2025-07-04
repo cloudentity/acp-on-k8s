@@ -10,5 +10,11 @@ resources:
 images:
   - name: cockroachdb/cockroach
     newTag: v24.2.4
+configMapGenerator:
+  - name: cockroachdb-provision
+    files:
+      - cockroachdb-provision.sh
+generatorOptions:
+  disableNameSuffixHash: true
 configurations:
   - kustomizeconfig.yaml

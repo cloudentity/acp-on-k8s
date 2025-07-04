@@ -1,0 +1,14 @@
+{
+  "name": "id-token-ingest-pipeline",
+  "description": "Pipeline to mask id_token_hint",
+  "processors": [
+    {
+      "gsub": {
+        "field": "message",
+        "pattern": "(id_token_hint=)[^&]*",
+        "replacement": "$1*****",
+        "ignore_missing": true
+      }
+    }
+  ]
+}

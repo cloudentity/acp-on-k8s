@@ -7,3 +7,9 @@ resources:
   - tls.yaml
   - release.yaml
   - cronjob.yaml
+configMapGenerator:
+  - name: redis-node-sync
+    files:
+      - node-sync.sh
+generatorOptions:
+  disableNameSuffixHash: true

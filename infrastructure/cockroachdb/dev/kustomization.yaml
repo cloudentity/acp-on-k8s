@@ -3,6 +3,12 @@ kind: Kustomization
 namespace: cockroachdb-${cluster_region}
 resources:
   - ../base
+configMapGenerator:
+  - name: cockroachdb-provision
+    behavior: replace
+    files:
+      - cockroachdb-provision.sh
+generatorOptions:
+  disableNameSuffixHash: true
 patches:
   - path: crdbcluster.yaml
-  - path: job.yaml

@@ -7,4 +7,9 @@ resources:
   - deployment.yaml
   - namespace.yaml
   - service_account.yaml
-  - configmap.yaml
+configMapGenerator:
+  - name: update-graph
+    files:
+      - update-graph.yaml
+generatorOptions:
+  disableNameSuffixHash: true

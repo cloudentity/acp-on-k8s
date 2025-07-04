@@ -1,0 +1,3 @@
+To access cockroach database use following command:
+
+cockroach sql --user acp --certs-dir=/client-certs/ --host cockroachdb-local-public.cockroachdb-${cluster_region}

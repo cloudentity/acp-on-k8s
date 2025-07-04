@@ -25,17 +25,7 @@ roleRef:
   name: ssl-exporter
   apiGroup: rbac.authorization.k8s.io
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: ssl-exporter
-data:
-  config.yaml: |
-    modules:
-      tcp:
-        prober: tcp
-      kubernetes:
-        prober: kubernetes
+
 ---
 apiVersion: apps/v1
 kind: Deployment

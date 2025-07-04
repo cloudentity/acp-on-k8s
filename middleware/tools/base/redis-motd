@@ -1,0 +1,3 @@
+To access redis-oss local database use following command:
+
+redis-cli --tls --cert /client-certs/client.acp.crt --key /client-certs/client.acp.key --cacert /client-certs/ca.crt -h redis-local-redis-cluster-0.redis-local-redis-cluster-headless.redis

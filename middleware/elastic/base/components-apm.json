@@ -1,0 +1,9 @@
+{
+  "template": {
+    "settings": {
+      "lifecycle": {
+        "name": "apm@custom"
+      }
+    }
+  }
+}

@@ -4,9 +4,21 @@ namespace: tools
 resources:
   - namespace.yaml
   - certificate.yaml
-  - cockroach-configmap.yaml
   - cockroach.yaml
-  - redis-configmap.yaml
   - redis.yaml
-  - timescale-configmap.yaml
   - timescale.yaml
+configMapGenerator:
+  - name: redis-tools
+    files:
+      - motd=redis-motd
+      - bashrc=redis-bashrc
+  - name: cockroach-tools
+    files:
+      - motd=cockroach-motd
+      - bashrc=cockroach-bashrc
+  - name: timescale-tools
+    files:
+      - motd=timescale-motd
+      - bashrc=timescale-bashrc
+generatorOptions:
+  disableNameSuffixHash: true

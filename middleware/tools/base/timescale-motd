@@ -1,0 +1,3 @@
+To access timescale database use following command:
+
+psql "user=acp host=timescaledb-rw.timescaledb sslcert=/client-certs/client.acp.crt sslkey=/client-certs/client.acp.key sslrootcert=/client-certs/ca.crt sslmode=verify-ca"
