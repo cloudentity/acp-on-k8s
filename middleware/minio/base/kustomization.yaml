@@ -5,5 +5,10 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
-  - secret.yaml
   - tls.yaml
+secretGenerator:
+  - name: minio-admin
+    envs:
+      - secret.enc.env
+generatorOptions:
+  disableNameSuffixHash: true

@@ -18,6 +18,7 @@ spec:
   # Default values
   # https://github.com/open-telemetry/opentelemetry-helm-charts/blob/main/charts/opentelemetry-collector/values.yaml
   values:
+    priorityClassName: "system-cluster-critical"
     mode: "daemonset"
     image:
       repository: otel/opentelemetry-collector-k8s

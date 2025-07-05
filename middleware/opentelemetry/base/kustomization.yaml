@@ -6,4 +6,9 @@ resources:
   - release.yaml
   - repository.yaml
   - tls.yaml
-  - secret.yaml
+secretGenerator:
+  - name: apm
+    envs:
+      - secret.enc.env
+generatorOptions:
+  disableNameSuffixHash: true

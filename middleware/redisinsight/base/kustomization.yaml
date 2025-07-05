@@ -8,3 +8,9 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingress.yaml
+secretGenerator:
+  - name: redis-credentials
+    envs:
+      - secret.enc.env
+generatorOptions:
+  disableNameSuffixHash: true

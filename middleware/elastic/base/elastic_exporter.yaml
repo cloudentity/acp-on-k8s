@@ -18,42 +18,15 @@ spec:
       retries: 3
   # Default values
   # https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-elasticsearch-exporter/values.yaml
+  valuesFrom:
+    - kind: Secret
+      name: elastic-exporter-values
   values:
     serviceMonitor:
       enabled: true
     es:
-      uri: ENC[AES256_GCM,data:cLRqum2HY50uqB/kwupf78kdhgcgRMlJyvzSN6+wpdmgu/qD3Zq3EXH03DSkFjyruzBtnXOscG/WV+QUQsUWwBoE72uLelxIfhmZDUM=,iv:gVYlId1M2gfF5aqdw5dttIBa0ANgwSEQ/JTV1SXbcmc=,tag:DVjqTTpVXClQMN4n3Km1zA==,type:str]
       sslSkipVerify: true
       all: false
       indices_settings: false
       indices_mappings: false
       shards: false
-sops:
-  kms: []
-  gcp_kms: []
-  azure_kv: []
-  hc_vault: []
-  age: []
-  lastmodified: "2023-10-11T14:36:23Z"
-  mac: ENC[AES256_GCM,data:EzMihuNtYoeiph46q1cXlCUnz1uT2cf/BzEcM1CJc0I5Sf2KZomElIjrCQVyH6/4ekZgPDq8nQlpZWJpMcv3QE3l2J59uWFsytvKZeqtviHQSh56p45iM8kQi8w1Rtu87Z4RsczykQlFEFZtj7Ig4w6PhdUZPK9+VjJplAgnTwo=,iv:LB152GZmpxWir8t7DNH7+yZaH9qCEAzFbhIAsF+Ax7E=,tag:pgTNxTfMBERcvvhF6d34ew==,type:str]
-  pgp:
-    - created_at: "2023-10-11T14:36:23Z"
-      enc: |-
-        -----BEGIN PGP MESSAGE-----
-
-        hQGMA8acJXA92K4RAQwAmbUVlbPF55yH6f0gHzUzaoZLp7m49KLQ9W6hvwDN4paP
-        qwEpqVqPCGzBLUEtoXcccgM6EE95K8pMtWtp3ePT26iJIv4QmnjFuBQ4iBz/I9Sx
-        dN07daknqXN9HTGFL/fPGqyaw0UzLCAegpkzmzxtvzMvae/86IEt+GAfAZSKFu8o
-        kcASiM+283rqYczrl1Dy654yqq7Rp7bKpuiRfBfRDkEOAv/O75npR0vWOHEZWNG4
-        s5SacuuNLAhpRWzeVar0gMStZ8WaEWqUJyE0CV+MoTFjrG9GBrJryMVV0o78/lAO
-        N/HU6+s+5CbYEnlpQc8qJFrZTYmKMkLDzafiQ7McYey5MB0StvxklsOJjZjEoIJq
-        0ylH4dwH9WfUirJCVlf5gSMJKn8mzIFIzTLnqV5LUJ6Bdf3Env+RutmjGOz3JgVQ
-        L2tIc371U+ejZL+Gk3VR1UcWGPV6ajYM2aPb6W8QSb/CVvq9WCxergUhVwlxFzo+
-        h93nnMTeMd6oBq8WhaF70l4BV2YuDzcQZB1SArngueUBxL3FvjJ1uRodppsbtKan
-        uZxVXFJWALT7eV7HeZmFH6iLg21a7gf/zs22toyC0BiXAe35Yu/ylC0hN4jZsrl4
-        bhsEDWE9gUo1z62nc6/B
-        =HoiS
-        -----END PGP MESSAGE-----
-      fp: 379B2FD0571BABB20DDF66F7C88D9F4D45AC1770
-  encrypted_regex: ^(uri)$
-  version: 3.8.0

@@ -1,0 +1,32 @@
+type: ENC[AES256_GCM,data:Dd4=,iv:DApXPhgtn8YnB37jxhQABU3UvFXLvv3fjNtJQScRnB8=,tag:8cEF/tJT4P9CZskxQ0xLBw==,type:str]
+config:
+  bucket: ENC[AES256_GCM,data:DC5VlIgD,iv:qE5fJQgSzYYF94FhENAaLWJ+2EhjAf/k+4VlDgud5mA=,tag:g90HleDySBxQxUvBBX4fyA==,type:str]
+  endpoint: ENC[AES256_GCM,data:lpz8HmE5ybyex7Sr/4Lg1A==,iv:nENXz7XdmZTUeuaSXlMVh+By2CoV6aHLZ+74tglWA60=,tag:GCOpxo6GnhgXhUDH4y2J6g==,type:str]
+  access_key: ENC[AES256_GCM,data:r61qtYY=,iv:Ds5xStCy8235eoTU4pn9BWqzBDyuCMV8lxSEHi5v3vA=,tag:XscOZe7CculQ3YAQ9ZZzNQ==,type:str]
+  secret_key: ENC[AES256_GCM,data:kMdgsAHPP1yA,iv:YLmkqFNZSReSlWP9ZVBRMxc2GWcrQjX5/Gd2PVkNSKE=,tag:djgRs6XqNZsVnKvec1Gwvw==,type:str]
+  http_config:
+    insecure_skip_verify: ENC[AES256_GCM,data:3XufcA==,iv:ehMbIJXCc0BBP/gHTO5xKaGJvBhFUR0vJms4JMZ/Erw=,tag:6xSogycflwFtm9hzXOtlrQ==,type:bool]
+sops:
+  lastmodified: "2025-07-03T11:05:10Z"
+  mac: ENC[AES256_GCM,data:toZDGwUwogF0MnrCEA36GJOjl4948FBSoAwPY7Gvie73iboIDME2fiEXLv56oumyKTHM+NAv1UMo65BOryuUY8g16AQRB+zPsBwZbWB6xWX6yDSfcwwVSMovnTkkf7u/q/t1d8J6nPQ1YnW0kaiDW8bw0NEM4CCNw+cmTQXuhD4=,iv:V5pbQ0UBpdzrL824BM3Ff9a8J8O3AATpjoTDQvEmjMo=,tag:Qro24iSA9OmXI9HC8cl2vA==,type:str]
+  pgp:
+    - created_at: "2025-07-03T11:05:09Z"
+      enc: |-
+        -----BEGIN PGP MESSAGE-----
+
+        hQGMA8acJXA92K4RAQv+JxXo8mjj7pAMAg4BbYW7sV6YoSIVnERjQb4SACt5p1AH
+        afs2EKd8DcBnOhdweGo38/VxWG/jqcv3as62NQ+7kpp3m8RwdRMgiOVXElSo+7GP
+        qK8BKQsQcnpeJ/wHsV1IpHgmxUpJbvBh0wpxN4O+rfzqO+xgvDELr6eqyd8U64+z
+        gED1lErexrefJJJEIj3j85nWeFHmY7lNkxyRaNjVHXLTHvzDWiR1Mu5zds/N3TE9
+        QCwPMOblGwEywfwKBsMzzVruxh1Hiu20WW/jgahxPkMrnhKt3z8CeEVSRqBeriad
+        DB39ragThVwxrPYz7BBUkQOJ4iLUHmFhz8SHeHQ/bLS1tdLxfb8ufeMZTyx+IWv7
+        1AadDAsfCgmTbYdtkkd6FWl6bwoRV+Hlypu1umceWCOM6szotgMrdYoN+hn24Ozi
+        TAPbpJV3Cy57LSninYYDT/za2Z8OpOSzdlYc0IDqbCz+LkiUN3QAKMY47TcEo91U
+        Z0hJyOVz/zlBMds5akTf0l4BkZdVPIOne3GpxAsh+Wzdxi3KUs04n+gVp5boUCRH
+        zuzZIKBB9+UAh9XbDyqkfRTdgCzkxO5hwwThzt6V1M8mDuaj/jrNNLH0wO+eYfG6
+        8aTM+dsjKwdBwcf17LSl
+        =PJBB
+        -----END PGP MESSAGE-----
+      fp: 379B2FD0571BABB20DDF66F7C88D9F4D45AC1770
+  unencrypted_suffix: _unencrypted
+  version: 3.10.2

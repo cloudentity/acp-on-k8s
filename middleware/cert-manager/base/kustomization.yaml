@@ -6,4 +6,11 @@ resources:
   - repository.yaml
   - release.yaml
   - clusterissuer.yaml
-  - ca.yaml
+secretGenerator:
+  - name: ca
+    files:
+      - tls.crt
+      - tls.key
+    type: "kubernetes.io/tls"
+generatorOptions:
+  disableNameSuffixHash: true

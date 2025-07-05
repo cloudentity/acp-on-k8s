@@ -7,10 +7,8 @@ resources:
   - repository.yaml
   - release.yaml
   - thanos.yaml
-  - objstorage.yaml
   - ssl_exporter.yaml
   - blackbox_exporter.yaml
-  - secret.yaml
 configMapGenerator:
   - name: grafana-dashboards-acp
     files:
@@ -72,5 +70,16 @@ configMapGenerator:
       - config.yaml=ssl-exporter-config.yaml
     options:
       disableNameSuffixHash: true
+secretGenerator:
+  - name: grafana-user
+    envs:
+      - secret.enc.env
+    options:
+      disableNameSuffixHash: true
+#  - name: thanos-objstore
+#    files:
+#      - objstore.yml=objstorage.enc.yaml
+#    options:
+#      disableNameSuffixHash: true
 configurations:
   - kustomizeconfig.yaml
