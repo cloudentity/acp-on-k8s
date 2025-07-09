@@ -4,11 +4,18 @@ namespace: spicedb
 resources:
   - namespace.yaml
   - spicedb.yaml
-  - secret.yaml
   - pdb.yaml
   - tls.yaml
 images:
   - name: authzed/spicedb
     newTag: v1.40.1@sha256:fc33357b99d12f0d0bfb9157cf54f37bf5fa49ac8a1b25935cc86832db8aab3b
+secretGenerator:
+  - name: spicedb-config
+    envs:
+      - secret.enc.env
+generatorOptions:
+  disableNameSuffixHash: true
+patches:
+  - path: secret.yaml
 configurations:
   - kustomizeconfig.yaml

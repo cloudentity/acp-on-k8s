@@ -18,6 +18,9 @@ spec:
       retries: 3
   # Default values
   # https://github.com/bitnami/charts/blob/main/bitnami/redis-cluster/values.yaml
+  valuesFrom:
+    - kind: Secret
+      name: redis-values
   values:
     image:
       repository: bitnami/redis-cluster
@@ -25,7 +28,6 @@ spec:
     cluster:
       nodes: 6
       replicas: 1
-    password: "p@ssw0rd!"
     tls:
       enabled: true
       existingSecret: redis-tls
@@ -37,12 +39,6 @@ spec:
         enabled: true
         initialDelaySeconds: 60
       useAOFPersistence: "no"
-      configmap: |
-        # Production Readiness - Adjust Pod Resources
-        maxmemory 2gb
-        maxmemory-policy allkeys-lru
-        loadmodule /redismodules/redisearch.so OSS_GLOBAL_PASSWORD p@ssw0rd!
-        cluster-node-timeout 3000
       defaultConfigOverride: |
         # Redis configuration file example.
         #

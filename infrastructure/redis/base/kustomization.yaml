@@ -11,5 +11,9 @@ configMapGenerator:
   - name: redis-node-sync
     files:
       - node-sync.sh
+secretGenerator:
+  - name: redis-values
+    files:
+      - values.yaml=redis-values.enc.yaml
 generatorOptions:
   disableNameSuffixHash: true

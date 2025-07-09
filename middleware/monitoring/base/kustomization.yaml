@@ -14,7 +14,6 @@ configMapGenerator:
     files:
       - dashboards/golang.json
       - dashboards/acp.json
-      - dashboards/risk-engine.json
     options:
       labels:
         grafana_dashboard: "1"
@@ -50,6 +49,15 @@ configMapGenerator:
         grafana_dashboard: "1"
       annotations:
         kustomize.toolkit.fluxcd.io/substitute: disabled
+  - name: grafana-dashboards-risk-engine
+    files:
+      - dashboards/risk-engine.json
+      - dashboards/risk-engine-analytics-dashboard.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        kustomize.toolkit.fluxcd.io/substitute: disabled
   - name: grafana-dashboards-other
     files:
       - dashboards/control-plane.json
@@ -76,10 +84,10 @@ secretGenerator:
       - secret.enc.env
     options:
       disableNameSuffixHash: true
-#  - name: thanos-objstore
-#    files:
-#      - objstore.yml=objstorage.enc.yaml
-#    options:
-#      disableNameSuffixHash: true
+  - name: thanos-objstore
+    files:
+      - objstore.yml=objstorage.enc.yaml
+    options:
+      disableNameSuffixHash: true
 configurations:
   - kustomizeconfig.yaml
