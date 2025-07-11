@@ -5,6 +5,13 @@ resources:
   - namespace.yaml
   - repository.yaml
   - release.yaml
-  - client.yaml
-  - secret.yaml
   - ../../../secrets/base/registry.yaml
+secretGenerator:
+  - name: secret
+    files:
+      - secret.yaml=secret.enc.yaml
+  - name: client-secret
+    envs:
+      - client.enc.env
+generatorOptions:
+  disableNameSuffixHash: true
