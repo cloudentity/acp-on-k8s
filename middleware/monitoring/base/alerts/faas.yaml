@@ -9,17 +9,10 @@ spec:
         - alert: FaaSHttp5xxErrorRate
           expr: sum by (faas_env) (increase(acp_faas_executor_duration_seconds_count{status_code=~"5.."}[5m])) > 0
           labels:
-            severity: warning
+            severity: critical
           annotations:
             summary: 5xx errors detected in {{ $labels.namespace }} faas {{ $labels.faas_env }} in the last 5 minutes
             description: "There were one or more function executions returning 5xx in the last 5 minutes, VALUE = {{ $value }}"
-        - alert: FaaSTimeoutsRate
-          expr: sum by (faas_env) (increase(acp_faas_script_timeouts_total[5m])) > 10
-          labels:
-            severity: warning
-          annotations:
-            summary: Script timeouts detected in {{ $labels.namespace }} faas {{ $labels.faas_env }} in the last 5 minutes
-            description: "There were one or more script timeouts in the last 5 minutes, VALUE = {{ $value }}"
         - alert: FaasPodsRestart
           expr: sum by (pod,namespace)(kube_pod_container_status_restarts_total{namespace=~"acp-faas.*"} - kube_pod_container_status_restarts_total{namespace=~"acp-faas.*"} offset 5m) > 0
           labels:
