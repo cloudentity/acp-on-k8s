@@ -7,9 +7,6 @@ spec:
     features:
       backgroundScan:
         backgroundScanInterval: 8h
-    metricsConfig:
-      metricsRefreshInterval:
-        metricsRefreshInterval: 24h
     admissionController:
       replicas: 3
       serviceMonitor:
