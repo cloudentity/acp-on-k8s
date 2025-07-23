@@ -98,7 +98,7 @@ encrypt:
 debug:
 	@$(RUN) ./scripts/debug.sh
 
-clean:
+prune:
 	docker container prune -f
 	docker network prune -f
 	docker volume prune -f

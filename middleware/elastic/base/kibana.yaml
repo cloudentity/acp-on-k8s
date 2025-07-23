@@ -73,6 +73,8 @@ spec:
                     value: "/tls/tls.key"
                   - name: tls_supported_protocols
                     value: ["TLSv1.1", "TLSv1.2", "TLSv1.3"]
+                  - name: default_service_environment
+                    value: "${cluster_env}-${cluster_region}"
     xpack.fleet.enableDeleteUnenrolledAgents: true
   podTemplate:
     spec:
