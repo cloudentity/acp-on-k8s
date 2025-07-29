@@ -19,7 +19,7 @@ spec:
             secretName: elastic-es-http-certs-public
       containers:
         - name: es-setup
-          image: docker.secureauth.com/curlimages/curl:8.12.1
+          image: docker.secureauth.com/curlimages/curl:8.14.1@sha256:9a1ed35addb45476afa911696297f8e115993df459278ed036182dd2cd22b67b
           volumeMounts:
             - name: ilm
               mountPath: /data/ilm
