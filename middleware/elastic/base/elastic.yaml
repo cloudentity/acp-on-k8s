@@ -3,7 +3,7 @@ kind: Elasticsearch
 metadata:
   name: elastic
 spec:
-  version: 8.17.2 # Elasticsearch version
+  version: 8.18.3 # Elasticsearch version
   auth:
     fileRealm:
       - secretName: filerealm

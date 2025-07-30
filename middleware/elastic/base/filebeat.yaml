@@ -4,7 +4,7 @@ metadata:
   name: filebeat
 spec:
   type: filebeat
-  version: 8.17.2 # Filebeat version
+  version: 8.18.3 # Filebeat version
   elasticsearchRef:
     name: elastic
   kibanaRef:

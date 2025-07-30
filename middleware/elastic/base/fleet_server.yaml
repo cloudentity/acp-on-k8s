@@ -3,7 +3,7 @@ kind: Agent
 metadata:
   name: apm-fleet-server
 spec:
-  version: 8.17.2 # Agent version
+  version: 8.18.3 # Agent version
   kibanaRef:
     name: kibana
   elasticsearchRefs:
