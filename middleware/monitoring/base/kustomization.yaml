@@ -53,6 +53,7 @@ configMapGenerator:
     files:
       - dashboards/risk-engine.json
       - dashboards/risk-engine-analytics-dashboard.json
+      - dashboards/risk-engine-aiml-monitoring.json
     options:
       labels:
         grafana_dashboard: "1"

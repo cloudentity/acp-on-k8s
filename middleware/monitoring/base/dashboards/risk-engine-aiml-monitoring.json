@@ -1,0 +1,368 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P894B934712214A83"
+      },
+      "description": "This panel shows the number of acceptable models trained per day, grouped by handler.\nUse the \"Handler\" dropdown above to filter the data by a specific model handler or select multiple handlers to compare their training activity over time.\nThe data is aggregated based on the queued_at date, and only includes models where is_model_acceptable is marked as TRUE.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P894B934712214A83"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  queued_at::date AS train_date, \n  handler, \n  COUNT(*) AS number_trained\nFROM training_params \nWHERE is_model_acceptable IS Not False \nand handler = $handler\nGROUP BY queued_at::date, handler\nORDER BY train_date;\n\n\n\n\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Training Volume by Handler",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P894B934712214A83"
+      },
+      "description": "This panel compares the average number of acceptable models trained per day for each handler:\n\n2-Day Average: The mean daily training count over the past 2 days (excluding today)\n\n10-Day Average: The mean daily training count over the past 10 days (excluding today)\n\nUse this view to identify recent surges or drops in model training activity relative to historical behavior.",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 3,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "fullHighlight": false,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P894B934712214A83"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "WITH daily_counts AS (\n  SELECT \n    queued_at::date AS train_date,\n    handler,\n    COUNT(*) AS number_trained\n  FROM training_params\n  WHERE is_model_acceptable IS NOT False\n  GROUP BY train_date, handler\n),\nsummary AS (\n  SELECT\n    handler,\n\n    -- 2-day average: from (today - 2) to (today - 1)\n    (\n      SELECT AVG(number_trained)\n      FROM daily_counts d2\n      WHERE d2.handler = d.handler\n        AND d2.train_date >= CURRENT_DATE - INTERVAL '2 days'\n        AND d2.train_date < CURRENT_DATE\n    ) AS avg_last_2_days,\n\n    -- 10-day average: from (today - 10) to (today - 1)\n    (\n      SELECT AVG(number_trained)\n      FROM daily_counts d10\n      WHERE d10.handler = d.handler\n        AND d10.train_date >= CURRENT_DATE - INTERVAL '10 days'\n        AND d10.train_date < CURRENT_DATE\n    ) AS avg_last_10_days\n\n  FROM daily_counts d\n  WHERE d.train_date >= CURRENT_DATE - INTERVAL '10 days'\n    AND d.train_date < CURRENT_DATE\n  GROUP BY handler\n)\nSELECT *\nFROM summary\nORDER BY handler;\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "2-Day vs 10-Day Training Average (Per Handler)",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-postgresql-datasource",
+        "uid": "P894B934712214A83"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": ["sum"],
+          "show": false
+        },
+        "showHeader": true
+      },
+      "pluginVersion": "11.5.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "grafana-postgresql-datasource",
+            "uid": "P894B934712214A83"
+          },
+          "editorMode": "code",
+          "format": "table",
+          "rawQuery": true,
+          "rawSql": "-- select upper(o.tenant_org_id) from organizations  as o \n-- inner join tenants as t on t.id = o.tenant_id \n-- where o.active = true  \n-- and o.tenant_org_id like '%secure%'\n-- -- upper(t.name) In($Tenant)\n\nSELECT \n  queued_at::date AS train_date, \n  handler, \n  COUNT(*) AS number_trained\nFROM training_params \nWHERE is_model_acceptable IS NOT False\nand handler = $handler\nGROUP BY queued_at::date, handler\nORDER BY train_date desc, handler;\n",
+          "refId": "A",
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          }
+        }
+      ],
+      "title": "Daily Model Training Counts for Selected Handler",
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": ["Asq Handler"],
+          "value": ["Asq Handler"]
+        },
+        "datasource": {
+          "type": "grafana-postgresql-datasource",
+          "uid": "P894B934712214A83"
+        },
+        "definition": "SELECT DISTINCT handler FROM training_params WHERE handler IS NOT NULL AND TRIM(handler) != '' ORDER BY handler",
+        "includeAll": true,
+        "multi": true,
+        "name": "handler",
+        "options": [],
+        "query": "SELECT DISTINCT handler FROM training_params WHERE handler IS NOT NULL AND TRIM(handler) != '' ORDER BY handler",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-90d",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "New dashboard",
+  "version": 0,
+  "weekStart": ""
+}
