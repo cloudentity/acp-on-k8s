@@ -10,7 +10,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: elastic
-      version: 2.16.1
+      version: 3.0.0
   interval: 5m
   timeout: 15m
   # https://github.com/elastic/cloud-on-k8s/blob/main/deploy/eck-operator/values.yaml

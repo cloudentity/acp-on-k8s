@@ -28,6 +28,8 @@ spec:
             - name: bashrc
               mountPath: /etc/bash.bashrc
               subPath: bash.bashrc
+            - name: storage
+              mountPath: /storage
           command:
             - sleep
             - "2147483648"
@@ -84,6 +86,22 @@ spec:
                     - key: bashrc
                       path: bash.bashrc
                       mode: 0644
+        - name: storage
+          persistentVolumeClaim:
+            claimName: timescaledb-storage-pvc
       securityContext:
         fsGroup: 65534
         runAsNonRoot: true
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: timescaledb-storage-pvc
+  labels:
+    app.kubernetes.io/name: timescaledb-client
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
